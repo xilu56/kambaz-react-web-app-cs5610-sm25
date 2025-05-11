@@ -1,11 +1,10 @@
-import React from 'react';
 import { useParams } from 'react-router-dom';
 import CourseNavigation from '../Navigation';
 import Modules from '../Modules';
 import CourseStatus from './Status';
 
 export default function Home() {
-  const { cid } = useParams();
+  const {} = useParams();
 
   return (
     <div id="wd-course-home">

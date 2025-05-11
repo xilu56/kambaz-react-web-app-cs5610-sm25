@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function Modules() {
-  const { cid } = useParams();
+  const {} = useParams();
   
   // State for toggling view options
   const [showModules, setShowModules] = useState(true);

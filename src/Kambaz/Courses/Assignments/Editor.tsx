@@ -1,8 +1,7 @@
-import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams();
+  const { cid } = useParams();
   const navigate = useNavigate();
   
   const handleCancel = () => {
