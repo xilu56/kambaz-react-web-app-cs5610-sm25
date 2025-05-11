@@ -9,8 +9,8 @@ export default function CourseNavigation() {
       <Link to={`/Kambaz/Courses/${cid}/Modules`} id="wd-course-modules-link">Modules</Link><br/>
       <Link to={`/Kambaz/Courses/${cid}/Piazza`} id="wd-course-piazza-link">Piazza</Link><br/>
       <Link to={`/Kambaz/Courses/${cid}/Zoom`} id="wd-course-zoom-link">Zoom</Link><br/>
-      <Link to={`/Kambaz/Courses/${cid}/Assignments`} id="wd-course-quizzes-link">Assignments</Link><br/>
-      <Link to={`/Kambaz/Courses/${cid}/Quizzes`} id="wd-course-assignments-link">Quizzes</Link><br/>
+      <Link to={`/Kambaz/Courses/${cid}/Assignments`} id="wd-course-assignments-link">Assignments</Link><br/>
+      <Link to={`/Kambaz/Courses/${cid}/Quizzes`} id="wd-course-quizzes-link">Quizzes</Link><br/>
       <Link to={`/Kambaz/Courses/${cid}/Grades`} id="wd-course-grades-link">Grades</Link><br/>
       <Link to={`/Kambaz/Courses/${cid}/People`} id="wd-course-people-link">People</Link><br/>
     </div>
