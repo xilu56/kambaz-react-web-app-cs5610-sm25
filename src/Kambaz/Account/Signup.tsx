@@ -58,7 +58,12 @@ export default function Signup() {
         </button>
       </div>
       <div>
-        <Link to="/Kambaz/Account/Signin" id="wd-signin-link">Sign in</Link>
+        <button
+          id="wd-signin-link"
+          onClick={() => navigate("/Kambaz/Account/Signin")}
+        >
+          Sign in
+        </button>
       </div>
     </div>
   );
