@@ -1,6 +1,7 @@
 import CourseNavigation from "./Navigation";
 import { Navigate, Route, Routes, useParams } from "react-router";
 import CourseList from "./List";
+import Modules from "./Modules";
 
 // Define interfaces for course data
 interface CourseInfo {
@@ -70,8 +71,12 @@ export default function Courses() {
             <td valign="top">
               <Routes>
                 <Route path="/" element={<Navigate to="Home" />} />
-                <Route path="Home" element={<h2>Home - {course.title}</h2>} />
-                <Route path="Modules" element={<h2>Modules - {course.title}</h2>} />
+                <Route path="Home" element={
+                  <div>
+                    <h2>Home - {course.title}</h2>
+                  </div>
+                } />
+                <Route path="Modules" element={<Modules />} />
                 <Route path="Assignments" element={<h2>Assignments - {course.title}</h2>} />
                 <Route path="Assignments/:aid" element={<h2>Assignment Editor - {course.title}</h2>} />
                 <Route path="People" element={<h2>People - {course.title}</h2>} />
