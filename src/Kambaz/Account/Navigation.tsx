@@ -5,6 +5,8 @@ export default function AccountNavigation() {
       <Link to={`/Kambaz/Account/Signin`}  > Signin  </Link> <br/>
       <Link to={`/Kambaz/Account/Signup`}  > Signup  </Link> <br/>
       <Link to={`/Kambaz/Account/Profile`} > Profile </Link> <br/>
+      <Link to={`/Kambaz/Dashboard`}      > Dashboard </Link> <br/>
     </div>
-);}
+  );
+}
 
