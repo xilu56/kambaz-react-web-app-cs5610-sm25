@@ -22,7 +22,18 @@ export default function Signin() {
         value={password}
         onChange={e => setPassword(e.target.value)}
       /> <br />
-      <button id="wd-signin-btn" onClick={() => navigate("/Kambaz/Account/Profile")}>Sign in</button> <br />
+      <button
+        id="wd-signin-btn"
+        onClick={() => {
+          if (username === "admin") {
+            navigate("/Kambaz/Account/Dashboard");
+          } else {
+            navigate("/Kambaz/Account/Profile");
+          }
+        }}
+      >
+        Sign in
+      </button> <br />
       <Link to="/Kambaz/Account/Signup" id="wd-signup-link">Sign up</Link>
     </div>
   );
