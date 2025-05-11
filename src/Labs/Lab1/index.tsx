@@ -30,7 +30,20 @@ export default function Lab1() {
         <h5 id="wd-file-upload">File Upload</h5>
         <label htmlFor="wd-file-upload-input">Upload a file:</label>
         <input type="file" id="wd-file-upload-input" />
+        <h5 id="wd-radio-buttons">Radio buttons</h5>
 
+        <label>Favorite movie genre:</label><br />
+
+        <input type="radio" name="radio-genre" id="wd-radio-comedy"/>
+        <label htmlFor="wd-radio-comedy">Comedy</label><br />
+
+        <input type="radio" name="radio-genre" id="wd-radio-drama"/>
+        <label htmlFor="wd-radio-drama">Drama</label><br />
+
+        <input type="radio" name="radio-genre" id="wd-radio-scifi"/>
+        <label htmlFor="wd-radio-scifi">SciFi</label><br />
+        <input type="radio" name="radio-genre" id="wd-radio-fantasy"/>
+        <label htmlFor="wd-radio-fantasy">Fantasy</label>
       </div>      
 );
 }
