@@ -4,6 +4,7 @@ import CourseList from "./List";
 import Modules from "./Modules";
 import Home from "./Home";
 import Assignments from "./Assignments";
+import AssignmentEditor from "./Assignments/Editor";
 
 // Define interfaces for course data
 interface CourseInfo {
@@ -104,7 +105,7 @@ export default function Courses() {
                     <CourseNavigation />
                   </td>
                   <td valign="top">
-                    <h2>Assignment Editor - {course.title}</h2>
+                    <AssignmentEditor />
                   </td>
                 </tr>
               </tbody>
