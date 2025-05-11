@@ -2,6 +2,7 @@ import CourseNavigation from "./Navigation";
 import { Navigate, Route, Routes, useParams } from "react-router";
 import CourseList from "./List";
 import Modules from "./Modules";
+import Home from "./Home";
 
 // Define interfaces for course data
 interface CourseInfo {
@@ -62,33 +63,124 @@ export default function Courses() {
       <h2>{course.title}</h2>
       <p>{course.description}</p>
       <hr />
-      <table>
-        <tbody>
-          <tr>
-            <td valign="top">
-              <CourseNavigation />
-            </td>
-            <td valign="top">
-              <Routes>
-                <Route path="/" element={<Navigate to="Home" />} />
-                <Route path="Home" element={
-                  <div>
-                    <h2>Home - {course.title}</h2>
-                  </div>
-                } />
-                <Route path="Modules" element={<Modules />} />
-                <Route path="Assignments" element={<h2>Assignments - {course.title}</h2>} />
-                <Route path="Assignments/:aid" element={<h2>Assignment Editor - {course.title}</h2>} />
-                <Route path="People" element={<h2>People - {course.title}</h2>} />
-                <Route path="Piazza" element={<h2>Piazza - {course.title}</h2>} />
-                <Route path="Zoom" element={<h2>Zoom - {course.title}</h2>} />
-                <Route path="Quizzes" element={<h2>Quizzes - {course.title}</h2>} />
-                <Route path="Grades" element={<h2>Grades - {course.title}</h2>} />
-              </Routes>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="wd-course-content">
+        <Routes>
+          <Route path="/" element={<Navigate to="Home" />} />
+          <Route path="Home/*" element={<Home />} />
+          <Route path="Modules" element={
+            <table>
+              <tbody>
+                <tr>
+                  <td valign="top">
+                    <CourseNavigation />
+                  </td>
+                  <td valign="top">
+                    <Modules />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          } />
+          <Route path="Assignments" element={
+            <table>
+              <tbody>
+                <tr>
+                  <td valign="top">
+                    <CourseNavigation />
+                  </td>
+                  <td valign="top">
+                    <h2>Assignments - {course.title}</h2>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          } />
+          <Route path="Assignments/:aid" element={
+            <table>
+              <tbody>
+                <tr>
+                  <td valign="top">
+                    <CourseNavigation />
+                  </td>
+                  <td valign="top">
+                    <h2>Assignment Editor - {course.title}</h2>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          } />
+          <Route path="People" element={
+            <table>
+              <tbody>
+                <tr>
+                  <td valign="top">
+                    <CourseNavigation />
+                  </td>
+                  <td valign="top">
+                    <h2>People - {course.title}</h2>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          } />
+          <Route path="Piazza" element={
+            <table>
+              <tbody>
+                <tr>
+                  <td valign="top">
+                    <CourseNavigation />
+                  </td>
+                  <td valign="top">
+                    <h2>Piazza - {course.title}</h2>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          } />
+          <Route path="Zoom" element={
+            <table>
+              <tbody>
+                <tr>
+                  <td valign="top">
+                    <CourseNavigation />
+                  </td>
+                  <td valign="top">
+                    <h2>Zoom - {course.title}</h2>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          } />
+          <Route path="Quizzes" element={
+            <table>
+              <tbody>
+                <tr>
+                  <td valign="top">
+                    <CourseNavigation />
+                  </td>
+                  <td valign="top">
+                    <h2>Quizzes - {course.title}</h2>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          } />
+          <Route path="Grades" element={
+            <table>
+              <tbody>
+                <tr>
+                  <td valign="top">
+                    <CourseNavigation />
+                  </td>
+                  <td valign="top">
+                    <h2>Grades - {course.title}</h2>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          } />
+        </Routes>
+      </div>
     </div>
   );
 }
