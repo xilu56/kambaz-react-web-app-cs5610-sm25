@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+
 export default function Profile() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("bobcat");
   const [password, setPassword] = useState("passw0rd");
   const [firstName, setFirstName] = useState("Bob");
@@ -87,8 +89,14 @@ export default function Profile() {
         </select>
       </div>
       <div>
-        <Link to="/Kambaz/Account/Signin">Sign out</Link>
+        <button
+          id="wd-signout-btn"
+          onClick={() => navigate("/Kambaz/Account/Signin")}
+        >
+          Sign out
+        </button>
       </div>
     </div>
   );
 }
+  
