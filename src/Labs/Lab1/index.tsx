@@ -27,6 +27,10 @@ export default function Lab1() {
         Hello World!
         </button>
 
+        <h5 id="wd-file-upload">File Upload</h5>
+        <label htmlFor="wd-file-upload-input">Upload a file:</label>
+        <input type="file" id="wd-file-upload-input" />
+
       </div>      
 );
 }
