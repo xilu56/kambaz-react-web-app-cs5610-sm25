@@ -8,7 +8,7 @@ export default function KambazNavigation() {
       <Link to="/Kambaz/Courses" id="wd-course-link">Courses</Link><br/>
       <Link to="/Kambaz/Calendar" id="wd-calendar-link">Calendar</Link><br/>
       <Link to="/Kambaz/Inbox" id="wd-inbox-link">Inbox</Link><br/>
-      <Link to="/Labs" id="wd-labs-link">Labs</Link><br/>
+      <Link to="/Labs" id="wd-labs-link">Back to Labs</Link><br/>
     </div>
   );
 }
