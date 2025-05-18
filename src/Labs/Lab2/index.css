@@ -5,8 +5,11 @@
     background-color: red;
     color: white;
    }
-   p#wd-id-selector-2 {
+p#wd-id-selector-2 {
     background-color: yellow;
     color: black;
+    }
+.wd-class-selector {
+        background-color: yellow;
+        color: blue;
    }
-   
