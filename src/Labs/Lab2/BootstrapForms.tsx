@@ -5,6 +5,8 @@ import FormSelect from 'react-bootstrap/FormSelect';
 import Form from 'react-bootstrap/Form';
 import FormRange from 'react-bootstrap/FormRange';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 
 export default function BootstrapForms() {
@@ -58,7 +60,34 @@ export default function BootstrapForms() {
     <InputGroup.Text>0.00</InputGroup.Text>
   </InputGroup>
 
-</div>
 
+<div id="wd-css-responsive-forms-1">
+  <h3>Responsive forms</h3>
+  <Form.Group as={Row} className="mb-3" controlId="email1">
+    <Form.Label column sm={2}>
+     Email
+    </Form.Label>
+    <Col sm={10}>
+      <Form.Control type="email" value="email@example.com" />
+    </Col>
+  </Form.Group>
+  <Form.Group as={Row} className="mb-3" controlId="password1">
+    <Form.Label column sm={2}>
+      Password
+    </Form.Label>
+    <Col sm={10}>
+    <Form.Control type="password" />
+    </Col>
+  </Form.Group>
+  <Form.Group as={Row} className="mb-3" controlId="textarea2">
+    <Form.Label column sm={2}>
+      Bio
+    </Form.Label>
+    <Col sm={10}>
+      <Form.Control as="textarea" style={{height: "100px"}}/>
+    </Col>
+  </Form.Group>
+</div>
+</div>
     )
 }
