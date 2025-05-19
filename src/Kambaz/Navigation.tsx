@@ -30,17 +30,17 @@ export default function KambazNavigation() {
     <ListGroup.Item to="/Kambaz/Calendar" as={Link}
        className="text-white
                   bg-black text-center border-0">
-       <IoCalendarOutline className="fs-1 text-white" />
+       <IoCalendarOutline className="fs-1 text-danger" />
        Calendar </ListGroup.Item>
     <ListGroup.Item to="/Kambaz/Inbox" as={Link}
        className="text-white
                   bg-black text-center border-0">
-       <FaInbox className="fs-1 text-white" /><br />
+       <FaInbox className="fs-1 text-danger" /><br />
        Inbox </ListGroup.Item>
     <ListGroup.Item to="/Kambaz/Account/Settings" as={Link}
        className="text-white
                   bg-black text-center border-0">
-       <LiaCogSolid className="fs-1 text-white" />
+       <LiaCogSolid className="fs-1 text-danger" />
        Settings </ListGroup.Item>
   </ListGroup>);
 }
