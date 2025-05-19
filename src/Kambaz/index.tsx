@@ -4,6 +4,7 @@ import KambazNavigation from "./Navigation";
 import Account from "./Account";
 import Dashboard from "./Dashboard";
 import Courses from "./Courses";
+import "./styles.css";
 
 export default function Kambaz() {
   return (
