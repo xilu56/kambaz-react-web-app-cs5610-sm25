@@ -2,6 +2,7 @@ import "./index.css";
 import ForegroundColor from "./ForegroundColors";
 import BackgroundColor from "./BackgroundColors";
 import Borders from "./Borders";
+import Padding from "./Padding";
 
 export default function Lab2() {
   return (
@@ -10,6 +11,7 @@ export default function Lab2() {
       <ForegroundColor />
       <BackgroundColor />
       <Borders />
+      <Padding />
     </div>
 
   );}
