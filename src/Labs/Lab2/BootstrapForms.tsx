@@ -4,6 +4,7 @@ import FormControl from 'react-bootstrap/FormControl';
 import FormSelect from 'react-bootstrap/FormSelect';
 import Form from 'react-bootstrap/Form';
 import FormRange from 'react-bootstrap/FormRange';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 
 export default function BootstrapForms() {
@@ -45,6 +46,17 @@ export default function BootstrapForms() {
     <FormRange min="0" max="5" step="0.5" />
   </FormGroup>
 </div>
+<h3>Addons</h3>
+  <InputGroup className="mb-3">
+    <InputGroup.Text>$</InputGroup.Text>
+    <InputGroup.Text>0.00</InputGroup.Text>
+    <FormControl />
+  </InputGroup>
+  <InputGroup>
+    <FormControl />
+    <InputGroup.Text>$</InputGroup.Text>
+    <InputGroup.Text>0.00</InputGroup.Text>
+  </InputGroup>
 
 </div>
 
