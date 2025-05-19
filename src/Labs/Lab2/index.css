@@ -176,5 +176,9 @@
             width: 20%;
             float: left;
          }
-         
+.wd-flex-row-container {
+            display: flex;
+            flex-direction: row;
+          }
+          
           
