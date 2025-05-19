@@ -1,6 +1,7 @@
 import FormGroup from 'react-bootstrap/FormGroup';
 import FormLabel from 'react-bootstrap/FormLabel';
 import FormControl from 'react-bootstrap/FormControl';
+import FormSelect from 'react-bootstrap/FormSelect';
 
 export default function BootstrapForms() {
     return (
@@ -14,6 +15,14 @@ export default function BootstrapForms() {
     <FormLabel>Example textarea</FormLabel>
     <FormControl as="textarea" rows={3} />
   </FormGroup>
+  <h3>Dropdowns</h3>
+  <FormSelect>
+     <option selected>Open this select menu</option>
+     <option value="1">One</option>
+     <option value="2">Two</option>
+     <option value="3">Three</option>
+  </FormSelect>
 </div>
+
     )
 }
