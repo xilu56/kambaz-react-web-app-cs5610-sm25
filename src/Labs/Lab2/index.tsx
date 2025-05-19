@@ -1,18 +1,11 @@
 import "./index.css";
+import ForegroundColor from "./ForegroundColors";
+
 export default function Lab2() {
   return (
-  
-<div id="wd-css-borders">
-  <h2>Borders</h2>
-  <p className="wd-border-fat
-     wd-border-red
-     wd-border-solid">
-    Solid fat red border</p>
-  <p className="wd-border-thin
-     wd-border-blue
-     wd-border-dashed">
-    Dashed thin blue border
-  </p>
-</div>
+    <div id="wd-lab2">
+      <h1>Lab 2</h1>
+      <ForegroundColor />
+    </div>
 
   );}
