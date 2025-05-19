@@ -24,3 +24,18 @@
     background-color: green; }
  .wd-bg-color-gray {
     background-color: lightgray; }
+
+.wd-border-fat {
+    border-width: 20px 30px 20px 30px; }
+.wd-border-thin {
+    border-width: 4px; }
+.wd-border-solid {
+    border-style: solid; }
+.wd-border-dashed {
+    border-style: dashed; }
+.wd-border-yellow {
+    border-color: #ffff07; }
+.wd-border-red {
+    border-color: #ff7070; }
+.wd-border-blue {
+    border-color: #7070ff; }
