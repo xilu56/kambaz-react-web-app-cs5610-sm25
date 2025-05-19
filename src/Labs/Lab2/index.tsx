@@ -7,6 +7,7 @@ import Margins from "./Margins";
 import Dimensions from "./Dimensions";
 import Corners from "./Corners";
 import Positions from "./Positions";
+import Zindex from "./Zindex";
 
 export default function Lab2() {
   return (
@@ -20,6 +21,7 @@ export default function Lab2() {
       <Dimensions />
       <Corners />
       <Positions />
+      <Zindex />
     </div>
 
   );}
