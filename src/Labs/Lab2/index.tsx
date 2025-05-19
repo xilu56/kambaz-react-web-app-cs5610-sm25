@@ -12,6 +12,7 @@ import Float from "./Float";
 import GridLayout from "./GridLayout";
 import Flex from "./Flex"; 
 import ReactIconsSampler from "./ReactIcons"; 
+import Container from "./Container";
 
 export default function Lab2() {
   return (
@@ -30,6 +31,10 @@ export default function Lab2() {
       <GridLayout />
       <Flex />
       <ReactIconsSampler />
+      <Container>
+        <h2>Lab 2 - Cascading Style Sheets</h2>
+        <h3>Styling with the STYLE attribute</h3>
+      </Container>
     </div>
-
-  );}
+  );
+}
