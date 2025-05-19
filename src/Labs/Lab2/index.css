@@ -66,4 +66,19 @@
 .wd-margin-all-around {
     margin: 30px;
     }
-      
+
+.wd-dimension-portrait {
+    width: 75px;
+    height: 100px;
+    }
+     
+.wd-dimension-landscape {
+    width: 100px;
+    height: 75px;
+    }
+     
+.wd-dimension-square {
+    width: 75px;
+    height: 75px;
+    }
+     

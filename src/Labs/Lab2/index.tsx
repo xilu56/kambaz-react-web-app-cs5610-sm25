@@ -4,6 +4,7 @@ import BackgroundColor from "./BackgroundColors";
 import Borders from "./Borders";
 import Padding from "./Padding";
 import Margins from "./Margins";
+import Dimensions from "./Dimensions";
 
 export default function Lab2() {
   return (
@@ -14,6 +15,7 @@ export default function Lab2() {
       <Borders />
       <Padding />
       <Margins />
+      <Dimensions />
     </div>
 
   );}
