@@ -1,3 +1,5 @@
+import starshipImage from '../../assets/starship.jpg';
+
 export default function Lab1() {
     return (
       <div>
@@ -132,7 +134,7 @@ tag to tell browsers to render the gaps.
   <div id="wd-image">
       <h4>Image Tag</h4>
       <p>Image of a starship</p>
-      <img src="src/assets/starship.jpg"
+      <img src={starshipImage}
     width="200px"
     height="300px"/>
     </div>
@@ -143,7 +145,7 @@ tag to tell browsers to render the gaps.
   <br />
   Loading a local image:
   <br />
-  <img src="src/assets/starship.jpg"
+  <img src={starshipImage}
      width="200px"
      height="300px"
 />
