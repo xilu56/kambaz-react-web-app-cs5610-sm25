@@ -15,6 +15,7 @@ import ReactIconsSampler from "./ReactIcons";
 import Container from "./Container";
 import BootstrapGrids from "./BootstrapGrids";
 import ScreenSizeLabel from "./ScreenSizeLabel";
+import BootstrapTables from "./BootstrapTables";
 
 export default function Lab2() {
   return (
@@ -39,6 +40,7 @@ export default function Lab2() {
       </Container>
       <BootstrapGrids />
       <ScreenSizeLabel />
+      <BootstrapTables />
     </div>
   );
 }
