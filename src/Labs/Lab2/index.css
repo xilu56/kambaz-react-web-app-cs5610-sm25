@@ -128,3 +128,10 @@
         position: absolute;
         top: 20px;
         left: 120px;      }
+.wd-pos-fixed {
+        position: fixed;
+        right: 0px;
+        bottom: 50%;
+        }
+          
+          
