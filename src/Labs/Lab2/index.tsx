@@ -9,6 +9,7 @@ import Corners from "./Corners";
 import Positions from "./Positions";
 import Zindex from "./Zindex";
 import Float from "./Float";
+import GridLayout from "./GridLayout";
 
 export default function Lab2() {
   return (
@@ -24,6 +25,7 @@ export default function Lab2() {
       <Positions />
       <Zindex />
       <Float />
+      <GridLayout />
     </div>
 
   );}
