@@ -6,71 +6,71 @@ import { Table, Form, InputGroup, Button } from "react-bootstrap";
 interface Person {
   id: string;
   name: string;
+  loginId: string;
+  section: string;
   role: string;
-  email: string;
   lastActivity: string;
+  totalActivity: string;
 }
 
 export default function PeopleTable() {
   const { cid } = useParams();
 
-  // 模拟课程参与者数据
+  // 模拟课程参与者数据 - 参照图片中的格式
   const people: Person[] = [
     {
       id: "1",
-      name: "Dr. John Smith",
-      role: "Instructor",
-      email: "john.smith@university.edu",
-      lastActivity: "Today, 9:42 AM"
+      name: "Tony Stark",
+      loginId: "001234561S",
+      section: "S101",
+      role: "STUDENT",
+      lastActivity: "2020-10-01T00:00:00.000Z",
+      totalActivity: "10:21:32"
     },
     {
       id: "2",
-      name: "Maya Rodriguez",
-      role: "Teaching Assistant",
-      email: "m.rodriguez@university.edu",
-      lastActivity: "Yesterday, 4:15 PM"
+      name: "Bruce Wayne",
+      loginId: "001234562S",
+      section: "S101",
+      role: "STUDENT",
+      lastActivity: "2020-11-02T00:00:00.000Z",
+      totalActivity: "15:32:43"
     },
     {
       id: "3",
-      name: "David Chen",
-      role: "Teaching Assistant",
-      email: "d.chen@university.edu",
-      lastActivity: "Today, 10:30 AM"
+      name: "Steve Rogers",
+      loginId: "001234563S",
+      section: "S101",
+      role: "STUDENT",
+      lastActivity: "2020-10-02T00:00:00.000Z",
+      totalActivity: "23:32:43"
     },
     {
       id: "4",
-      name: "Sophia Williams",
-      role: "Student",
-      email: "s.williams@university.edu",
-      lastActivity: "Today, 11:05 AM"
+      name: "Natasha Romanoff",
+      loginId: "001234564S",
+      section: "S101",
+      role: "TA",
+      lastActivity: "2020-11-05T00:00:00.000Z",
+      totalActivity: "13:23:34"
     },
     {
       id: "5",
-      name: "Michael Johnson",
-      role: "Student",
-      email: "m.johnson@university.edu",
-      lastActivity: "Yesterday, 8:20 PM"
+      name: "Thor Odinson",
+      loginId: "001234565S",
+      section: "S101",
+      role: "STUDENT",
+      lastActivity: "2020-12-01T00:00:00.000Z",
+      totalActivity: "11:22:33"
     },
     {
       id: "6",
-      name: "Emma Davis",
-      role: "Student",
-      email: "e.davis@university.edu",
-      lastActivity: "Today, 8:55 AM"
-    },
-    {
-      id: "7",
-      name: "Daniel Kim",
-      role: "Student",
-      email: "d.kim@university.edu",
-      lastActivity: "3 days ago"
-    },
-    {
-      id: "8",
-      name: "Olivia Martinez",
-      role: "Student",
-      email: "o.martinez@university.edu",
-      lastActivity: "Today, 12:15 PM"
+      name: "Bruce Banner",
+      loginId: "001234566S",
+      section: "S101",
+      role: "STUDENT",
+      lastActivity: "2020-12-01T00:00:00.000Z",
+      totalActivity: "22:33:44"
     }
   ];
 
@@ -101,9 +101,11 @@ export default function PeopleTable() {
         <thead>
           <tr>
             <th>Name</th>
+            <th>Login ID</th>
+            <th>Section</th>
             <th>Role</th>
-            <th>Email</th>
             <th>Last Activity</th>
+            <th>Total Activity</th>
           </tr>
         </thead>
         <tbody>
@@ -115,9 +117,11 @@ export default function PeopleTable() {
                   {person.name}
                 </div>
               </td>
+              <td>{person.loginId}</td>
+              <td>{person.section}</td>
               <td>{person.role}</td>
-              <td>{person.email}</td>
               <td>{person.lastActivity}</td>
+              <td>{person.totalActivity}</td>
             </tr>
           ))}
         </tbody>
