@@ -52,7 +52,7 @@ export default function KambazNavigation() {
         target="_blank"
         className="border-0 bg-black text-danger text-center"
       >
-        Northeastern
+      <img src="/images/NEU.png" width="75px" />
       </ListGroup.Item>
       {links.map((link) => (
         <ListGroup.Item
