@@ -1,82 +1,59 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Form, Container, Row, Col } from "react-bootstrap";
 
 export default function Signup() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [verifyPassword, setVerifyPassword] = useState("");
 
   const handleSignup = () => {
-    if (password && password === verifyPassword) {
-      navigate("/Kambaz/Account/Profile");
-    } else {
-      alert("Passwords do not match!");
-    }
+    navigate("/Kambaz/Account/Profile");
   };
 
   return (
-    <Container fluid className="p-0">
-      <Row>
-        <Col>
-          <div className="d-flex">
-            <div className="border-end pe-4 me-4">
-              <h2 className="mb-4">Signup</h2>
-            </div>
-            <div>
-              <h2 className="mb-4">Signup</h2>
-              <Form>
-                <Form.Group className="mb-3">
-                  <Form.Control
-                    type="text"
-                    placeholder="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </Form.Group>
-                
-                <Form.Group className="mb-3">
-                  <Form.Control
-                    type="password"
-                    placeholder="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </Form.Group>
-                
-                <Form.Group className="mb-3">
-                  <Form.Control
-                    type="password"
-                    placeholder="verify password"
-                    value={verifyPassword}
-                    onChange={(e) => setVerifyPassword(e.target.value)}
-                  />
-                </Form.Group>
-                
-                <Button 
-                  variant="primary" 
-                  className="w-100 mb-3"
-                  onClick={handleSignup}
-                >
-                  Signup
-                </Button>
-                
-                <div className="text-center">
-                  <Link 
-                    to="/Kambaz/Account/Signin"
-                    className="text-primary text-decoration-none"
-                  >
-                    Signin
-                  </Link>
-                </div>
-              </Form>
-            </div>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+    <div id="wd-signup-screen">
+      <Container>
+        <Row>
+          <Col xs={12} md={3}>
+            {/* 左侧列留空 */}
+          </Col>
+          <Col xs={12} md={3} className="border-end d-flex flex-column">
+            <h3 className="mb-4">Signup</h3>
+            <Link to="/Kambaz/Account/Signin" className="text-danger mb-3">Signin</Link>
+            <Link to="/Kambaz/Account/Signup" className="text-danger mb-3">Signup</Link>
+            <Link to="/Kambaz/Account/Profile" className="text-danger mb-3">Profile</Link>
+          </Col>
+          <Col xs={12} md={6}>
+            <h3 className="mb-4">Signup</h3>
+            <Form>
+              <Form.Control 
+                id="wd-signup-username"
+                placeholder="username"
+                className="mb-4"/>
+              <Form.Control 
+                id="wd-signup-password"
+                placeholder="password" 
+                type="password"
+                className="mb-4"/>
+              <Link 
+                id="wd-signup-btn"
+                to="/Kambaz/Account/Profile"
+                className="btn btn-primary w-100 mb-3"
+                onClick={handleSignup}
+              >
+                Signup
+              </Link>
+              <div className="text-center">
+                <Link 
+                  id="wd-signin-link" 
+                  to="/Kambaz/Account/Signin"
+                  className="text-primary">
+                  Signin
+                </Link>
+              </div>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
     
