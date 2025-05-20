@@ -1,0 +1,79 @@
+[
+    {
+      "_id": "CS5001",
+      "name": "Programming Fundamentals",
+      "number": "CS5001",
+      "startDate": "2023-09-01",
+      "endDate": "2023-12-15",
+      "department": "Computer Science",
+      "credits": 4,
+      "description": "An intensive introduction to programming and problem solving using Python. Designed for students with minimal programming background, this course covers fundamentals of programming including variables, data types, control structures, functions, and object-oriented programming concepts. Students will learn algorithmic thinking and develop skills in writing well-structured, efficient code.",
+      "image": "CS5001.jpg"
+    },
+    {
+      "_id": "CS5002",
+      "name": "Discrete Structures",
+      "number": "CS5002",
+      "startDate": "2023-09-01",
+      "endDate": "2023-12-15",
+      "department": "Computer Science",
+      "credits": 4,
+      "description": "This course explores the mathematical foundations of computer science, including logic, proof techniques, set theory, relations, functions, counting principles, and graph theory. Topics also include Boolean algebra, induction, recursion, and analysis of algorithms. This mathematical background is essential for advanced study in algorithms, programming languages, and other areas of computer science.",
+      "image": "CS5002.jpg"
+    },
+    {
+      "_id": "CS5004",
+      "name": "Object-Oriented Design",
+      "number": "CS5004",
+      "startDate": "2024-01-08",
+      "endDate": "2024-04-25",
+      "department": "Computer Science",
+      "credits": 4,
+      "description": "An in-depth study of object-oriented programming and design principles using Java. The course covers class design, inheritance, polymorphism, interfaces, abstract classes, design patterns, and software testing. Students will develop complex applications with emphasis on code quality, maintainability, and following best practices in software engineering.",
+      "image": "CS5004.jpg"
+    },
+    {
+      "_id": "CS5008",
+      "name": "Data Structures and Algorithms",
+      "number": "CS5008",
+      "startDate": "2024-01-08",
+      "endDate": "2024-04-25",
+      "department": "Computer Science",
+      "credits": 4,
+      "description": "A comprehensive study of fundamental data structures and algorithms essential for efficient computation. Topics include arrays, linked lists, stacks, queues, trees, hash tables, graphs, sorting algorithms, and algorithmic strategies. The course emphasizes algorithm analysis, problem-solving techniques, and the trade-offs in algorithm design. Students implement these concepts through programming assignments in C/C++.",
+      "image": "CS5008.jpg"
+    },
+    {
+      "_id": "CS5010",
+      "name": "Programming Design Paradigm",
+      "number": "CS5010",
+      "startDate": "2024-05-06",
+      "endDate": "2024-08-20",
+      "department": "Computer Science",
+      "credits": 4,
+      "description": "This course explores various programming paradigms including functional, procedural, and object-oriented approaches. Students learn to select and apply appropriate paradigms for different problem domains. The course emphasizes clean code design, abstraction, and composing solutions through different paradigmatic approaches. Programming assignments use languages such as Racket, Python, and Java to illustrate different programming styles.",
+      "image": "CS5010.jpg"
+    },
+    {
+      "_id": "CS5520",
+      "name": "Mobile Application Development",
+      "number": "CS5520",
+      "startDate": "2024-09-01",
+      "endDate": "2024-12-15",
+      "department": "Computer Science",
+      "credits": 4,
+      "description": "An introduction to developing applications for mobile platforms like iOS and Android. The course covers mobile user interface design, reactive programming paradigms, data persistence, network communication, and deployment. Students learn cross-platform development using React Native or Flutter, enabling them to create applications that run efficiently on multiple mobile operating systems.",
+      "image": "CS5520.jpg"
+    },
+    {
+      "_id": "CS5800",
+      "name": "Algorithms",
+      "number": "CS5800",
+      "startDate": "2024-09-01",
+      "endDate": "2024-12-15",
+      "department": "Computer Science",
+      "credits": 4,
+      "description": "An advanced study of algorithm design, analysis, and implementation. Topics include greedy algorithms, dynamic programming, graph algorithms, NP-completeness, and approximation algorithms. The course also explores computational complexity theory and the limits of algorithmic efficiency. Students implement and analyze algorithms for solving complex computational problems, preparing them for research and industry applications.",
+      "image": "CS5800.jpg"
+    }
+  ]

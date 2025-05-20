@@ -1,33 +1,28 @@
-import { useParams } from 'react-router-dom';
-import CourseNavigation from '../Navigation';
-import Modules from '../Modules';
-import CourseStatus from './Status';
+import React from 'react';
+import Modules from "../Modules";
+import CourseStatus from "./Status";
+import { Row, Col } from 'react-bootstrap';
 
 export default function Home() {
-  const {} = useParams();
-
   return (
-    <div id="wd-course-home">
-      <table width="100%">
-        <tbody>
-          <tr>
-            {/* Column 1: Course Navigation */}
-            <td valign="top" className="wd-column wd-course-nav-column">
-              <CourseNavigation />
-            </td>
-            
-            {/* Column 2: Modules Content */}
-            <td valign="top" className="wd-column wd-modules-column">
-              <Modules />
-            </td>
-            
-            {/* Column 3: Course Status */}
-            <td valign="top" className="wd-column wd-status-column">
-              <CourseStatus />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div id="wd-home">
+      <Row>
+        {/* Main Content: Modules */}
+        <Col lg={9} md={8} sm={12} className="pe-md-4">
+          <h2 className="mb-4">Course Content</h2>
+          <Modules />
+        </Col>
+        
+        {/* Sidebar: Course Status - Hidden on small screens */}
+        <Col lg={3} md={4} className="d-none d-md-block">
+          <CourseStatus />
+        </Col>
+        
+        {/* Course Status for mobile - Only visible on small screens */}
+        <Col xs={12} className="d-md-none mt-4">
+          <CourseStatus />
+        </Col>
+      </Row>
     </div>
   );
 }

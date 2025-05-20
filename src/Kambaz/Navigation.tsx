@@ -1,47 +1,75 @@
-import { AiOutlineDashboard } from "react-icons/ai";
-import { IoCalendarOutline } from "react-icons/io5";
-import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
-import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import { ListGroup } from "react-bootstrap";
+import { Link, useLocation } from "react-router-dom";
+import { FaBook, FaCalendar, FaInbox } from "react-icons/fa";
+import { GoBeaker } from "react-icons/go";
+import { ImMeter } from "react-icons/im";
+import { BsPeople } from "react-icons/bs";
 
 export default function KambazNavigation() {
- return (
-  <ListGroup id="wd-kambaz-navigation" style={{ width: 120 }} 
-       className="rounded-0 position-fixed bottom-0 top-0 d-none d-md-block bg-black z-2">
-    <ListGroup.Item id="wd-neu-link" target="_blank" action
-       href="https://www.northeastern.edu/"
-       className="bg-black border-0 text-center">
-       <img src="/images/NEU.png" width="75px" /></ListGroup.Item>
-    <ListGroup.Item to="/Kambaz/Account" as={Link}
-       className="text-center border-0 bg-black text-white">
-       <FaRegCircleUser className="fs-1 text text-white" />
-       Account </ListGroup.Item>
-    <ListGroup.Item to="/Kambaz/Dashboard" as={Link}
-       className="text-center border-0
-                  bg-white text-danger">
-       <AiOutlineDashboard className="fs-1 text-danger" />
-       Dashboard </ListGroup.Item>
-    <ListGroup.Item to="/Kambaz/Courses" as={Link}
-       className="text-white
-                  bg-black text-center border-0">
-       <LiaBookSolid className="fs-1 text-danger" />
-       Courses </ListGroup.Item>
-    <ListGroup.Item to="/Kambaz/Calendar" as={Link}
-       className="text-white
-                  bg-black text-center border-0">
-       <IoCalendarOutline className="fs-1 text-danger" />
-       Calendar </ListGroup.Item>
-    <ListGroup.Item to="/Kambaz/Inbox" as={Link}
-       className="text-white
-                  bg-black text-center border-0">
-       <FaInbox className="fs-1 text-danger" /><br />
-       Inbox </ListGroup.Item>
-    <ListGroup.Item to="/Kambaz/Account/Settings" as={Link}
-       className="text-white
-                  bg-black text-center border-0">
-       <LiaCogSolid className="fs-1 text-danger" />
-       Settings </ListGroup.Item>
-  </ListGroup>);
+  const { pathname } = useLocation();
+  const links = [
+    {
+      id: "wd-account-link",
+      to: "/Kambaz/Account",
+      text: "Account",
+      icon: BsPeople,
+    },
+    {
+      id: "wd-dashboard-link",
+      to: "/Kambaz/Dashboard",
+      text: "Dashboard",
+      icon: ImMeter,
+    },
+    {
+      id: "wd-course-link",
+      to: "/Kambaz/Courses",
+      text: "Courses",
+      icon: FaBook,
+    },
+    {
+      id: "wd-calendar-link",
+      to: "/Kambaz/Calendar",
+      text: "Calendar",
+      icon: FaCalendar,
+    },
+    {
+      id: "wd-inbox-link",
+      to: "/Kambaz/Inbox",
+      text: "Inbox",
+      icon: FaInbox,
+    },
+    { id: "wd-labs-link", to: "/Labs", text: "Labs", icon: GoBeaker },
+  ];
+  return (
+    <ListGroup
+      id="wd-kambaz-navigation"
+      className="d-none d-md-block rounded-0 p-0 m-0 border-0 position-fixed bottom-0 top-0 bg-black"
+    >
+      <ListGroup.Item
+        action
+        href="https://www.northeastern.edu/"
+        id="wd-neu-link"
+        target="_blank"
+        className="border-0 bg-black text-danger text-center"
+      >
+        Northeastern
+      </ListGroup.Item>
+      {links.map((link) => (
+        <ListGroup.Item
+          className={`border-0 text-center ${
+            pathname.includes(link.text)
+              ? "bg-white text-danger"
+              : "text-white bg-black"
+          }`}
+          as={Link}
+          to={link.to}
+          id={link.id}
+        >
+          {link.icon({ className: "fs-1 text-danger" })}
+          <br />
+          {link.text}
+        </ListGroup.Item>
+      ))}
+    </ListGroup>
+  );
 }
-
