@@ -1,4 +1,3 @@
-import React from 'react';
 import Modules from "../Modules";
 import CourseStatus from "./Status";
 import { Row, Col } from 'react-bootstrap';

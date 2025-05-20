@@ -1,5 +1,3 @@
-import React from "react";
-import { useParams } from "react-router-dom";
 import { FaUserCircle, FaSearch, FaUserPlus } from "react-icons/fa";
 import { Table, Form, InputGroup, Button } from "react-bootstrap";
 
@@ -14,9 +12,10 @@ interface Person {
 }
 
 export default function PeopleTable() {
-  const { cid } = useParams();
+  // courseId will be used in future API calls
+  // const { cid } = useParams();
 
-  // 模拟课程参与者数据 - 参照图片中的格式
+  // Sample course participants data
   const people: Person[] = [
     {
       id: "1",

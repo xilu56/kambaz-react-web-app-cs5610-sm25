@@ -6,7 +6,7 @@ import { FaPlus, FaFileLines } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
 import { useState } from "react";
 
-// 示例数据结构，模拟图片中的内容 - 每周包含学习目标、阅读材料、幻灯片和评估
+// Sample data structure for modules - weekly content including learning objectives, reading materials, slides, and assessments
 const moduleData = [
   {
     id: "week1",

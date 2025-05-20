@@ -7,7 +7,7 @@ export default function Signin() {
       <Container>
         <Row>
           <Col xs={12} md={3}>
-            {/* 左侧列留空 */}
+            {/* Left column empty */}
           </Col>
           <Col xs={12} md={3} className="border-end d-flex flex-column">
             <h3 className="mb-4">Signin</h3>
