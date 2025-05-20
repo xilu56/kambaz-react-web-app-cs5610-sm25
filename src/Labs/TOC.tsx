@@ -1,26 +1,67 @@
 import Nav from "react-bootstrap/Nav";
-import { Link } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
+
 export default function TOC() {
- return (
+  const location = useLocation();
+  const { pathname } = location;
+  
+  return (
    <Nav variant="pills">
      <Nav.Item>
-       <Nav.Link to="/Labs" as={Link}>Labs</Nav.Link>
+       <Nav.Link 
+         as={NavLink} 
+         to="/"
+         className={pathname === "/" ? "active" : ""}
+       >
+         Northeastern
+       </Nav.Link>
      </Nav.Item>
      <Nav.Item>
-       <Nav.Link to="/Labs/Lab1" as={Link}>Lab 1</Nav.Link>
+       <Nav.Link 
+         as={NavLink} 
+         to="/Labs/Lab1"
+         className={pathname === "/Labs/Lab1" ? "active" : ""}
+       >
+         Lab 1
+       </Nav.Link>
      </Nav.Item>
      <Nav.Item>
-       <Nav.Link to="/Labs/Lab2" as={Link} active>Lab 2</Nav.Link>
+       <Nav.Link 
+         as={NavLink} 
+         to="/Labs/Lab2"
+         className={pathname === "/Labs/Lab2" ? "active" : ""}
+       >
+         Lab 2
+       </Nav.Link>
      </Nav.Item>
      <Nav.Item>
-       <Nav.Link to="/Labs/Lab3" as={Link}>Lab 3</Nav.Link>
+       <Nav.Link 
+         as={NavLink} 
+         to="/Labs/Lab3"
+         className={pathname === "/Labs/Lab3" ? "active" : ""}
+       >
+         Lab 3
+       </Nav.Link>
      </Nav.Item>
      <Nav.Item>
-       <Nav.Link to="/Kambaz" as={Link}>Kambaz</Nav.Link>
+       <Nav.Link 
+         as={NavLink} 
+         to="/Kambaz"
+         className={pathname.includes("/Kambaz") ? "active" : ""}
+       >
+         Kambaz
+       </Nav.Link>
      </Nav.Item>
      <Nav.Item>
-       <Nav.Link href="https://github.com/xilu56">My GitHub</Nav.Link>
+       <Nav.Link 
+         href="https://github.com/xilu56"
+         target="_blank"
+         rel="noopener noreferrer"
+       >
+         My GitHub
+       </Nav.Link>
      </Nav.Item>
    </Nav>
-);}
+  );
+}
 
