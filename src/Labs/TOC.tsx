@@ -13,7 +13,7 @@ export default function TOC() {
          to="/"
          className={pathname === "/" ? "active" : ""}
        >
-         Northeastern
+         Labs
        </Nav.Link>
      </Nav.Item>
      <Nav.Item>
