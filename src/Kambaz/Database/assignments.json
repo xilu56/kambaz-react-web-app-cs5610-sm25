@@ -17,10 +17,79 @@
       "course": "RS101",
       "description": "Analyze the combustion processes in a rocket engine, identify potential issues, and propose solutions."
     },
-    { "_id": "A201", "title": "Aerodynamics Quiz", "course": "RS102" },
-    { "_id": "A202", "title": "Flow Analysis", "course": "RS102" },
-    { "_id": "A203", "title": "Heating Analysis", "course": "RS102" },
-    { "_id": "A301", "title": "Structural Design Task", "course": "RS103" },
-    { "_id": "A302", "title": "Orbital Calculations", "course": "RS103" },
-    { "_id": "A303", "title": "Systems Engineering Exam", "course": "RS103" }
+    {
+      "_id": "A1",
+      "title": "A1",
+      "course": "CS5610",
+      "description": "First Assignment",
+      "module": "Multiple Modules",
+      "dueDate": "May 13 at 11:59pm",
+      "availableFrom": "May 6 at 12:00am",
+      "points": 100,
+      "status": "completed"
+    },
+    {
+      "_id": "A2",
+      "title": "A2",
+      "course": "CS5610",
+      "description": "Second Assignment",
+      "module": "Multiple Modules",
+      "dueDate": "May 20 at 11:59pm",
+      "availableFrom": "May 13 at 12:00am",
+      "points": 100,
+      "status": "completed"
+    },
+    {
+      "_id": "A3",
+      "title": "A3",
+      "course": "CS5610",
+      "description": "Third Assignment",
+      "module": "Multiple Modules",
+      "dueDate": "May 27 at 11:59pm",
+      "availableFrom": "May 20 at 12:00am",
+      "points": 100,
+      "status": "completed"
+    },
+    {
+      "_id": "A201",
+      "title": "Aerodynamics Quiz",
+      "course": "RS102",
+      "dueDate": "June 10 at 11:59pm",
+      "points": 50
+    },
+    {
+      "_id": "A202",
+      "title": "Flow Analysis",
+      "course": "RS102",
+      "dueDate": "June 17 at 11:59pm",
+      "points": 75
+    },
+    {
+      "_id": "A203",
+      "title": "Heating Analysis",
+      "course": "RS102",
+      "dueDate": "June 24 at 11:59pm",
+      "points": 100
+    },
+    {
+      "_id": "A301",
+      "title": "Structural Design Task",
+      "course": "RS103",
+      "dueDate": "July 1 at 11:59pm",
+      "points": 100
+    },
+    {
+      "_id": "A302",
+      "title": "Orbital Calculations",
+      "course": "RS103",
+      "dueDate": "July 8 at 11:59pm",
+      "points": 75
+    },
+    {
+      "_id": "A303",
+      "title": "Systems Engineering Exam",
+      "course": "RS103",
+      "dueDate": "July 15 at 11:59pm",
+      "points": 150
+    }
   ]

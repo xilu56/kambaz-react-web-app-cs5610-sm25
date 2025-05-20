@@ -1,32 +1,215 @@
-import { Link, useParams } from "react-router-dom";
-import { db } from "../../Database";
-import { ListGroup } from "react-bootstrap";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import type { CSSProperties } from "react";
+import { FaSearch, FaEllipsisV, FaGripVertical, FaCheckCircle, FaCircle } from "react-icons/fa";
+import { BsFileText } from "react-icons/bs";
+import { InputGroup, Form, Badge, Row, Col } from "react-bootstrap";
+
+// 导入 GreenCheckmark 组件
+import GreenCheckmark from "../Modules/GreenCheckmark";
+
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments.filter((a: any) => a.course === cid);
+  const navigate = useNavigate();
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  const handleAddAssignment = () => {
+    navigate(`/Kambaz/Courses/${cid}/Assignments/new`);
+  };
+
+  const assignmentItemStyle: CSSProperties = {
+    position: "relative",
+    padding: "10px 5px",
+    transition: "background-color 0.2s",
+    marginBottom: "0",
+    borderLeft: "0",
+    borderRight: "0",
+    borderTop: "0",
+    borderBottom: "1px solid rgba(0,0,0,.125)",
+  };
+
+  const greenBorderStyle: CSSProperties = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "3px",
+    height: "100%",
+    backgroundColor: "#28a745"
+  };
+
+  const caretStyle: CSSProperties = {
+    transition: "transform 0.3s ease"
+  };
+  
+  const fileIconStyle: CSSProperties = {
+    color: "#28a745",
+    marginRight: "10px",
+    fontSize: "1.1rem"
+  };
+
   return (
-    <div id="wd-assignments">
-      <input id="wd-search-assignment" placeholder="Search for Assignments" />
-      <button id="wd-add-assignment-group">+ Group</button>
-      <button id="wd-add-assignment">+ Assignment</button>
-      <h3 id="wd-assignments-title">
-        ASSIGNMENTS 40% of Total <button>+</button>
-      </h3>
-      <ListGroup id="wd-assignment-groups">
-        {assignments.map((assignment: any) => (
-          <ListGroup.Item
-            as={Link}
-            to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
-            className="wd-assignment-group"
-            key={assignment._id}
+    <div className="p-3">
+      <Row className="mb-3 align-items-center">
+        <Col md={6}>
+          <InputGroup>
+            <InputGroup.Text style={{borderRight: "none", backgroundColor: "white"}}>
+              <FaSearch />
+            </InputGroup.Text>
+            <Form.Control
+              placeholder="Search..."
+              style={{borderLeft: "none"}}
+            />
+          </InputGroup>
+        </Col>
+        <Col md={6} className="d-flex justify-content-end">
+          <button 
+            className="btn me-2" 
+            style={{backgroundColor: "#f8f9fa", border: "1px solid #dee2e6"}}
           >
-            <h4 className="wd-assignment-group-title">{assignment.title}</h4>
-            <p className="wd-assignment-group-description">
-              {assignment.description}
-            </p>
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
+            + Group
+          </button>
+          <button 
+            className="btn text-white"
+            style={{backgroundColor: "#dc3545", borderColor: "#dc3545"}}
+            onClick={handleAddAssignment}
+          >
+            + Assignment
+          </button>
+        </Col>
+      </Row>
+      
+      <div 
+        className="d-flex justify-content-between align-items-center py-2 border-bottom mb-0 px-2 bg-light"
+        onClick={toggleExpand}
+        style={{ cursor: 'pointer' }}
+      >
+        <div className="d-flex align-items-center">
+          <FaGripVertical className="text-muted me-2" />
+          <span className="fw-bold">ASSIGNMENTS</span>
+        </div>
+        <div className="d-flex align-items-center">
+          <span 
+            className="me-3 rounded-pill px-2 py-1 bg-secondary bg-opacity-10 text-muted"
+            style={{ fontSize: "0.85rem" }}
+          >
+            40% of Total
+          </span>
+          <button className="btn p-0 fs-5 text-muted">+</button>
+          <div className="ms-3 text-muted">
+            <FaEllipsisV />
+          </div>
+        </div>
+      </div>
+      
+      {isExpanded && (
+        <ul className="list-group list-group-flush">
+          <li 
+            className="list-group-item d-flex"
+            style={assignmentItemStyle}
+          >
+            <div style={greenBorderStyle}></div>
+            <div className="me-2">
+              <FaGripVertical className="text-muted" style={{opacity: 0.3}} />
+            </div>
+            <div className="me-2">
+              <BsFileText style={fileIconStyle} />
+            </div>
+            <div className="flex-grow-1">
+              <h5 className="mb-0">
+                <Link 
+                  to={`/Kambaz/Courses/${cid}/Assignments/a1`} 
+                  style={{color: "#212529", textDecoration: "none"}}
+                >
+                  A1
+                </Link>
+              </h5>
+              <div style={{fontSize: "0.9rem"}}>
+                <span style={{color: "#dc3545"}}>Multiple Modules</span>
+                <span className="text-muted"> | Not available until May 6 at 12:00am |</span>
+                <div className="text-muted">Due May 13 at 11:59pm | 100 pts</div>
+              </div>
+            </div>
+            <div className="d-flex align-items-start ms-2">
+              <GreenCheckmark />
+              <div className="ms-3 text-muted">
+                <FaEllipsisV />
+              </div>
+            </div>
+          </li>
+          
+          <li 
+            className="list-group-item d-flex"
+            style={assignmentItemStyle}
+          >
+            <div style={greenBorderStyle}></div>
+            <div className="me-2">
+              <FaGripVertical className="text-muted" style={{opacity: 0.3}} />
+            </div>
+            <div className="me-2">
+              <BsFileText style={fileIconStyle} />
+            </div>
+            <div className="flex-grow-1">
+              <h5 className="mb-0">
+                <Link 
+                  to={`/Kambaz/Courses/${cid}/Assignments/a2`} 
+                  style={{color: "#212529", textDecoration: "none"}}
+                >
+                  A2
+                </Link>
+              </h5>
+              <div style={{fontSize: "0.9rem"}}>
+                <span style={{color: "#dc3545"}}>Multiple Modules</span>
+                <span className="text-muted"> | Not available until May 13 at 12:00am |</span>
+                <div className="text-muted">Due May 20 at 11:59pm | 100 pts</div>
+              </div>
+            </div>
+            <div className="d-flex align-items-start ms-2">
+              <GreenCheckmark />
+              <div className="ms-3 text-muted">
+                <FaEllipsisV />
+              </div>
+            </div>
+          </li>
+          
+          <li 
+            className="list-group-item d-flex"
+            style={assignmentItemStyle}
+          >
+            <div style={greenBorderStyle}></div>
+            <div className="me-2">
+              <FaGripVertical className="text-muted" style={{opacity: 0.3}} />
+            </div>
+            <div className="me-2">
+              <BsFileText style={fileIconStyle} />
+            </div>
+            <div className="flex-grow-1">
+              <h5 className="mb-0">
+                <Link 
+                  to={`/Kambaz/Courses/${cid}/Assignments/a3`} 
+                  style={{color: "#212529", textDecoration: "none"}}
+                >
+                  A3
+                </Link>
+              </h5>
+              <div style={{fontSize: "0.9rem"}}>
+                <span style={{color: "#dc3545"}}>Multiple Modules</span>
+                <span className="text-muted"> | Not available until May 20 at 12:00am |</span>
+                <div className="text-muted">Due May 27 at 11:59pm | 100 pts</div>
+              </div>
+            </div>
+            <div className="d-flex align-items-start ms-2">
+              <GreenCheckmark />
+              <div className="ms-3 text-muted">
+                <FaEllipsisV />
+              </div>
+            </div>
+          </li>
+        </ul>
+      )}
     </div>
   );
 }
