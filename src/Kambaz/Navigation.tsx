@@ -10,7 +10,7 @@ export default function KambazNavigation() {
   const links = [
     {
       id: "wd-account-link",
-      to: "/Kambaz/Account",
+      to: "/Kambaz/Account/Signin",
       text: "Account",
       icon: BsPeople,
     },
@@ -58,7 +58,8 @@ export default function KambazNavigation() {
         <ListGroup.Item
           key={link.id}
           className={`border-0 text-center ${
-            pathname.includes(link.text)
+            pathname.includes(link.text) || 
+            (link.text === "Account" && pathname.includes("Account"))
               ? "bg-white text-danger"
               : "text-white bg-black"
           }`}

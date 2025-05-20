@@ -39,7 +39,7 @@ export default function Kambaz() {
         </Col>
         <Col md={10} sm={10} xs={12} className="p-4 wd-main-content-offset">
           <Routes>
-            <Route path="/" element={<Navigate to="Account" />} />
+            <Route path="/" element={<Navigate to="Account/Signin" />} />
             <Route path="/Account/*" element={<Account />} />
             <Route path="/Dashboard" element={<Dashboard />} />
             <Route path="/Courses" element={<Courses />} />

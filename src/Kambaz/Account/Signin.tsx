@@ -1,45 +1,50 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Form, Container, Row, Col } from "react-bootstrap";
 
 export default function Signin() {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState("kambaz");
-  const [password, setPassword] = useState("123456");
-
   return (
     <div id="wd-signin-screen">
-      <h3>Sign in</h3>
-      <input
-        placeholder="username"
-        className="wd-username"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-      /> <br />
-      <input
-        placeholder="password"
-        type="password"
-        className="wd-password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      /> <br />
-      <button
-        id="wd-signin-btn" 
-        onClick={() => {
-          if (username === "admin") {
-            navigate("/Kambaz/Account/Dashboard");
-          } else {
-            navigate("/Kambaz/Dashboard");
-          }
-        }}
-      >
-        Sign in
-      </button> <br />
-      <button 
-        id="wd-signup-link"
-        onClick={() => navigate("/Kambaz/Account/Signup")}
-      >
-        Sign up
-      </button>
+      <Container>
+        <Row>
+          <Col xs={12} md={3}>
+            {/* 左侧列留空 */}
+          </Col>
+          <Col xs={12} md={3} className="border-end d-flex flex-column">
+            <h3 className="mb-4">Signin</h3>
+            <Link to="/Kambaz/Account/Signin" className="text-danger mb-3">Signin</Link>
+            <Link to="/Kambaz/Account/Signup" className="text-danger mb-3">Signup</Link>
+            <Link to="/Kambaz/Account/Profile" className="text-danger mb-3">Profile</Link>
+          </Col>
+          <Col xs={12} md={6}>
+            <h3 className="mb-4">Signin</h3>
+            <Form>
+              <Form.Control 
+                id="wd-username"
+                placeholder="username"
+                className="mb-4"/>
+              <Form.Control 
+                id="wd-password"
+                placeholder="password" 
+                type="password"
+                className="mb-4"/>
+              <Link 
+                id="wd-signin-btn"
+                to="/Kambaz/Account/Profile"
+                className="btn btn-primary w-100 mb-3">
+                Signin
+              </Link>
+              <div className="text-center">
+                <Link 
+                  id="wd-signup-link" 
+                  to="/Kambaz/Account/Signup"
+                  className="text-primary">
+                  Signup
+                </Link>
+              </div>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 }
