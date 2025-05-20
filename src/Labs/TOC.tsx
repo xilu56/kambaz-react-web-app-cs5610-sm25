@@ -54,7 +54,7 @@ export default function TOC() {
      </Nav.Item>
      <Nav.Item>
        <Nav.Link 
-         href="https://github.com/xilu56"
+         href="https://github.com/xilu56/kambaz-react-web-app-cs5610-sm25.git"
          target="_blank"
          rel="noopener noreferrer"
        >
