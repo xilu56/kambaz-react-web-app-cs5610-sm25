@@ -1,11 +1,11 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { CSSProperties } from "react";
-import { FaSearch, FaEllipsisV, FaGripVertical } from "react-icons/fa";
+import { FaSearch, FaEllipsisV, FaGripVertical} from "react-icons/fa";
 import { BsFileText } from "react-icons/bs";
 import { InputGroup, Form, Row, Col } from "react-bootstrap";
 
-// Import GreenCheckmark component
+// 导入 GreenCheckmark 组件
 import GreenCheckmark from "../Modules/GreenCheckmark";
 
 export default function Assignments() {
@@ -39,6 +39,10 @@ export default function Assignments() {
     width: "3px",
     height: "100%",
     backgroundColor: "#28a745"
+  };
+
+  const caretStyle: CSSProperties = {
+    transition: "transform 0.3s ease"
   };
   
   const fileIconStyle: CSSProperties = {
