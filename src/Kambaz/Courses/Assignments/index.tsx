@@ -5,7 +5,7 @@ import { FaSearch, FaEllipsisV, FaGripVertical} from "react-icons/fa";
 import { BsFileText } from "react-icons/bs";
 import { InputGroup, Form, Row, Col } from "react-bootstrap";
 
-// 导入 GreenCheckmark 组件
+// Import GreenCheckmark component
 import GreenCheckmark from "../Modules/GreenCheckmark";
 
 export default function Assignments() {
@@ -41,10 +41,6 @@ export default function Assignments() {
     backgroundColor: "#28a745"
   };
 
-  const caretStyle: CSSProperties = {
-    transition: "transform 0.3s ease"
-  };
-  
   const fileIconStyle: CSSProperties = {
     color: "#28a745",
     marginRight: "10px",
