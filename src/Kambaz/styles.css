@@ -4,6 +4,28 @@
     }
   }
   
+  /* Hide Kambaz Navigation at narrowest screens */
+  @media (max-width: 575px) {
+    #wd-kambaz-navigation {
+      display: none;
+    }
+  }
+  
+  /* Responsive styles for course content */
+  @media (max-width: 991px) {
+    #wd-home .row > div:first-child {
+      width: 100%;
+    }
+  }
+  
+  /* For wide screens to handle the 4-column layout */
+  @media (min-width: 1200px) {
+    #wd-home .row {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+  
   .list-group.wd > .list-group-item.active {
     color: black;
     background-color: white;
@@ -24,4 +46,46 @@
   }
   .wd-lesson {
     border-left: 3px solid green !important;
+  }
+  
+  /* Course status styling */
+  #wd-course-status {
+    max-width: 350px;
+    margin: 0 auto;
+  }
+  
+  @media (min-width: 992px) {
+    #wd-course-status {
+      margin: 0;
+    }
+  }
+
+  /* Modules list styling */
+  .wd-modules-list .list-group-item {
+    border-radius: 0;
+  }
+
+  .wd-module-items .list-group-item {
+    border-right: none;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+  }
+
+  .wd-module-items .list-group-item.border-success {
+    border-left: 4px solid green;
+  }
+
+  .wd-module-items .list-group-item:last-child {
+    border-bottom: none;
+  }
+
+  /* Header items styling */
+  .wd-module-items .list-group-item.fw-bold {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    border-left: none;
+  }
+
+  /* Add green checkmark styling */
+  .green-checkmark {
+    color: green;
   }

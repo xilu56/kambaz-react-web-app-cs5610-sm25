@@ -43,7 +43,7 @@ export default function KambazNavigation() {
   return (
     <ListGroup
       id="wd-kambaz-navigation"
-      className="d-none d-md-block rounded-0 p-0 m-0 border-0 position-fixed bottom-0 top-0 bg-black"
+      className="rounded-0 p-0 m-0 border-0 position-fixed bottom-0 top-0 bg-black"
     >
       <ListGroup.Item
         action
@@ -56,6 +56,7 @@ export default function KambazNavigation() {
       </ListGroup.Item>
       {links.map((link) => (
         <ListGroup.Item
+          key={link.id}
           className={`border-0 text-center ${
             pathname.includes(link.text)
               ? "bg-white text-danger"

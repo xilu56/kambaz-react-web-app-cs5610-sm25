@@ -7,19 +7,21 @@ export default function Home() {
   return (
     <div id="wd-home">
       <Row>
-        {/* Main Content: Modules */}
-        <Col lg={9} md={8} sm={12} className="pe-md-4">
+        {/* First Column: Navigation - Handled in parent component */}
+        
+        {/* Second Column: Main Content: Modules */}
+        <Col xl={6} lg={8} md={12}>
           <h2 className="mb-4">Course Content</h2>
           <Modules />
         </Col>
         
-        {/* Sidebar: Course Status - Hidden on small screens */}
-        <Col lg={3} md={4} className="d-none d-md-block">
-          <CourseStatus />
+        {/* Third Column: Empty space on very wide screens */}
+        <Col xl={3} className="d-none d-xl-block">
+          {/* Empty column for spacing */}
         </Col>
         
-        {/* Course Status for mobile - Only visible on small screens */}
-        <Col xs={12} className="d-md-none mt-4">
+        {/* Fourth Column: Course Status - Hidden on smaller screens */}
+        <Col xl={3} lg={4} className="d-none d-lg-block">
           <CourseStatus />
         </Col>
       </Row>

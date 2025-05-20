@@ -34,10 +34,10 @@ export default function Kambaz() {
   return (
     <div id="wd-kambaz">
       <Row>
-        <Col md={2} className="bg-light min-vh-100">
+        <Col md={2} sm={2} className="d-none d-sm-block bg-light min-vh-100 p-0">
           <KambazNavigation />
         </Col>
-        <Col md={10} className="p-4">
+        <Col md={10} sm={10} xs={12} className="p-4 wd-main-content-offset">
           <Routes>
             <Route path="/" element={<Navigate to="Account" />} />
             <Route path="/Account/*" element={<Account />} />

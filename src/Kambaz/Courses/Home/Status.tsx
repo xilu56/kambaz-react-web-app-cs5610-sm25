@@ -6,32 +6,12 @@ import { LiaFileImportSolid } from "react-icons/lia";
 import { MdOutlineHome, MdTimeline } from "react-icons/md";
 import { FaRegBell, FaChartBar } from "react-icons/fa";
 import { IoNotificationsOutline } from "react-icons/io5";
-import { Button, Image } from "react-bootstrap";
-import { useParams } from 'react-router-dom';
-import { db } from '../../Database';
+import { Button } from "react-bootstrap";
 
 export default function CourseStatus() {
-  const { cid } = useParams();
-  const course = db.courses.find((c: any) => c._id === cid);
-  
-  // 确保图片加载失败时有备用处理
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = e.target as HTMLImageElement;
-    target.src = "/images/placeholder.jpg"; // 公共目录中的备用图片
-    target.onerror = null; // 防止无限循环
-  };
-
   return (
-    <div id="wd-course-status" style={{ width: "350px" }}>
+    <div id="wd-course-status">
       <h2>Course Status</h2>
-      <div className="mb-3">
-        <Image 
-          src={course && course.image ? `/images/${course.image}` : "/images/placeholder.jpg"}
-          alt={course?.name || "CS Course"} 
-          className="img-fluid rounded mb-3"
-          onError={handleImageError}
-        />
-      </div>
       <div className="d-flex">
         <div className="w-50 pe-1">
           <Button variant="secondary" size="lg" className="w-100 text-nowrap">
