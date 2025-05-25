@@ -1,18 +1,30 @@
-import { Link, useParams } from "react-router-dom";
-
-export default function CourseNavigation() {
+import { ListGroup } from "react-bootstrap";
+import { Link, useLocation, useParams } from "react-router-dom";
+export default function CoursesNavigation() {
   const { cid } = useParams();
-  
+  const { pathname } = useLocation();
+  const links = [
+    "Home",
+    "Modules",
+    "Piazza",
+    "Zoom",
+    "Assignments",
+    "Quizzes",
+    "Grades",
+    "People",
+  ];
   return (
-    <div id="wd-courses-navigation">
-      <Link to={`/Kambaz/Courses/${cid}/Home`} id="wd-course-home-link">Home</Link><br/>
-      <Link to={`/Kambaz/Courses/${cid}/Modules`} id="wd-course-modules-link">Modules</Link><br/>
-      <Link to={`/Kambaz/Courses/${cid}/Piazza`} id="wd-course-piazza-link">Piazza</Link><br/>
-      <Link to={`/Kambaz/Courses/${cid}/Zoom`} id="wd-course-zoom-link">Zoom</Link><br/>
-      <Link to={`/Kambaz/Courses/${cid}/Assignments`} id="wd-course-assignments-link">Assignments</Link><br/>
-      <Link to={`/Kambaz/Courses/${cid}/Quizzes`} id="wd-course-quizzes-link">Quizzes</Link><br/>
-      <Link to={`/Kambaz/Courses/${cid}/Grades`} id="wd-course-grades-link">Grades</Link><br/>
-      <Link to={`/Kambaz/Courses/${cid}/People`} id="wd-course-people-link">People</Link><br/>
-    </div>
+    <ListGroup id="wd-courses-navigation" className="wd rounded-0">
+      {links.map((link) => (
+        <ListGroup.Item
+          active={pathname.includes(link)}
+          className="border-0 text-danger bg-white"
+          as={Link}
+          to={`/Kambaz/Courses/${cid}/${link}`}
+        >
+          {link}
+        </ListGroup.Item>
+      ))}
+    </ListGroup>
   );
 }

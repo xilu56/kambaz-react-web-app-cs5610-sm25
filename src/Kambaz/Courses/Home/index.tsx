@@ -1,33 +1,29 @@
-import { useParams } from 'react-router-dom';
-import CourseNavigation from '../Navigation';
-import Modules from '../Modules';
-import CourseStatus from './Status';
+import Modules from "../Modules";
+import CourseStatus from "./Status";
+import { Row, Col } from 'react-bootstrap';
 
 export default function Home() {
-  const {} = useParams();
-
   return (
-    <div id="wd-course-home">
-      <table width="100%">
-        <tbody>
-          <tr>
-            {/* Column 1: Course Navigation */}
-            <td valign="top" className="wd-column wd-course-nav-column">
-              <CourseNavigation />
-            </td>
-            
-            {/* Column 2: Modules Content */}
-            <td valign="top" className="wd-column wd-modules-column">
-              <Modules />
-            </td>
-            
-            {/* Column 3: Course Status */}
-            <td valign="top" className="wd-column wd-status-column">
-              <CourseStatus />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div id="wd-home">
+      <Row>
+        {/* First Column: Navigation - Handled in parent component */}
+        
+        {/* Second Column: Main Content: Modules */}
+        <Col xl={6} lg={8} md={12}>
+          <h2 className="mb-4">Course Content</h2>
+          <Modules />
+        </Col>
+        
+        {/* Third Column: Empty space on very wide screens */}
+        <Col xl={3} className="d-none d-xl-block">
+          {/* Empty column for spacing */}
+        </Col>
+        
+        {/* Fourth Column: Course Status - Hidden on smaller screens */}
+        <Col xl={3} lg={4} className="d-none d-lg-block">
+          <CourseStatus />
+        </Col>
+      </Row>
     </div>
   );
 }

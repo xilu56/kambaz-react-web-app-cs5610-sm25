@@ -1,15 +1,58 @@
+import { ListGroup } from "react-bootstrap";
+import ModulesControls from "./ModulesControls";
+import { BsGripVertical } from "react-icons/bs";
+import { FaChevronDown, FaChevronRight, FaFile } from "react-icons/fa";
+import { FaPlus, FaFileLines } from "react-icons/fa6";
+import GreenCheckmark from "./GreenCheckmark";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+
+// Sample data structure for modules - weekly content including learning objectives, reading materials, slides, and assessments
+const moduleData = [
+  {
+    id: "week1",
+    title: "Week 1",
+    items: [
+      { id: "w1-item1", type: "header", title: "LEARNING OBJECTIVES" },
+      { id: "w1-item2", type: "content", title: "Introduction to the course" },
+      { id: "w1-item3", type: "content", title: "Learn what is Web Development" },
+      { id: "w1-item4", type: "header", title: "READING" },
+      { id: "w1-item5", type: "reading", title: "Full Stack Developer - Chapter 1 - Introduction" },
+      { id: "w1-item6", type: "reading", title: "Full Stack Developer - Chapter 2 - Creating User Interfaces With HTML" },
+      { id: "w1-item7", type: "header", title: "SLIDES" },
+      { id: "w1-item8", type: "slide", title: "Introduction to Web Development" },
+      { id: "w1-item9", type: "slide", title: "Creating an HTTP server with Node.js" },
+      { id: "w1-item10", type: "slide", title: "Creating a React Application" },
+      { id: "w1-item11", type: "slide", title: "Commit your source to GitHub.com" },
+      { id: "w1-item12", type: "slide", title: "Deploying to Netlify" },
+      { id: "w1-item13", type: "slide", title: "Deploying multiple branches in Netlify" },
+      { id: "w1-item14", type: "header", title: "EVALUATIONS" }
+    ]
+  },
+  {
+    id: "week2",
+    title: "Week 2",
+    items: [
+      { id: "w2-item1", type: "header", title: "LEARNING OBJECTIVES" },
+      { id: "w2-item2", type: "content", title: "Learn about React State Management" },
+      { id: "w2-item3", type: "content", title: "Understanding Component Lifecycle" },
+      { id: "w2-item4", type: "header", title: "READING" },
+      { id: "w2-item5", type: "reading", title: "Full Stack Developer - Chapter 3 - JavaScript Basics" },
+      { id: "w2-item6", type: "reading", title: "Full Stack Developer - Chapter 4 - React Fundamentals" },
+      { id: "w2-item7", type: "header", title: "SLIDES" },
+      { id: "w2-item8", type: "slide", title: "React Components and Props" },
+      { id: "w2-item9", type: "slide", title: "State and Lifecycle Methods" },
+      { id: "w2-item10", type: "slide", title: "Handling Events in React" },
+      { id: "w2-item11", type: "header", title: "EVALUATIONS" },
+      { id: "w2-item12", type: "assignment", title: "Assignment 1: Create a React App" }
+    ]
+  }
+];
 
 export default function Modules() {
-  const {} = useParams();
-  
-  // State for toggling view options
-  const [showModules, setShowModules] = useState(true);
-  const [showLessons, setShowLessons] = useState(true);
-  const [expandedModules, setExpandedModules] = useState<string[]>(["week1", "week2", "week3", "week4"]);
-  
-  // Toggle module expansion
+  const [expandedModules, setExpandedModules] = useState<string[]>(
+    moduleData.map(module => module.id)
+  );
+
   const toggleModule = (moduleId: string) => {
     if (expandedModules.includes(moduleId)) {
       setExpandedModules(expandedModules.filter(id => id !== moduleId));
@@ -17,168 +60,70 @@ export default function Modules() {
       setExpandedModules([...expandedModules, moduleId]);
     }
   };
-  
-  // Toggle all modules
-  const toggleAllModules = () => {
-    if (expandedModules.length > 0) {
-      setExpandedModules([]);
-    } else {
-      setExpandedModules(["week1", "week2", "week3", "week4"]);
+
+  const getIconForType = (type: string) => {
+    switch (type) {
+      case "slide":
+        return <FaFileLines className="text-danger me-2" />;
+      case "reading":
+        return <FaFile className="text-secondary me-2" />;
+      default:
+        return null;
     }
   };
 
   return (
     <div>
-      {/* Header with action buttons */}
-      <div className="wd-header">
-        <h2>Modules - Course Content</h2>
-        <div className="wd-controls">
-          <button 
-            className={`wd-button ${showModules ? 'active' : ''}`}
-            onClick={() => setShowModules(!showModules)}
-          >
-            {showModules ? "Hide Modules" : "Show Modules"}
-          </button>
-          <button 
-            className="wd-button"
-            onClick={toggleAllModules}
-          >
-            {expandedModules.length > 0 ? "Collapse All" : "Expand All"}
-          </button>
-          <button 
-            className={`wd-button ${showLessons ? 'active' : ''}`}
-            onClick={() => setShowLessons(!showLessons)}
-          >
-            {showLessons ? "Hide Lessons" : "Show Lessons"}
-          </button>
-          <button className="wd-button">View Progress</button>
-          <button className="wd-button">View Labs</button>
-          <button className="wd-button">View Quizzes</button>
-          <button className="wd-button">View Assignments</button>
-        </div>
-      </div>
-
-      {/* Course description */}
-      <div className="wd-description">
-        <h3>Course Description</h3>
-        <p>This course covers the basics of web development, including HTML, CSS, and JavaScript.</p>
-        <p>Students will learn how to create responsive web pages and understand the fundamentals of web design.</p>
-        <p>By the end of the course, students will be able to build a simple web application.</p>
-      </div>
-
-      {/* Course modules */}
-      {showModules && (
-        <ul id="wd-modules">
-          {/* Week 1 */}
-          <li className="wd-module">
-            <div 
-              className={`wd-title ${expandedModules.includes("week1") ? "expanded" : "collapsed"}`}
-              onClick={() => toggleModule("week1")}
+      <ModulesControls />
+      <ListGroup className="rounded-0 wd-modules-list">
+        {moduleData.map((module) => (
+          <div key={module.id} className="mb-3">
+            {/* Module Header */}
+            <ListGroup.Item 
+              className="d-flex align-items-center p-2 bg-light border"
+              style={{ cursor: "pointer" }}
+              onClick={() => toggleModule(module.id)}
             >
-              Week 1
-              <span className="module-toggle">{expandedModules.includes("week1") ? "▼" : "►"}</span>
-            </div>
-            {expandedModules.includes("week1") && showLessons && (
-              <ul className="wd-lessons">
-                <li className="wd-lesson">
-                  <span className="wd-title">LEARNING OBJECTIVES</span>
-                  <ul className="wd-content">
-                    <li className="wd-content-item">Introduction to the course</li>
-                    <li className="wd-content-item">Learn what is Web Development</li>
-                  </ul>
-                </li>
-              </ul>
-            )}
-          </li>
+              <div className="me-2">
+                {expandedModules.includes(module.id) ? (
+                  <FaChevronDown className="text-secondary" />
+                ) : (
+                  <FaChevronRight className="text-secondary" />
+                )}
+              </div>
+              <BsGripVertical className="me-2 text-secondary" />
+              <div className="flex-grow-1">{module.title}</div>
+              <div className="d-flex align-items-center">
+                <GreenCheckmark />
+                <FaPlus className="mx-2 text-secondary" />
+                <span className="fs-4 text-secondary">⋮</span>
+              </div>
+            </ListGroup.Item>
 
-          {/* Week 2 */}
-          <li className="wd-module">
-            <div 
-              className={`wd-title ${expandedModules.includes("week2") ? "expanded" : "collapsed"}`}
-              onClick={() => toggleModule("week2")}
-            >
-              Week 2
-              <span className="module-toggle">{expandedModules.includes("week2") ? "▼" : "►"}</span>
-            </div>
-            {expandedModules.includes("week2") && showLessons && (
-              <ul className="wd-lessons">
-                <li className="wd-lesson">
-                  <span className="wd-title">LEARNING OBJECTIVES</span>
-                  <ul className="wd-content">
-                    <li className="wd-content-item">HTML Basics</li>
-                    <li className="wd-content-item">CSS Basics</li>
-                  </ul>
-                </li>
-                <li className="wd-lesson">
-                  <span className="wd-title">ASSIGNMENTS</span>
-                  <ul className="wd-content">
-                    <li className="wd-content-item">Assignment 1: Create a simple webpage</li>
-                    <li className="wd-content-item">Assignment 2: Style the webpage with CSS</li>
-                  </ul>
-                </li>
-              </ul>
+            {/* Module Items */}
+            {expandedModules.includes(module.id) && (
+              <ListGroup className="wd-module-items rounded-0">
+                {module.items.map((item) => (
+                  <ListGroup.Item 
+                    key={item.id} 
+                    className={`d-flex align-items-center py-2 ps-4 border-start ${item.type === 'header' ? 'fw-bold bg-light' : 'border-success'}`}
+                  >
+                    <BsGripVertical className="me-2 text-secondary invisible" />
+                    <div className="me-2">
+                      {getIconForType(item.type)}
+                    </div>
+                    <div className="flex-grow-1">{item.title}</div>
+                    <div className="d-flex align-items-center">
+                      {item.type !== 'header' && <GreenCheckmark />}
+                      {item.type !== 'header' && <span className="fs-4 ms-2 text-secondary">⋮</span>}
+                    </div>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
             )}
-          </li>
-
-          {/* Week 3 */}
-          <li className="wd-module">
-            <div 
-              className={`wd-title ${expandedModules.includes("week3") ? "expanded" : "collapsed"}`}
-              onClick={() => toggleModule("week3")}
-            >
-              Week 3
-              <span className="module-toggle">{expandedModules.includes("week3") ? "▼" : "►"}</span>
-            </div>
-            {expandedModules.includes("week3") && showLessons && (
-              <ul className="wd-lessons">
-                <li className="wd-lesson">
-                  <span className="wd-title">LEARNING OBJECTIVES</span>
-                  <ul className="wd-content">
-                    <li className="wd-content-item">JavaScript Basics</li>
-                    <li className="wd-content-item">DOM Manipulation</li>
-                  </ul>
-                </li>
-                <li className="wd-lesson">
-                  <span className="wd-title">ASSIGNMENTS</span>
-                  <ul className="wd-content">
-                    <li className="wd-content-item">Assignment 3: Create a simple JavaScript program</li>
-                    <li className="wd-content-item">Assignment 4: Manipulate the DOM with JavaScript</li>
-                  </ul>
-                </li>
-              </ul>
-            )}
-          </li>
-
-          {/* Week 4 */}
-          <li className="wd-module">
-            <div 
-              className={`wd-title ${expandedModules.includes("week4") ? "expanded" : "collapsed"}`}
-              onClick={() => toggleModule("week4")}
-            >
-              Week 4
-              <span className="module-toggle">{expandedModules.includes("week4") ? "▼" : "►"}</span>
-            </div>
-            {expandedModules.includes("week4") && showLessons && (
-              <ul className="wd-lessons">
-                <li className="wd-lesson">
-                  <span className="wd-title">LEARNING OBJECTIVES</span>
-                  <ul className="wd-content">
-                    <li className="wd-content-item">Responsive Web Design</li>
-                    <li className="wd-content-item">CSS Flexbox and Grid</li>
-                  </ul>
-                </li>
-                <li className="wd-lesson">
-                  <span className="wd-title">ASSIGNMENTS</span>
-                  <ul className="wd-content">
-                    <li className="wd-content-item">Assignment 5: Create a responsive webpage</li>
-                    <li className="wd-content-item">Assignment 6: Use CSS Flexbox and Grid</li>
-                  </ul>
-                </li>
-              </ul>
-            )}
-          </li>
-        </ul>
-      )}
+          </div>
+        ))}
+      </ListGroup>
     </div>
   );
 }
