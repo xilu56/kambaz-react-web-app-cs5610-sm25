@@ -22,6 +22,7 @@ import House from "./House";
 import TodoItem from "./todos/TodoItem";
 import todos from "./todos/todos.json";
 import { ListGroup } from "react-bootstrap";
+import Spreading from "./Spreading";
 
 export default function Lab3() {
   return (
@@ -55,6 +56,7 @@ export default function Lab3() {
           <TodoItem key={index} todo={todo} />
         ))}
       </ListGroup>
+      <Spreading />
     </div>
   );
 }
