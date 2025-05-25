@@ -12,6 +12,7 @@ import TemplateLiterals from "./TemplateLiterals";
 import SimpleArrays from "./SimpleArrays";
 import ArrayIndexAndLength from "./ArrayIndexAndLength";
 import AddingAndRemovingToFromArrays from "./AddingAndRemovingToFromArrays";
+import ForLoops from "./ForLoops";
 
 export default function Lab3() {
   return (
@@ -31,6 +32,7 @@ export default function Lab3() {
       <SimpleArrays/>
       <ArrayIndexAndLength/>
       <AddingAndRemovingToFromArrays/>
+      <ForLoops/>
     </div>
   );
 }
