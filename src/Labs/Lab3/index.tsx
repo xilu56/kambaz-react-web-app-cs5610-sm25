@@ -19,6 +19,9 @@ import FindIndex from "./FindIndex";
 import FilterFunction from "./FilterFunction";
 import JsonStringify from "./JsonStringify";
 import House from "./House";
+import TodoItem from "./todos/TodoItem";
+import todos from "./todos/todos.json";
+import { ListGroup } from "react-bootstrap";
 
 export default function Lab3() {
   return (
@@ -45,6 +48,13 @@ export default function Lab3() {
       <FilterFunction/>
       <JsonStringify/>
       <House/>
+      <TodoItem />
+      <h3>Todo List</h3>
+      <ListGroup>
+        {todos.map((todo, index) => (
+          <TodoItem key={index} todo={todo} />
+        ))}
+      </ListGroup>
     </div>
   );
 }
