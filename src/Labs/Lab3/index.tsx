@@ -23,6 +23,7 @@ import TodoItem from "./todos/TodoItem";
 import todos from "./todos/todos.json";
 import { ListGroup } from "react-bootstrap";
 import Spreading from "./Spreading";
+import Destructing from "./Destructing";
 
 export default function Lab3() {
   return (
@@ -57,6 +58,7 @@ export default function Lab3() {
         ))}
       </ListGroup>
       <Spreading />
+      <Destructing />
     </div>
   );
 }
