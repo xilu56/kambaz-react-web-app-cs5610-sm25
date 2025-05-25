@@ -5,11 +5,10 @@ import { db } from "./Database";
 export default function Dashboard() {
   const courses = db.courses;
   
-  // 处理图片加载错误
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
-    target.src = "/images/placeholder.jpg"; // 使用占位符图片
-    target.onerror = null; // 防止无限循环
+    target.src = "/images/placeholder.jpg";
+    target.onerror = null;
   };
 
   return (
