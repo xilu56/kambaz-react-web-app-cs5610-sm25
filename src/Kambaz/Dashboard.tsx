@@ -37,7 +37,7 @@ export default function Dashboard() {
                   />
                   <Card.Body className="d-flex flex-column">
                     <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                      {course.name}
+                      {course.number}: {course.name}
                     </Card.Title>
                     <Card.Text
                       className="wd-dashboard-course-description overflow-hidden"
