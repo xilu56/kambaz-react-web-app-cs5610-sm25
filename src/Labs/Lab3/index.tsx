@@ -25,6 +25,7 @@ import { ListGroup } from "react-bootstrap";
 import Spreading from "./Spreading";
 import Destructing from "./Destructing";
 import FunctionDestructing from "./FunctionDestructing";
+import DestructingImports from "./DestructingImports";
 
 export default function Lab3() {
   return (
@@ -61,6 +62,7 @@ export default function Lab3() {
       <Spreading />
       <Destructing />
       <FunctionDestructing />
+      <DestructingImports />
     </div>
   );
 }
