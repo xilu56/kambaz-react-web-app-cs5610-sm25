@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Row, Col } from "react-bootstrap";
 import KambazNavigation from "./Navigation";
 import Account from "./Account";
 import Dashboard from "./Dashboard";

@@ -1,16 +1,29 @@
 import { useParams } from 'react-router-dom';
-import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
+import { Form, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import { BsCalendar } from 'react-icons/bs';
 import { db } from "../../Database";
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
+
+// Define the assignment type to match the database structure
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;
+  description?: string;
+  points?: number | string;
+  dueDate?: string;
+  availableFrom?: string;
+  module?: string;
+  status?: string;
+}
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
   
   // Find the assignment in the database using the aid from URL params
   const assignment = aid && aid !== 'new' 
-    ? db.assignments.find((a: any) => a._id.toLowerCase() === aid.toLowerCase()) 
+    ? db.assignments.find((a: any) => a._id.toLowerCase() === aid.toLowerCase()) as Assignment | undefined
     : null;
 
   // Format date strings from the assignment data (if they exist) to be used in date inputs
