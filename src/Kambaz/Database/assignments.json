@@ -1,57 +1,11 @@
 [
-    {
-      "_id": "A1",
-      "title": "A1",
-      "course": "CS5610",
-      "description": "First Assignment",
-      "module": "Multiple Modules",
-      "dueDate": "May 13 at 11:59pm",
-      "availableFrom": "May 6 at 12:00am",
-      "points": 100,
-      "status": "completed"
-    },
-    {
-      "_id": "A2",
-      "title": "A2",
-      "course": "CS5610",
-      "description": "Second Assignment",
-      "module": "Multiple Modules",
-      "dueDate": "May 20 at 11:59pm",
-      "availableFrom": "May 13 at 12:00am",
-      "points": 100,
-      "status": "completed"
-    },
-    {
-      "_id": "A3",
-      "title": "A3",
-      "course": "CS5610",
-      "description": "Third Assignment",
-      "module": "Multiple Modules",
-      "dueDate": "May 27 at 11:59pm",
-      "availableFrom": "May 20 at 12:00am",
-      "points": 100,
-      "status": "completed"
-    },
-    {
-      "_id": "A4",
-      "title": "A4",
-      "course": "CS5610",
-      "description": "Fourth Assignment",
-      "module": "Multiple Modules",
-      "dueDate": "June 3 at 11:59pm",
-      "availableFrom": "May 27 at 12:00am",
-      "points": 100,
-      "status": "in-progress"
-    },
-    {
-      "_id": "A5",
-      "title": "A5",
-      "course": "CS5610",
-      "description": "Fifth Assignment",
-      "module": "Multiple Modules",
-      "dueDate": "June 10 at 11:59pm",
-      "availableFrom": "June 3 at 12:00am",
-      "points": 100,
-      "status": "not-started"
-    }
-  ]
+  { "_id": "A101", "title": "Propulsion Assignment", "course": "RS101" },
+  { "_id": "A102", "title": "Combustion Analysis", "course": "RS101" },
+  { "_id": "A103", "title": "Nozzle Design Project", "course": "RS101" },
+  { "_id": "A201", "title": "Aerodynamics Quiz", "course": "RS102" },
+  { "_id": "A202", "title": "Flow Analysis", "course": "RS102" },
+  { "_id": "A203", "title": "Heating Analysis", "course": "RS102" },
+  { "_id": "A301", "title": "Structural Design Task", "course": "RS103" },
+  { "_id": "A302", "title": "Orbital Calculations", "course": "RS103" },
+  { "_id": "A303", "title": "Systems Engineering Exam", "course": "RS103" }
+]
