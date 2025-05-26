@@ -1,5 +1,8 @@
 import { FaUserCircle, FaSearch, FaUserPlus } from "react-icons/fa";
 import { Table, Form, InputGroup, Button } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { db } from "../../Database";
 
 interface Person {
   id: string;
@@ -12,66 +15,31 @@ interface Person {
 }
 
 export default function PeopleTable() {
-  // courseId will be used in future API calls
-  // const { cid } = useParams();
+  const { cid } = useParams();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Sample course participants data
-  const people: Person[] = [
-    {
-      id: "1",
-      name: "Tony Stark",
-      loginId: "001234561S",
-      section: "S101",
-      role: "STUDENT",
-      lastActivity: "2020-10-01T00:00:00.000Z",
-      totalActivity: "10:21:32"
-    },
-    {
-      id: "2",
-      name: "Bruce Wayne",
-      loginId: "001234562S",
-      section: "S101",
-      role: "STUDENT",
-      lastActivity: "2020-11-02T00:00:00.000Z",
-      totalActivity: "15:32:43"
-    },
-    {
-      id: "3",
-      name: "Steve Rogers",
-      loginId: "001234563S",
-      section: "S101",
-      role: "STUDENT",
-      lastActivity: "2020-10-02T00:00:00.000Z",
-      totalActivity: "23:32:43"
-    },
-    {
-      id: "4",
-      name: "Natasha Romanoff",
-      loginId: "001234564S",
-      section: "S101",
-      role: "TA",
-      lastActivity: "2020-11-05T00:00:00.000Z",
-      totalActivity: "13:23:34"
-    },
-    {
-      id: "5",
-      name: "Thor Odinson",
-      loginId: "001234565S",
-      section: "S101",
-      role: "STUDENT",
-      lastActivity: "2020-12-01T00:00:00.000Z",
-      totalActivity: "11:22:33"
-    },
-    {
-      id: "6",
-      name: "Bruce Banner",
-      loginId: "001234566S",
-      section: "S101",
-      role: "STUDENT",
-      lastActivity: "2020-12-01T00:00:00.000Z",
-      totalActivity: "22:33:44"
-    }
-  ];
+  // Get users enrolled in the current course using the updated enrollments data structure
+  const enrolledUserIds = db.enrollments
+    .filter((enrollment: any) => enrollment.course === cid)
+    .map((enrollment: any) => enrollment.user);
+
+  // Convert database users to the Person interface format
+  const people: Person[] = db.users
+    .filter((user: any) => enrolledUserIds.includes(user._id))
+    .map((user: any) => ({
+      id: user._id,
+      name: `${user.firstName} ${user.lastName}`,
+      loginId: user.loginId,
+      section: user.section,
+      role: user.role,
+      lastActivity: user.lastActivity,
+      totalActivity: user.totalActivity
+    }))
+    .filter((person) => 
+      searchTerm === "" || 
+      person.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      person.loginId.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
     <div id="wd-people-table">
@@ -92,6 +60,8 @@ export default function PeopleTable() {
           <Form.Control
             placeholder="Search for people"
             aria-label="Search for people"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </InputGroup>
       </div>
@@ -123,6 +93,13 @@ export default function PeopleTable() {
               <td>{person.totalActivity}</td>
             </tr>
           ))}
+          {people.length === 0 && (
+            <tr>
+              <td colSpan={6} className="text-center py-4">
+                No people found for this course
+              </td>
+            </tr>
+          )}
         </tbody>
       </Table>
       {/* <pre>{JSON.stringify(enrollments, null, 2)}</pre>
