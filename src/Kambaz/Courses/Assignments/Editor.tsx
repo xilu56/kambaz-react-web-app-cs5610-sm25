@@ -1,24 +1,51 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+import { Form, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import { BsCalendar } from 'react-icons/bs';
 import { db } from "../../Database";
 import type { CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
+
+// Define the assignment type to match the database structure
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;
+  description?: string;
+  points?: number | string;
+  dueDate?: string;
+  availableFrom?: string;
+  module?: string;
+  status?: string;
+}
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
-  const navigate = useNavigate();
   
-  // 如果存在aid，则查找对应的assignment
-  const assignment = aid && aid !== 'new' ? db.assignments.find((a: any) => a._id === aid) : null;
-  
-  const handleCancel = () => {
-    navigate(`/Kambaz/Courses/${cid}/Assignments`);
-  };
-  
-  const handleSave = () => {
-    // 这里通常会保存表单数据
-    // 目前仅导航回assignments列表
-    navigate(`/Kambaz/Courses/${cid}/Assignments`);
+  // Find the assignment in the database using the aid from URL params
+  const assignment = aid && aid !== 'new' 
+    ? db.assignments.find((a: any) => a._id.toLowerCase() === aid.toLowerCase()) as Assignment | undefined
+    : null;
+
+  // Format date strings from the assignment data (if they exist) to be used in date inputs
+  const formatDateForInput = (dateString: string | undefined) => {
+    if (!dateString) return '';
+    
+    // Extract date from format like "May 13 at 11:59pm"
+    const months: Record<string, string> = {
+      'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+      'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+    };
+    
+    const match = dateString.match(/(\w+)\s+(\d+)/);
+    if (match) {
+      const month = months[match[1]];
+      const day = match[2].padStart(2, '0');
+      // Use current year as a fallback
+      const year = new Date().getFullYear();
+      return `${year}-${month}-${day}`;
+    }
+    
+    return '';
   };
   
   const formSectionStyle: CSSProperties = {
@@ -47,7 +74,7 @@ export default function AssignmentEditor() {
             <Form.Label style={formLabelStyle}>Assignment Name</Form.Label>
             <Form.Control 
               type="text" 
-              defaultValue={assignment?.title || "A1 - ENV + HTML"} 
+              defaultValue={assignment?.title || ""} 
             />
           </Form.Group>
         </div>
@@ -58,7 +85,7 @@ export default function AssignmentEditor() {
             <Form.Control 
               as="textarea" 
               rows={6} 
-              defaultValue={assignment?.description || "The assignment is available online Submit a link to the landing page of your Web application running on Netlify. The landing page should include the following: Your full name and section Links to each of the lab assignments Link to the Kanbas application Links to all relevant source code repositories The Kanbas application should include a link to navigate back to the landing page."}
+              defaultValue={assignment?.description || ""}
             />
           </Form.Group>
         </div>
@@ -149,7 +176,10 @@ export default function AssignmentEditor() {
             <Form.Label column sm={3} style={formLabelStyle}>Due</Form.Label>
             <Col sm={9}>
               <InputGroup>
-                <Form.Control type="date" defaultValue="2024-05-13" />
+                <Form.Control 
+                  type="date" 
+                  defaultValue={formatDateForInput(assignment?.dueDate) || "2024-05-13"} 
+                />
                 <InputGroup.Text style={{ backgroundColor: 'white', borderLeft: 'none' }}>
                   <BsCalendar />
                 </InputGroup.Text>
@@ -161,7 +191,10 @@ export default function AssignmentEditor() {
             <Form.Label column sm={3} style={formLabelStyle}>Available from</Form.Label>
             <Col sm={9}>
               <InputGroup>
-                <Form.Control type="date" defaultValue="2024-05-06" />
+                <Form.Control 
+                  type="date" 
+                  defaultValue={formatDateForInput(assignment?.availableFrom) || "2024-05-06"} 
+                />
                 <InputGroup.Text style={{ backgroundColor: 'white', borderLeft: 'none' }}>
                   <BsCalendar />
                 </InputGroup.Text>
@@ -183,19 +216,18 @@ export default function AssignmentEditor() {
         </div>
         
         <div style={buttonContainerStyle}>
-          <Button 
-            variant="primary"
-            className="me-2"
-            onClick={handleCancel}
+          <Link 
+            to={`/Kambaz/Courses/${cid}/Assignments`}
+            className="btn btn-primary me-2"
           >
             Cancel
-          </Button>
-          <Button 
-            variant="danger"
-            onClick={handleSave}
+          </Link>
+          <Link 
+            to={`/Kambaz/Courses/${cid}/Assignments`}
+            className="btn btn-danger"
           >
             Save
-          </Button>
+          </Link>
         </div>
       </Container>
     </div>

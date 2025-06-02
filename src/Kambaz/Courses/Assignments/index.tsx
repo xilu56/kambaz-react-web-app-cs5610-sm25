@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import { FaSearch, FaEllipsisV, FaGripVertical} from "react-icons/fa";
 import { BsFileText } from "react-icons/bs";
 import { InputGroup, Form, Row, Col } from "react-bootstrap";
+import { db } from "../../Database";
 
 // Import GreenCheckmark component
 import GreenCheckmark from "../Modules/GreenCheckmark";
@@ -12,6 +13,11 @@ export default function Assignments() {
   const { cid } = useParams();
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(true);
+  
+  // Get assignments for the current course
+  const courseAssignments = db.assignments.filter((a: any) => 
+    a.course === cid || a._id.startsWith("A")
+  );
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -103,107 +109,44 @@ export default function Assignments() {
       
       {isExpanded && (
         <ul className="list-group list-group-flush">
-          <li 
-            className="list-group-item d-flex"
-            style={assignmentItemStyle}
-          >
-            <div style={greenBorderStyle}></div>
-            <div className="me-2">
-              <FaGripVertical className="text-muted" style={{opacity: 0.3}} />
-            </div>
-            <div className="me-2">
-              <BsFileText style={fileIconStyle} />
-            </div>
-            <div className="flex-grow-1">
-              <h5 className="mb-0">
-                <Link 
-                  to={`/Kambaz/Courses/${cid}/Assignments/a1`} 
-                  style={{color: "#212529", textDecoration: "none"}}
-                >
-                  A1
-                </Link>
-              </h5>
-              <div style={{fontSize: "0.9rem"}}>
-                <span style={{color: "#dc3545"}}>Multiple Modules</span>
-                <span className="text-muted"> | Not available until May 6 at 12:00am |</span>
-                <div className="text-muted">Due May 13 at 11:59pm | 100 pts</div>
+          {courseAssignments.map((assignment: any) => (
+            <li 
+              key={assignment._id}
+              className="list-group-item d-flex"
+              style={assignmentItemStyle}
+            >
+              <div style={greenBorderStyle}></div>
+              <div className="me-2">
+                <FaGripVertical className="text-muted" style={{opacity: 0.3}} />
               </div>
-            </div>
-            <div className="d-flex align-items-start ms-2">
-              <GreenCheckmark />
-              <div className="ms-3 text-muted">
-                <FaEllipsisV />
+              <div className="me-2">
+                <BsFileText style={fileIconStyle} />
               </div>
-            </div>
-          </li>
-          
-          <li 
-            className="list-group-item d-flex"
-            style={assignmentItemStyle}
-          >
-            <div style={greenBorderStyle}></div>
-            <div className="me-2">
-              <FaGripVertical className="text-muted" style={{opacity: 0.3}} />
-            </div>
-            <div className="me-2">
-              <BsFileText style={fileIconStyle} />
-            </div>
-            <div className="flex-grow-1">
-              <h5 className="mb-0">
-                <Link 
-                  to={`/Kambaz/Courses/${cid}/Assignments/a2`} 
-                  style={{color: "#212529", textDecoration: "none"}}
-                >
-                  A2
-                </Link>
-              </h5>
-              <div style={{fontSize: "0.9rem"}}>
-                <span style={{color: "#dc3545"}}>Multiple Modules</span>
-                <span className="text-muted"> | Not available until May 13 at 12:00am |</span>
-                <div className="text-muted">Due May 20 at 11:59pm | 100 pts</div>
+              <div className="flex-grow-1">
+                <h5 className="mb-0">
+                  <Link 
+                    to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`} 
+                    style={{color: "#212529", textDecoration: "none"}}
+                  >
+                    {assignment.title}
+                  </Link>
+                </h5>
+                <div style={{fontSize: "0.9rem"}}>
+                  <span style={{color: "#dc3545"}}>{assignment.module || "Multiple Modules"}</span>
+                  <span className="text-muted"> | {assignment.availableFrom ? `Not available until ${assignment.availableFrom}` : "Available now"} |</span>
+                  <div className="text-muted">
+                    {assignment.dueDate ? `Due ${assignment.dueDate}` : "No due date"} | {assignment.points || 100} pts
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="d-flex align-items-start ms-2">
-              <GreenCheckmark />
-              <div className="ms-3 text-muted">
-                <FaEllipsisV />
+              <div className="d-flex align-items-start ms-2">
+                {assignment.status === "completed" && <GreenCheckmark />}
+                <div className="ms-3 text-muted">
+                  <FaEllipsisV />
+                </div>
               </div>
-            </div>
-          </li>
-          
-          <li 
-            className="list-group-item d-flex"
-            style={assignmentItemStyle}
-          >
-            <div style={greenBorderStyle}></div>
-            <div className="me-2">
-              <FaGripVertical className="text-muted" style={{opacity: 0.3}} />
-            </div>
-            <div className="me-2">
-              <BsFileText style={fileIconStyle} />
-            </div>
-            <div className="flex-grow-1">
-              <h5 className="mb-0">
-                <Link 
-                  to={`/Kambaz/Courses/${cid}/Assignments/a3`} 
-                  style={{color: "#212529", textDecoration: "none"}}
-                >
-                  A3
-                </Link>
-              </h5>
-              <div style={{fontSize: "0.9rem"}}>
-                <span style={{color: "#dc3545"}}>Multiple Modules</span>
-                <span className="text-muted"> | Not available until May 20 at 12:00am |</span>
-                <div className="text-muted">Due May 27 at 11:59pm | 100 pts</div>
-              </div>
-            </div>
-            <div className="d-flex align-items-start ms-2">
-              <GreenCheckmark />
-              <div className="ms-3 text-muted">
-                <FaEllipsisV />
-              </div>
-            </div>
-          </li>
+            </li>
+          ))}
         </ul>
       )}
     </div>

@@ -1,236 +1,116 @@
 [
-    {
-      "_id": "M101",
-      "name": "Python Basics",
-      "description": "Introduction to Python syntax and basic programming concepts.",
-      "course": "CS5001",
-      "lessons": [
-        {
-          "_id": "L101",
-          "name": "Variables and Data Types",
-          "description": "Understanding Python variables, primitive data types, and type conversion.",
-          "module": "M101"
-        },
-        {
-          "_id": "L102",
-          "name": "Control Structures",
-          "description": "Conditional statements, loops, and flow control in Python.",
-          "module": "M101"
-        },
-        {
-          "_id": "L103",
-          "name": "Functions and Modules",
-          "description": "Writing reusable code with functions and organizing code with modules.",
-          "module": "M101"
-        }
-      ]
-    },
-    {
-      "_id": "M102",
-      "name": "Data Structures in Python",
-      "description": "Understanding Python's built-in data structures and their applications.",
-      "course": "CS5001",
-      "lessons": [
-        {
-          "_id": "L201",
-          "name": "Lists and Tuples",
-          "description": "Working with sequence data types in Python.",
-          "module": "M102"
-        },
-        {
-          "_id": "L202",
-          "name": "Dictionaries and Sets",
-          "description": "Using mapping and unordered collection types in Python.",
-          "module": "M102"
-        },
-        {
-          "_id": "L203",
-          "name": "Advanced Data Manipulation",
-          "description": "List comprehensions, slicing, and advanced operations on collections.",
-          "module": "M102"
-        }
-      ]
-    },
-    {
-      "_id": "M103",
-      "name": "Object-Oriented Programming",
-      "description": "Introduction to object-oriented programming concepts in Python.",
-      "course": "CS5001",
-      "lessons": [
-        {
-          "_id": "L301",
-          "name": "Classes and Objects",
-          "description": "Creating and using classes and objects in Python.",
-          "module": "M103"
-        },
-        {
-          "_id": "L302",
-          "name": "Inheritance and Polymorphism",
-          "description": "Understanding OOP relationships and method overriding.",
-          "module": "M103"
-        },
-        {
-          "_id": "L303",
-          "name": "Advanced OOP Concepts",
-          "description": "Magic methods, encapsulation, and design patterns in Python.",
-          "module": "M103"
-        }
-      ]
-    },
-    {
-      "_id": "M201",
-      "name": "Logic and Proofs",
-      "description": "Fundamentals of mathematical logic and proof techniques.",
-      "course": "CS5002",
-      "lessons": [
-        {
-          "_id": "L401",
-          "name": "Propositional Logic",
-          "description": "Understanding logical operators, truth tables, and logical equivalences.",
-          "module": "M201"
-        },
-        {
-          "_id": "L402",
-          "name": "Predicate Logic",
-          "description": "Working with quantifiers, predicates, and logical inference.",
-          "module": "M201"
-        },
-        {
-          "_id": "L403",
-          "name": "Proof Techniques",
-          "description": "Direct proofs, contradiction, induction, and other proof methods.",
-          "module": "M201"
-        }
-      ]
-    },
-    {
-      "_id": "M202",
-      "name": "Sets, Relations, and Functions",
-      "description": "Mathematical foundations for computer science.",
-      "course": "CS5002",
-      "lessons": [
-        {
-          "_id": "L501",
-          "name": "Set Theory",
-          "description": "Operations on sets, set properties, and set identities.",
-          "module": "M202"
-        },
-        {
-          "_id": "L502",
-          "name": "Relations",
-          "description": "Binary relations, equivalence relations, and partial orders.",
-          "module": "M202"
-        },
-        {
-          "_id": "L503",
-          "name": "Functions",
-          "description": "Types of functions, composition, and function properties.",
-          "module": "M202"
-        }
-      ]
-    },
-    {
-      "_id": "M301",
-      "name": "Java Fundamentals",
-      "description": "Introduction to Java programming language and environment.",
-      "course": "CS5004",
-      "lessons": [
-        {
-          "_id": "L601",
-          "name": "Java Syntax and Environment",
-          "description": "Setting up Java, understanding syntax, and basic constructs.",
-          "module": "M301"
-        },
-        {
-          "_id": "L602",
-          "name": "Java Classes and Objects",
-          "description": "Creating classes, methods, and constructors in Java.",
-          "module": "M301"
-        },
-        {
-          "_id": "L603",
-          "name": "Packages and Access Control",
-          "description": "Organizing code with packages and controlling access to members.",
-          "module": "M301"
-        }
-      ]
-    },
-    {
-      "_id": "M302",
-      "name": "Design Patterns",
-      "description": "Common design patterns and their implementation in Java.",
-      "course": "CS5004",
-      "lessons": [
-        {
-          "_id": "L701",
-          "name": "Creational Patterns",
-          "description": "Singleton, Factory Method, Abstract Factory, and Builder patterns.",
-          "module": "M302"
-        },
-        {
-          "_id": "L702",
-          "name": "Structural Patterns",
-          "description": "Adapter, Decorator, Composite, and Facade patterns.",
-          "module": "M302"
-        },
-        {
-          "_id": "L703",
-          "name": "Behavioral Patterns",
-          "description": "Observer, Strategy, Command, and Template Method patterns.",
-          "module": "M302"
-        }
-      ]
-    },
-    {
-      "_id": "M401",
-      "name": "Front-End Development",
-      "description": "Building user interfaces with React and modern front-end technologies.",
-      "course": "CS5610",
-      "lessons": [
-        {
-          "_id": "L801",
-          "name": "HTML and CSS Fundamentals",
-          "description": "Modern HTML5 and CSS3 techniques for responsive web design.",
-          "module": "M401"
-        },
-        {
-          "_id": "L802",
-          "name": "JavaScript and DOM Manipulation",
-          "description": "Using JavaScript to create dynamic web content and manipulate the DOM.",
-          "module": "M401"
-        },
-        {
-          "_id": "L803",
-          "name": "React Components and State",
-          "description": "Building interactive UIs using React's component architecture.",
-          "module": "M401"
-        }
-      ]
-    },
-    {
-      "_id": "M402",
-      "name": "Back-End Development",
-      "description": "Server-side programming with Node.js and Express.",
-      "course": "CS5610",
-      "lessons": [
-        {
-          "_id": "L901",
-          "name": "Node.js Fundamentals",
-          "description": "Getting started with Node.js ecosystem and npm.",
-          "module": "M402"
-        },
-        {
-          "_id": "L902",
-          "name": "Express Framework",
-          "description": "Building RESTful APIs with Express.js.",
-          "module": "M402"
-        },
-        {
-          "_id": "L903",
-          "name": "Database Integration",
-          "description": "Connecting web applications to MongoDB using Mongoose.",
-          "module": "M402"
-        }
-      ]
-    }
-  ]
+  {
+    "_id": "M101",
+    "name": "Introduction to Rocket Propulsion",
+    "description": "Basic principles of rocket propulsion and rocket engines.",
+    "course": "RS101",
+    "lessons": [
+      {
+        "_id": "L101",
+        "name": "History of Rocketry",
+        "description": "A brief history of rocketry and space exploration.",
+        "module": "M101"
+      },
+      {
+        "_id": "L102",
+        "name": "Rocket Propulsion Fundamentals",
+        "description": "Basic principles of rocket propulsion.",
+        "module": "M101"
+      },
+      {
+        "_id": "L103",
+        "name": "Rocket Engine Types",
+        "description": "Overview of different types of rocket engines.",
+        "module": "M101"
+      }
+    ]
+  },
+  {
+    "_id": "M102",
+    "name": "Fuel and Combustion",
+    "description": "Understanding rocket fuel, combustion processes, and efficiency.",
+    "course": "RS101",
+    "lessons": [
+      {
+        "_id": "L201",
+        "name": "Rocket Fuel",
+        "description": "Overview of different types of rocket fuels.",
+        "module": "M102"
+      },
+      {
+        "_id": "L202",
+        "name": "Combustion Processes",
+        "description": "Understanding combustion processes and efficiency.",
+        "module": "M102"
+      },
+      {
+        "_id": "L203",
+        "name": "Combustion Instability",
+        "description": "Understanding combustion instability and mitigation.",
+        "module": "M102"
+      }
+    ]
+  },
+  {
+    "_id": "M103",
+    "name": "Nozzle Design",
+    "description": "Principles of rocket nozzle design and performance optimization.",
+    "course": "RS101",
+    "lessons": [
+      {
+        "_id": "L301",
+        "name": "Nozzle Design",
+        "description": "Overview of different types of rocket nozzles.",
+        "module": "M103"
+      },
+      {
+        "_id": "L302",
+        "name": "Nozzle Performance",
+        "description": "Understanding nozzle performance and efficiency.",
+        "module": "M103"
+      },
+      {
+        "_id": "L303",
+        "name": "Nozzle Optimization",
+        "description": "Optimizing nozzle design for specific applications.",
+        "module": "M103"
+      }
+    ]
+  },
+  {
+    "_id": "M201",
+    "name": "Fundamentals of Aerodynamics",
+    "description": "Basic aerodynamic concepts and fluid dynamics principles.",
+    "course": "RS102"
+  },
+  {
+    "_id": "M202",
+    "name": "Subsonic and Supersonic Flow",
+    "description": "Understanding subsonic and supersonic aerodynamic behaviors.",
+    "course": "RS102"
+  },
+  {
+    "_id": "M203",
+    "name": "Aerodynamic Heating",
+    "description": "Study of aerodynamic heating and thermal protection systems.",
+    "course": "RS102"
+  },
+  {
+    "_id": "M301",
+    "name": "Spacecraft Structural Design",
+    "description": "Fundamentals of designing spacecraft structures and materials selection.",
+    "course": "RS103"
+  },
+  {
+    "_id": "M302",
+    "name": "Orbital Mechanics",
+    "description": "Understanding orbital dynamics and mission planning.",
+    "course": "RS103"
+  },
+  {
+    "_id": "M303",
+    "name": "Spacecraft Systems Engineering",
+    "description": "Overview of spacecraft systems and subsystems engineering.",
+    "course": "RS103"
+  }
+]

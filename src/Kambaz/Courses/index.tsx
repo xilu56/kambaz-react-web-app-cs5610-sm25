@@ -15,7 +15,7 @@ export default function Courses() {
     <div id="wd-courses">
       <h2 className="text-danger">
         <FaAlignJustify className="me-4 fs-4 mb-1" />
-        {course?.name} &gt; {pathname.split("/").pop()}
+        {course?.number}: {course?.name} &gt; {pathname.split("/").pop()}
       </h2>
       <hr />
       <div className="d-flex">

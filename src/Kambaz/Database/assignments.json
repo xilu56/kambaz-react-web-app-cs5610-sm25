@@ -1,95 +1,101 @@
 [
-    {
-      "_id": "A101",
-      "title": "Propulsion Assignment",
-      "course": "RS101",
-      "description": "Analyze the performance of a rocket engine and its fuel system, and propose improvements for efficiency and safety."
-    },
-    {
-      "_id": "A102",
-      "title": "Combustion Analysis",
-      "course": "RS101",
-      "description": "Analyze the combustion processes in a rocket engine, identify potential issues, and propose solutions."
-    },
-    {
-      "_id": "A103",
-      "title": "Nozzle Design Project",
-      "course": "RS101",
-      "description": "Analyze the combustion processes in a rocket engine, identify potential issues, and propose solutions."
-    },
-    {
-      "_id": "A1",
-      "title": "A1",
-      "course": "CS5610",
-      "description": "First Assignment",
-      "module": "Multiple Modules",
-      "dueDate": "May 13 at 11:59pm",
-      "availableFrom": "May 6 at 12:00am",
-      "points": 100,
-      "status": "completed"
-    },
-    {
-      "_id": "A2",
-      "title": "A2",
-      "course": "CS5610",
-      "description": "Second Assignment",
-      "module": "Multiple Modules",
-      "dueDate": "May 20 at 11:59pm",
-      "availableFrom": "May 13 at 12:00am",
-      "points": 100,
-      "status": "completed"
-    },
-    {
-      "_id": "A3",
-      "title": "A3",
-      "course": "CS5610",
-      "description": "Third Assignment",
-      "module": "Multiple Modules",
-      "dueDate": "May 27 at 11:59pm",
-      "availableFrom": "May 20 at 12:00am",
-      "points": 100,
-      "status": "completed"
-    },
-    {
-      "_id": "A201",
-      "title": "Aerodynamics Quiz",
-      "course": "RS102",
-      "dueDate": "June 10 at 11:59pm",
-      "points": 50
-    },
-    {
-      "_id": "A202",
-      "title": "Flow Analysis",
-      "course": "RS102",
-      "dueDate": "June 17 at 11:59pm",
-      "points": 75
-    },
-    {
-      "_id": "A203",
-      "title": "Heating Analysis",
-      "course": "RS102",
-      "dueDate": "June 24 at 11:59pm",
-      "points": 100
-    },
-    {
-      "_id": "A301",
-      "title": "Structural Design Task",
-      "course": "RS103",
-      "dueDate": "July 1 at 11:59pm",
-      "points": 100
-    },
-    {
-      "_id": "A302",
-      "title": "Orbital Calculations",
-      "course": "RS103",
-      "dueDate": "July 8 at 11:59pm",
-      "points": 75
-    },
-    {
-      "_id": "A303",
-      "title": "Systems Engineering Exam",
-      "course": "RS103",
-      "dueDate": "July 15 at 11:59pm",
-      "points": 150
-    }
-  ]
+  { 
+    "_id": "A101", 
+    "title": "Propulsion Assignment", 
+    "course": "CS5001",
+    "description": "Design and analyze a propulsion system for a rocket.",
+    "points": 100,
+    "dueDate": "May 15 at 11:59pm",
+    "availableFrom": "May 1 at 12:00am",
+    "module": "Propulsion Systems",
+    "status": "not-started"
+  },
+  { 
+    "_id": "A102", 
+    "title": "Combustion Analysis", 
+    "course": "CS5001",
+    "description": "Analyze combustion processes in rocket engines.",
+    "points": 75,
+    "dueDate": "May 20 at 11:59pm",
+    "availableFrom": "May 5 at 12:00am",
+    "module": "Propulsion Systems",
+    "status": "not-started"
+  },
+  { 
+    "_id": "A103", 
+    "title": "Nozzle Design Project", 
+    "course": "CS5001",
+    "description": "Design an optimal nozzle for a rocket engine.",
+    "points": 125,
+    "dueDate": "May 25 at 11:59pm",
+    "availableFrom": "May 10 at 12:00am",
+    "module": "Propulsion Systems",
+    "status": "not-started"
+  },
+  { 
+    "_id": "A201", 
+    "title": "Aerodynamics Quiz", 
+    "course": "CS5002",
+    "description": "Quiz on basic aerodynamic principles.",
+    "points": 50,
+    "dueDate": "June 5 at 11:59pm",
+    "availableFrom": "June 1 at 12:00am",
+    "module": "Aerodynamics",
+    "status": "not-started"
+  },
+  { 
+    "_id": "A202", 
+    "title": "Flow Analysis", 
+    "course": "CS5002",
+    "description": "Analyze flow patterns around different shapes.",
+    "points": 75,
+    "dueDate": "June 10 at 11:59pm",
+    "availableFrom": "June 3 at 12:00am",
+    "module": "Aerodynamics",
+    "status": "not-started"
+  },
+  { 
+    "_id": "A203", 
+    "title": "Heating Analysis", 
+    "course": "CS5002",
+    "description": "Study heating effects during re-entry.",
+    "points": 100,
+    "dueDate": "June 15 at 11:59pm",
+    "availableFrom": "June 5 at 12:00am",
+    "module": "Aerodynamics",
+    "status": "not-started"
+  },
+  { 
+    "_id": "A301", 
+    "title": "Structural Design Task", 
+    "course": "CS5004",
+    "description": "Design a structural component for a spacecraft.",
+    "points": 100,
+    "dueDate": "July 1 at 11:59pm",
+    "availableFrom": "June 20 at 12:00am",
+    "module": "Structures",
+    "status": "not-started"
+  },
+  { 
+    "_id": "A302", 
+    "title": "Orbital Calculations", 
+    "course": "CS5004",
+    "description": "Calculate orbital parameters for different missions.",
+    "points": 75,
+    "dueDate": "July 10 at 11:59pm",
+    "availableFrom": "July 1 at 12:00am",
+    "module": "Orbital Mechanics",
+    "status": "not-started"
+  },
+  { 
+    "_id": "A303", 
+    "title": "Systems Engineering Exam", 
+    "course": "CS5004",
+    "description": "Comprehensive exam on systems engineering principles.",
+    "points": 150,
+    "dueDate": "July 20 at 11:59pm",
+    "availableFrom": "July 15 at 12:00am",
+    "module": "Systems Engineering",
+    "status": "not-started"
+  }
+]

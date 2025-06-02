@@ -1,79 +1,95 @@
 [
-    {
-      "_id": "CS5001",
-      "name": "Programming Fundamentals",
-      "number": "CS5001",
-      "startDate": "2023-09-01",
-      "endDate": "2023-12-15",
-      "department": "Computer Science",
-      "credits": 4,
-      "description": "An intensive introduction to programming and problem solving using Python. Designed for students with minimal programming background, this course covers fundamentals of programming including variables, data types, control structures, functions, and object-oriented programming concepts. Students will learn algorithmic thinking and develop skills in writing well-structured, efficient code.",
-      "image": "CS5001.jpg"
-    },
-    {
-      "_id": "CS5002",
-      "name": "Discrete Structures",
-      "number": "CS5002",
-      "startDate": "2023-09-01",
-      "endDate": "2023-12-15",
-      "department": "Computer Science",
-      "credits": 4,
-      "description": "This course explores the mathematical foundations of computer science, including logic, proof techniques, set theory, relations, functions, counting principles, and graph theory. Topics also include Boolean algebra, induction, recursion, and analysis of algorithms. This mathematical background is essential for advanced study in algorithms, programming languages, and other areas of computer science.",
-      "image": "CS5002.jpg"
-    },
-    {
-      "_id": "CS5004",
-      "name": "Object-Oriented Design",
-      "number": "CS5004",
-      "startDate": "2024-01-08",
-      "endDate": "2024-04-25",
-      "department": "Computer Science",
-      "credits": 4,
-      "description": "An in-depth study of object-oriented programming and design principles using Java. The course covers class design, inheritance, polymorphism, interfaces, abstract classes, design patterns, and software testing. Students will develop complex applications with emphasis on code quality, maintainability, and following best practices in software engineering.",
-      "image": "CS5004.jpg"
-    },
-    {
-      "_id": "CS5008",
-      "name": "Data Structures and Algorithms",
-      "number": "CS5008",
-      "startDate": "2024-01-08",
-      "endDate": "2024-04-25",
-      "department": "Computer Science",
-      "credits": 4,
-      "description": "A comprehensive study of fundamental data structures and algorithms essential for efficient computation. Topics include arrays, linked lists, stacks, queues, trees, hash tables, graphs, sorting algorithms, and algorithmic strategies. The course emphasizes algorithm analysis, problem-solving techniques, and the trade-offs in algorithm design. Students implement these concepts through programming assignments in C/C++.",
-      "image": "CS5008.jpg"
-    },
-    {
-      "_id": "CS5010",
-      "name": "Programming Design Paradigm",
-      "number": "CS5010",
-      "startDate": "2024-05-06",
-      "endDate": "2024-08-20",
-      "department": "Computer Science",
-      "credits": 4,
-      "description": "This course explores various programming paradigms including functional, procedural, and object-oriented approaches. Students learn to select and apply appropriate paradigms for different problem domains. The course emphasizes clean code design, abstraction, and composing solutions through different paradigmatic approaches. Programming assignments use languages such as Racket, Python, and Java to illustrate different programming styles.",
-      "image": "CS5010.jpg"
-    },
-    {
-      "_id": "CS5520",
-      "name": "Mobile Application Development",
-      "number": "CS5520",
-      "startDate": "2024-09-01",
-      "endDate": "2024-12-15",
-      "department": "Computer Science",
-      "credits": 4,
-      "description": "An introduction to developing applications for mobile platforms like iOS and Android. The course covers mobile user interface design, reactive programming paradigms, data persistence, network communication, and deployment. Students learn cross-platform development using React Native or Flutter, enabling them to create applications that run efficiently on multiple mobile operating systems.",
-      "image": "CS5520.jpg"
-    },
-    {
-      "_id": "CS5800",
-      "name": "Algorithms",
-      "number": "CS5800",
-      "startDate": "2024-09-01",
-      "endDate": "2024-12-15",
-      "department": "Computer Science",
-      "credits": 4,
-      "description": "An advanced study of algorithm design, analysis, and implementation. Topics include greedy algorithms, dynamic programming, graph algorithms, NP-completeness, and approximation algorithms. The course also explores computational complexity theory and the limits of algorithmic efficiency. Students implement and analyze algorithms for solving complex computational problems, preparing them for research and industry applications.",
-      "image": "CS5800.jpg"
-    }
-  ]
+  {
+    "_id": "RS101",
+    "name": "Rocket Propulsion",
+    "number": "RS4550",
+    "startDate": "2023-01-10",
+    "endDate": "2023-05-15",
+    "department": "D123",
+    "credits": 4,
+    "description": "This course provides an in-depth study of the fundamentals of rocket propulsion, covering topics such as propulsion theory, engine types, fuel chemistry, and the practical applications of rocket technology. Designed for students with a strong background in physics and engineering, the course includes both theoretical instruction and hands-on laboratory work"
+  },
+  {
+    "_id": "RS102",
+    "name": "Aerodynamics",
+    "number": "RS4560",
+    "startDate": "2023-01-10",
+    "endDate": "2023-05-15",
+    "department": "D123",
+    "credits": 3,
+    "description": "This course offers a comprehensive exploration of aerodynamics, focusing on the principles and applications of airflow and its effects on flying objects. Topics include fluid dynamics, airfoil design, lift and drag forces, and the aerodynamic considerations in aircraft design. The course blends theoretical learning with practical applications, suitable for students pursuing a career in aeronautics or astronautics engineering."
+  },
+  {
+    "_id": "RS103",
+    "name": "Spacecraft Design",
+    "number": "RS4570",
+    "startDate": "2023-01-10",
+    "endDate": "2023-05-15",
+    "department": "D123",
+    "credits": 4,
+    "description": "This course delves into the principles and practices of spacecraft design, offering students a detailed understanding of the engineering and technology behind spacecraft systems. Key topics include spacecraft structure, propulsion, power systems, thermal control, and payload integration. Emphasizing both theoretical concepts and practical skills, the course prepares students for careers in the space industry, with a focus on innovative design and problem-solving in the context of current and future space missions"
+  },
+  {
+    "_id": "RS104",
+    "name": "Organic Chemistry",
+    "number": "CH1230",
+    "startDate": "2023-01-10",
+    "endDate": "2023-05-15",
+    "department": "D134",
+    "credits": 3,
+    "description": "Organic Chemistry is an in-depth course that explores the structure, properties, composition, and reactions of organic compounds and materials. The course covers various topics including hydrocarbons, functional groups, stereochemistry, and organic synthesis techniques. Students will learn about the mechanisms of organic reactions, spectroscopic methods for structure determination, and the role of organic chemistry in biological systems. Emphasis is placed on problem-solving and laboratory skills, preparing students for advanced studies in chemistry, medicine, and related fields."
+  },
+  {
+    "_id": "RS105",
+    "name": "Inorganic Chemistry",
+    "number": "CH1240",
+    "startDate": "2023-01-10",
+    "endDate": "2023-05-15",
+    "department": "D134",
+    "credits": 3,
+    "description": "Inorganic Chemistry focuses on the properties, structures, and behaviors of inorganic and organometallic compounds. This course covers a range of topics including coordination chemistry, metal complexes, bonding theories, symmetry, and crystal field theory. Students will also explore the role of inorganic chemistry in real-world applications such as catalysis, materials science, and bioinorganic processes. Laboratory work emphasizes synthesis and analysis of inorganic compounds, fostering a deeper understanding of theoretical concepts."
+  },
+  {
+    "_id": "RS106",
+    "name": "Physical Chemistry",
+    "number": "CH1250",
+    "startDate": "2023-01-10",
+    "endDate": "2023-05-15",
+    "department": "D134",
+    "credits": 3,
+    "description": "Physical Chemistry merges the principles of physics and chemistry to understand the physical properties of molecules, the forces that act upon them, and the chemical reactions they undergo. Key topics include thermodynamics, kinetics, quantum mechanics, and spectroscopy. The course provides a comprehensive understanding of molecular behavior, reaction dynamics, and the application of mathematical methods in solving chemical problems. Labs focus on experimental techniques and data analysis, equipping students with skills necessary for research and advanced study in chemistry and related fields."
+  },
+  {
+    "_id": "RS107",
+    "name": "Ancient Languages and Scripts of Middle-earth",
+    "number": "ME101",
+    "startDate": "2023-01-10",
+    "endDate": "2023-05-15",
+    "department": "Languages",
+    "credits": 3,
+    "description": "This course offers an exploration of the ancient languages and scripts found throughout Middle-earth, including Elvish (Sindarin and Quenya), Dwarvish (Khuzdul), and the Black Speech of Mordor. Students will learn the historical and cultural contexts of these languages, their linguistic structures, and their usage in various inscriptions and texts. Emphasis is on understanding the philological aspects and the role of language in shaping Middle-earth's history and lore.",
+    "author": "654f9ec2ea7ead465908d1e3"
+  },
+  {
+    "_id": "RS108",
+    "name": "Wizards, Elves, and Men: Inter-species Diplomacy in Middle-earth",
+    "number": "ME102",
+    "startDate": "2023-01-10",
+    "endDate": "2023-05-15",
+    "department": "Political Studies",
+    "credits": 4,
+    "description": "This course explores the complex relationships and diplomatic interactions among the different races of Middle-earth: Elves, Men, Dwarves, and Wizards. Topics include the study of historical alliances, conflicts, and the role of leadership and wisdom in maintaining peace. Students will engage in discussions and case studies on key events in Middle-earth's history, such as the Council of Elrond and the War of the Ring, to understand the principles of diplomacy and conflict resolution in a multi-species context.",
+    "author": "654f9ec2ea7ead465908d1e3"
+  },
+{
+    "_id": "RS109",
+    "name": "The Art of Elven Craftsmanship",
+    "number": "ME103",
+    "startDate": "2023-01-10",
+    "endDate": "2023-05-15",
+    "department": "Arts and Crafts",
+    "credits": 3,
+    "description": "This course delves into the exquisite craftsmanship of the Elves of Middle-earth, focusing on their art, architecture, and material culture. Students will study the techniques used in Elven crafts such as jewelry making, woodworking, and metalwork, as well as the cultural significance of these arts. The course includes practical workshops where students can create their own Elven-inspired crafts, fostering an appreciation for the beauty and intricacy of Elven artistry.",
+    "author": "654f9ec2ea7ead465908d1e3"
+  }
+]
