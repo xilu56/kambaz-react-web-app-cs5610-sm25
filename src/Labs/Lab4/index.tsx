@@ -2,6 +2,7 @@ import ClickEvent from "./ClickEvent";
 import PassingDataOnEvent from "./PassingDataOnEvent";
 import PassingFunctions from "./PassingFunctions";
 import EventObject from "./EventObject";
+import Counter from "./Counter";
 
 export default function Lab4() {
     function sayHello() {
@@ -14,5 +15,6 @@ export default function Lab4() {
         <PassingDataOnEvent />
         <PassingFunctions theFunction= {sayHello} />
         <EventObject />
+        <Counter />
     </div>  );
     }
