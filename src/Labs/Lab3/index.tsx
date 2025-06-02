@@ -20,7 +20,6 @@ import FilterFunction from "./FilterFunction";
 import JsonStringify from "./JsonStringify";
 import House from "./House";
 import TodoItem from "./todos/TodoItem";
-import todos from "./todos/todos.json";
 import { ListGroup } from "react-bootstrap";
 import Spreading from "./Spreading";
 import Destructing from "./Destructing";
@@ -72,11 +71,7 @@ export default function Lab3() {
       <House/>
       <TodoItem />
       <h3>Todo List</h3>
-      <ListGroup>
-        {todos.map((todo, index) => (
-          <TodoItem key={index} todo={todo} />
-        ))}
-      </ListGroup>
+
       <Spreading />
       <Destructing />
       <FunctionDestructing />
