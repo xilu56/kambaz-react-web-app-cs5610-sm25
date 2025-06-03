@@ -1,10 +1,11 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { CSSProperties } from "react";
-import { FaSearch, FaEllipsisV, FaGripVertical} from "react-icons/fa";
+import { FaSearch, FaEllipsisV, FaGripVertical, FaTrash, FaPencilAlt} from "react-icons/fa";
 import { BsFileText } from "react-icons/bs";
-import { InputGroup, Form, Row, Col } from "react-bootstrap";
-import { db } from "../../Database";
+import { InputGroup, Form, Row, Col, Modal, Button } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer";
 
 // Import GreenCheckmark component
 import GreenCheckmark from "../Modules/GreenCheckmark";
@@ -12,10 +13,16 @@ import GreenCheckmark from "../Modules/GreenCheckmark";
 export default function Assignments() {
   const { cid } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isExpanded, setIsExpanded] = useState(true);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null);
+  
+  // Get assignments from Redux store
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   
   // Get assignments for the current course
-  const courseAssignments = db.assignments.filter((a: any) => 
+  const courseAssignments = assignments.filter((a: any) => 
     a.course === cid
   );
 
@@ -25,6 +32,32 @@ export default function Assignments() {
 
   const handleAddAssignment = () => {
     navigate(`/Kambaz/Courses/${cid}/Assignments/new`);
+  };
+
+  const handleDeleteClick = (assignmentId: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAssignmentToDelete(assignmentId);
+    setShowDeleteDialog(true);
+  };
+
+  const confirmDelete = () => {
+    if (assignmentToDelete) {
+      dispatch(deleteAssignment(assignmentToDelete));
+    }
+    setShowDeleteDialog(false);
+    setAssignmentToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteDialog(false);
+    setAssignmentToDelete(null);
+  };
+
+  const handleEditClick = (assignmentId: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    navigate(`/Kambaz/Courses/${cid}/Assignments/${assignmentId}`);
   };
 
   const assignmentItemStyle: CSSProperties = {
@@ -141,14 +174,45 @@ export default function Assignments() {
               </div>
               <div className="d-flex align-items-start ms-2">
                 {assignment.status === "completed" && <GreenCheckmark />}
-                <div className="ms-3 text-muted">
-                  <FaEllipsisV />
+                <div className="d-flex gap-2 ms-3">
+                  <button
+                    className="btn btn-sm btn-outline-primary p-1"
+                    onClick={(e) => handleEditClick(assignment._id, e)}
+                    title="Edit Assignment"
+                  >
+                    <FaPencilAlt size={12} />
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-danger p-1"
+                    onClick={(e) => handleDeleteClick(assignment._id, e)}
+                    title="Delete Assignment"
+                  >
+                    <FaTrash size={12} />
+                  </button>
                 </div>
               </div>
             </li>
           ))}
         </ul>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteDialog} onHide={cancelDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Assignment</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to remove this assignment?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cancelDelete}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
