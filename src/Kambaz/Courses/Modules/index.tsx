@@ -31,17 +31,6 @@ export default function Modules() {
     }
   };
 
-  const getIconForType = (type: string) => {
-    switch (type) {
-      case "slide":
-        return <FaFileLines className="text-danger me-2" />;
-      case "reading":
-        return <FaFile className="text-secondary me-2" />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="wd-modules">
       <ModulesControls 

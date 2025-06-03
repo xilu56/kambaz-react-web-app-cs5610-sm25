@@ -66,7 +66,7 @@ export default function CourseStatus() {
         <h6>Coming Up</h6>
         {upcomingAssignments.length > 0 ? (
           <ul className="list-unstyled">
-            {upcomingAssignments.map((assignment: any, index: number) => (
+            {upcomingAssignments.map((assignment: any) => (
               <li key={assignment._id} className="mb-2">
                 <small className="text-muted d-block">
                   {assignment.dueDate || "No due date"}
@@ -84,7 +84,7 @@ export default function CourseStatus() {
         <h6>Recent Feedback</h6>
         {recentAssignments.length > 0 ? (
           <ul className="list-unstyled">
-            {recentAssignments.map((assignment: any, index: number) => (
+            {recentAssignments.map((assignment: any) => (
               <li key={assignment._id} className="mb-2">
                 <small className="text-muted d-block">Recently graded</small>
                 <span>Assignment: {assignment.title} - {assignment.points || 100}/{assignment.points || 100}</span>
