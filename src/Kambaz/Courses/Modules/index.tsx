@@ -1,18 +1,23 @@
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, FormControl } from "react-bootstrap";
 import ModulesControls from "./ModulesControls";
+import ModuleControlButtons from "./ModuleControlButtons";
 import { BsGripVertical } from "react-icons/bs";
 import { FaChevronDown, FaChevronRight, FaFile } from "react-icons/fa";
-import { FaPlus, FaFileLines } from "react-icons/fa6";
+import { FaFileLines } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { db } from "../../Database";
+import { addModule, editModule, updateModule, deleteModule } from "./reducer";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function Modules() {
   const { cid } = useParams();
-  
-  // Get modules for the current course from the database
-  const courseModules = db.modules.filter((module: any) => module.course === cid);
+  const [moduleName, setModuleName] = useState("");
+  const { modules } = useSelector((state: any) => state.modulesReducer);
+  const dispatch = useDispatch();
+
+  // Get modules for the current course from Redux state
+  const courseModules = modules.filter((module: any) => module.course === cid);
   
   const [expandedModules, setExpandedModules] = useState<string[]>(
     courseModules.map((module: any) => module._id)
@@ -38,48 +43,84 @@ export default function Modules() {
   };
 
   return (
-    <div>
-      <ModulesControls />
-      <ListGroup className="rounded-0 wd-modules-list">
+    <div className="wd-modules">
+      <ModulesControls 
+        moduleName={moduleName} 
+        setModuleName={setModuleName}
+        addModule={() => {
+          dispatch(addModule({ name: moduleName, course: cid }));
+          setModuleName("");
+        }} 
+      />
+      <ListGroup id="wd-modules" className="rounded-0">
         {courseModules.map((module: any) => (
           <div key={module._id} className="mb-3">
             {/* Module Header */}
-            <ListGroup.Item 
-              className="d-flex align-items-center p-2 bg-light border"
-              style={{ cursor: "pointer" }}
-              onClick={() => toggleModule(module._id)}
-            >
+            <ListGroup.Item className="d-flex align-items-center p-3 ps-2 bg-secondary">
               <div className="me-2">
                 {expandedModules.includes(module._id) ? (
-                  <FaChevronDown className="text-secondary" />
+                  <FaChevronDown 
+                    className="text-secondary" 
+                    style={{ cursor: "pointer" }}
+                    onClick={() => toggleModule(module._id)}
+                  />
                 ) : (
-                  <FaChevronRight className="text-secondary" />
+                  <FaChevronRight 
+                    className="text-secondary" 
+                    style={{ cursor: "pointer" }}
+                    onClick={() => toggleModule(module._id)}
+                  />
                 )}
               </div>
-              <BsGripVertical className="me-2 text-secondary" />
-              <div className="flex-grow-1">{module.name}</div>
-              <div className="d-flex align-items-center">
-                <GreenCheckmark />
-                <FaPlus className="mx-2 text-secondary" />
-                <span className="fs-4 text-secondary">⋮</span>
-              </div>
+              <BsGripVertical className="me-2 fs-3" />
+              
+              {!module.editing && (
+                <div className="flex-grow-1 text-white">{module.name}</div>
+              )}
+              
+              {module.editing && (
+                <FormControl 
+                  className="w-50 d-inline-block"
+                  onChange={(e) =>
+                    dispatch(
+                      updateModule({ ...module, name: e.target.value })
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      dispatch(updateModule({ ...module, editing: false }));
+                    }
+                  }}
+                  defaultValue={module.name}
+                />
+              )}
+              
+              <ModuleControlButtons
+                moduleId={module._id}
+                deleteModule={(moduleId) => {
+                  dispatch(deleteModule(moduleId));
+                }}
+                editModule={(moduleId) => dispatch(editModule(moduleId))}
+              />
             </ListGroup.Item>
 
             {/* Module Content */}
             {expandedModules.includes(module._id) && (
               <ListGroup className="wd-module-items rounded-0">
                 {/* Module Description */}
-                <ListGroup.Item className="d-flex align-items-center py-2 ps-4 border-start border-success">
-                  <BsGripVertical className="me-2 text-secondary invisible" />
-                  <div className="me-2">
-                    <FaFile className="text-secondary me-2" />
-                  </div>
-                  <div className="flex-grow-1">{module.description}</div>
-                  <div className="d-flex align-items-center">
-                    <GreenCheckmark />
-                    <span className="fs-4 ms-2 text-secondary">⋮</span>
-                  </div>
-                </ListGroup.Item>
+                {module.description && (
+                  <ListGroup.Item className="d-flex align-items-center py-2 ps-4 border-start border-success">
+                    <BsGripVertical className="me-2 text-secondary invisible" />
+                    <div className="me-2">
+                      <FaFile className="text-secondary me-2" />
+                    </div>
+                    <div className="flex-grow-1">{module.description}</div>
+                    <div className="d-flex align-items-center">
+                      <GreenCheckmark />
+                      <span className="fs-4 ms-2 text-secondary">⋮</span>
+                    </div>
+                  </ListGroup.Item>
+                )}
                 
                 {/* Module Lessons (if any) */}
                 {module.lessons && module.lessons.map((lesson: any) => (
