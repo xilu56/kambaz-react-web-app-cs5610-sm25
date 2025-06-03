@@ -16,7 +16,7 @@ export default function Assignments() {
   
   // Get assignments for the current course
   const courseAssignments = db.assignments.filter((a: any) => 
-    a.course === cid || a._id.startsWith("A")
+    a.course === cid
   );
 
   const toggleExpand = () => {
