@@ -1,11 +1,8 @@
 import { ListGroup, Badge, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { db } from "./Database";
 import { FaBook, FaUsers, FaClock } from "react-icons/fa";
 
-export default function CoursesList() {
-  const courses = db.courses;
-
+export default function CoursesList({ courses }: { courses: any[] }) {
   return (
     <Container fluid>
       <div id="wd-courses-list">
