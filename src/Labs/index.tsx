@@ -22,7 +22,7 @@ export default function Labs() {
             <li>Lab 2: CSS Styling</li>
             <li>Lab 3: JavaScript Fundamentals</li>
             <li>Lab 4: React Components and State Management</li>
-            <li>Lab 5: Advanced React Concepts</li>
+            <li>Lab 5: Implementing RESTful APIs with Express.js</li>
           </ul>
         </div>} />
         <Route path="Lab1" element={<Lab1 />} />
