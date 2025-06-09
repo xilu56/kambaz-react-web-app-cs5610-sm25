@@ -20,7 +20,6 @@ import FilterFunction from "./FilterFunction";
 import JsonStringify from "./JsonStringify";
 import House from "./House";
 import TodoItem from "./todos/TodoItem";
-import todos from "./todos/todos.json";
 import { ListGroup } from "react-bootstrap";
 import Spreading from "./Spreading";
 import Destructing from "./Destructing";
@@ -32,11 +31,23 @@ import Add from "./Add";
 import Square from "./Square";
 import Highlight from "./Highlight";
 import PathParameters from "./PathParameters";
+import { useSelector } from "react-redux";
 
 export default function Lab3() {
+  const { todos } = useSelector((state: any) => state.todosReducer);
   return (
     <div id="wd-lab3">
       <h3>JavaScript</h3>
+      <h2>Lab 3</h2>
+      <ListGroup>
+        {todos.map((todo: any) => (
+          <ListGroup.Item key={todo.id}>
+            {todo.title}
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+      <hr />
+
       <VariablesAndConstants/>
       <VariableTypes/>
       <BooleanVariables/>
@@ -60,11 +71,7 @@ export default function Lab3() {
       <House/>
       <TodoItem />
       <h3>Todo List</h3>
-      <ListGroup>
-        {todos.map((todo, index) => (
-          <TodoItem key={index} todo={todo} />
-        ))}
-      </ListGroup>
+
       <Spreading />
       <Destructing />
       <FunctionDestructing />

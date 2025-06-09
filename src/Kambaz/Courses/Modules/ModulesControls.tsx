@@ -1,9 +1,18 @@
 import { FaPlus } from "react-icons/fa6";
 import { MdDoNotDisturbAlt } from "react-icons/md";
 import { Button, Dropdown } from "react-bootstrap";
+import { useState } from "react";
 import GreenCheckmark from "./GreenCheckmark";
+import ModuleEditor from "./ModuleEditor";
 
-export default function ModulesControls() {
+export default function ModulesControls(
+  { moduleName, setModuleName, addModule }:
+  { moduleName: string; setModuleName: (title: string) => void; addModule: () => void; }
+) {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <div id="wd-modules-controls" className="text-nowrap d-flex justify-content-between mb-3">
       <div className="d-flex">
@@ -57,10 +66,20 @@ export default function ModulesControls() {
         <Button 
           id="wd-add-module-btn"
           variant="danger" 
+          onClick={handleShow} 
           size="lg">
           <FaPlus className="me-2" />
           Module
         </Button>
+        
+        <ModuleEditor 
+          show={show} 
+          handleClose={handleClose} 
+          dialogTitle="Add Module"
+          moduleName={moduleName} 
+          setModuleName={setModuleName} 
+          addModule={addModule} 
+        />
       </div>
     </div>
   );

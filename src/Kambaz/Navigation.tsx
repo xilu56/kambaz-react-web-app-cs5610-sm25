@@ -4,16 +4,13 @@ import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 import ListGroup from "react-bootstrap/ListGroup";
-import { db } from "./Database";
 
 export default function KambazNavigation() {
   const { pathname } = useLocation();
-  // Get the first course ID to use as default when clicking Courses
-  const defaultCourseId = db.courses.length > 0 ? db.courses[0]._id : "";
   
   const links = [
     { label: "Dashboard", path: "/Kambaz/Dashboard", icon: AiOutlineDashboard },
-    { label: "Courses",   path: `/Kambaz/Courses/${defaultCourseId}/Home`, icon: LiaBookSolid },
+    { label: "Courses",   path: "/Kambaz/Courses", icon: LiaBookSolid },
     { label: "Calendar",  path: "/Kambaz/Calendar",  icon: IoCalendarOutline },
     { label: "Inbox",     path: "/Kambaz/Inbox",     icon: FaInbox },
     { label: "Labs",      path: "/Labs",             icon: LiaCogSolid },
@@ -32,7 +29,7 @@ export default function KambazNavigation() {
       </ListGroup.Item>
       {links.map((link) => (
         <ListGroup.Item key={link.path} as={Link} to={link.path} className={`bg-black text-center border-0
-              ${link.label === "Courses" && pathname.includes("/Courses/") ? "text-danger bg-white" : 
+              ${link.label === "Courses" && pathname.includes("/Courses") ? "text-danger bg-white" : 
                 pathname.includes(link.label) ? "text-danger bg-white" : "text-white bg-black"}`}>
           {link.icon({ className: "fs-1 text-danger"})}
           <br />

@@ -1,36 +1,72 @@
-import { useParams } from 'react-router-dom';
-import { Form, Container, Row, Col, InputGroup } from 'react-bootstrap';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Form, Container, Row, Col, InputGroup, Button } from 'react-bootstrap';
 import { BsCalendar } from 'react-icons/bs';
-import { db } from "../../Database";
+import { useSelector, useDispatch } from "react-redux";
+import { addAssignment, updateAssignment } from "./reducer";
+import { useState, useEffect } from 'react';
 import type { CSSProperties } from 'react';
-import { Link } from 'react-router-dom';
 
 // Define the assignment type to match the database structure
 interface Assignment {
-  _id: string;
+  _id?: string;
   title: string;
   course: string;
   description?: string;
   points?: number | string;
   dueDate?: string;
   availableFrom?: string;
+  availableUntil?: string;
   module?: string;
   status?: string;
 }
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   
-  // Find the assignment in the database using the aid from URL params
-  const assignment = aid && aid !== 'new' 
-    ? db.assignments.find((a: any) => a._id.toLowerCase() === aid.toLowerCase()) as Assignment | undefined
+  // Get assignments from Redux store
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  
+  // Find the assignment if editing
+  const existingAssignment = aid && aid !== 'new' 
+    ? assignments.find((a: any) => a._id === aid) as Assignment | undefined
     : null;
 
-  // Format date strings from the assignment data (if they exist) to be used in date inputs
-  const formatDateForInput = (dateString: string | undefined) => {
+  // Form state
+  const [assignment, setAssignment] = useState<Assignment>({
+    title: existingAssignment?.title || "New Assignment",
+    course: cid || "",
+    description: existingAssignment?.description || "",
+    points: existingAssignment?.points || 100,
+    dueDate: existingAssignment?.dueDate || "",
+    availableFrom: existingAssignment?.availableFrom || "",
+    availableUntil: existingAssignment?.availableUntil || "",
+    module: existingAssignment?.module || "",
+    status: existingAssignment?.status || "not-started"
+  });
+
+  // Update form when existing assignment changes
+  useEffect(() => {
+    if (existingAssignment) {
+      setAssignment({
+        title: existingAssignment.title,
+        course: existingAssignment.course,
+        description: existingAssignment.description || "",
+        points: existingAssignment.points || 100,
+        dueDate: existingAssignment.dueDate || "",
+        availableFrom: existingAssignment.availableFrom || "",
+        availableUntil: existingAssignment.availableUntil || "",
+        module: existingAssignment.module || "",
+        status: existingAssignment.status || "not-started"
+      });
+    }
+  }, [existingAssignment]);
+
+  // Format date for input (convert from "May 13 at 11:59pm" to "2024-05-13")
+  const formatDateForInput = (dateString: string) => {
     if (!dateString) return '';
     
-    // Extract date from format like "May 13 at 11:59pm"
     const months: Record<string, string> = {
       'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
       'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
@@ -40,12 +76,53 @@ export default function AssignmentEditor() {
     if (match) {
       const month = months[match[1]];
       const day = match[2].padStart(2, '0');
-      // Use current year as a fallback
       const year = new Date().getFullYear();
       return `${year}-${month}-${day}`;
     }
     
     return '';
+  };
+
+  // Format date from input (convert from "2024-05-13" to "May 13 at 11:59pm")
+  const formatDateFromInput = (inputDate: string) => {
+    if (!inputDate) return '';
+    
+    const date = new Date(inputDate);
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    return `${month} ${day} at 11:59pm`;
+  };
+
+  const handleSave = () => {
+    const formattedAssignment = {
+      ...assignment,
+      dueDate: assignment.dueDate ? formatDateFromInput(assignment.dueDate) : "",
+      availableFrom: assignment.availableFrom ? formatDateFromInput(assignment.availableFrom) : "",
+      availableUntil: assignment.availableUntil ? formatDateFromInput(assignment.availableUntil) : "",
+    };
+
+    if (aid === 'new' || !existingAssignment) {
+      // Create new assignment
+      dispatch(addAssignment(formattedAssignment));
+    } else {
+      // Update existing assignment
+      dispatch(updateAssignment({ ...formattedAssignment, _id: aid }));
+    }
+    
+    navigate(`/Kambaz/Courses/${cid}/Assignments`);
+  };
+
+  const handleCancel = () => {
+    navigate(`/Kambaz/Courses/${cid}/Assignments`);
+  };
+
+  const handleInputChange = (field: keyof Assignment, value: string | number) => {
+    setAssignment(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
   
   const formSectionStyle: CSSProperties = {
@@ -59,7 +136,8 @@ export default function AssignmentEditor() {
   const buttonContainerStyle: CSSProperties = {
     marginTop: '2rem',
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    gap: '10px'
   };
   
   const formLabelStyle: CSSProperties = {
@@ -74,7 +152,8 @@ export default function AssignmentEditor() {
             <Form.Label style={formLabelStyle}>Assignment Name</Form.Label>
             <Form.Control 
               type="text" 
-              defaultValue={assignment?.title || ""} 
+              value={assignment.title}
+              onChange={(e) => handleInputChange('title', e.target.value)}
             />
           </Form.Group>
         </div>
@@ -85,7 +164,8 @@ export default function AssignmentEditor() {
             <Form.Control 
               as="textarea" 
               rows={6} 
-              defaultValue={assignment?.description || ""}
+              value={assignment.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
             />
           </Form.Group>
         </div>
@@ -94,14 +174,22 @@ export default function AssignmentEditor() {
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm={3} style={formLabelStyle}>Points</Form.Label>
             <Col sm={9}>
-              <Form.Control type="text" defaultValue={assignment?.points || "100"} />
+              <Form.Control 
+                type="number" 
+                value={assignment.points}
+                onChange={(e) => handleInputChange('points', parseInt(e.target.value) || 0)}
+              />
             </Col>
           </Form.Group>
           
           <Form.Group as={Row} className="mb-3">
             <Form.Label column sm={3} style={formLabelStyle}>Assignment Group</Form.Label>
             <Col sm={9}>
-              <Form.Select defaultValue="ASSIGNMENTS">
+              <Form.Select 
+                value={assignment.module}
+                onChange={(e) => handleInputChange('module', e.target.value)}
+              >
+                <option value="">Select Module</option>
                 <option value="ASSIGNMENTS">ASSIGNMENTS</option>
                 <option value="QUIZZES">QUIZZES</option>
                 <option value="EXAMS">EXAMS</option>
@@ -178,7 +266,8 @@ export default function AssignmentEditor() {
               <InputGroup>
                 <Form.Control 
                   type="date" 
-                  defaultValue={formatDateForInput(assignment?.dueDate) || "2024-05-13"} 
+                  value={formatDateForInput(assignment.dueDate || "")}
+                  onChange={(e) => handleInputChange('dueDate', e.target.value)}
                 />
                 <InputGroup.Text style={{ backgroundColor: 'white', borderLeft: 'none' }}>
                   <BsCalendar />
@@ -193,7 +282,8 @@ export default function AssignmentEditor() {
               <InputGroup>
                 <Form.Control 
                   type="date" 
-                  defaultValue={formatDateForInput(assignment?.availableFrom) || "2024-05-06"} 
+                  value={formatDateForInput(assignment.availableFrom || "")}
+                  onChange={(e) => handleInputChange('availableFrom', e.target.value)}
                 />
                 <InputGroup.Text style={{ backgroundColor: 'white', borderLeft: 'none' }}>
                   <BsCalendar />
@@ -206,7 +296,11 @@ export default function AssignmentEditor() {
             <Form.Label column sm={3} style={formLabelStyle}>Until</Form.Label>
             <Col sm={9}>
               <InputGroup>
-                <Form.Control type="date" defaultValue="2024-05-20" />
+                <Form.Control 
+                  type="date" 
+                  value={formatDateForInput(assignment.availableUntil || "")}
+                  onChange={(e) => handleInputChange('availableUntil', e.target.value)}
+                />
                 <InputGroup.Text style={{ backgroundColor: 'white', borderLeft: 'none' }}>
                   <BsCalendar />
                 </InputGroup.Text>
@@ -216,18 +310,12 @@ export default function AssignmentEditor() {
         </div>
         
         <div style={buttonContainerStyle}>
-          <Link 
-            to={`/Kambaz/Courses/${cid}/Assignments`}
-            className="btn btn-primary me-2"
-          >
+          <Button variant="secondary" onClick={handleCancel}>
             Cancel
-          </Link>
-          <Link 
-            to={`/Kambaz/Courses/${cid}/Assignments`}
-            className="btn btn-danger"
-          >
+          </Button>
+          <Button variant="danger" onClick={handleSave}>
             Save
-          </Link>
+          </Button>
         </div>
       </Container>
     </div>

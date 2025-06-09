@@ -32,50 +32,60 @@ export default function PeopleTable() {
     }
 
     try {
-      // Get users enrolled in the current course
-      const matchingEnrollments = db.enrollments.filter(
-        (enrollment: any) => enrollment.course === cid
-      );
-      
-      console.log("Matching enrollments:", matchingEnrollments);
-      
-      const enrolledUserIds = matchingEnrollments.map(
-        (enrollment: any) => enrollment.user
-      );
-
-      // Collect debug information
-      const debug = {
-        currentCourseId: cid,
-        availableCourseIds: [...new Set(db.enrollments.map((e: any) => e.course))],
-        matchingEnrollments: matchingEnrollments,
-        enrolledUserIds: enrolledUserIds,
-        allCourses: db.courses.map((c: any) => ({ id: c._id, name: c.name }))
-      };
-      setDebugInfo(debug);
-
-      // Find all enrolled users and format them for display
-      const matchingUsers = db.users.filter((user: any) => 
-        enrolledUserIds.includes(user._id)
-      );
-      
-      console.log("Matching users:", matchingUsers);
-
-      const enrolledPeople: Person[] = matchingUsers.map((user: any) => ({
-        id: user._id,
-        name: `${user.firstName} ${user.lastName}`,
-        loginId: user.loginId,
-        section: user.section,
-        role: user.role,
-        lastActivity: user.lastActivity,
-        totalActivity: user.totalActivity
-      }));
-
-      setPeople(enrolledPeople);
+      // Force re-render by wrapping in setTimeout
+      // This ensures the component re-renders with the updated data
+      setTimeout(() => {
+        // Get users enrolled in the current course
+        const matchingEnrollments = db.enrollments.filter(
+          (enrollment: any) => enrollment.course === cid
+        );
+        
+        console.log("Matching enrollments:", matchingEnrollments);
+        
+        const enrolledUserIds = matchingEnrollments.map(
+          (enrollment: any) => enrollment.user
+        );
+  
+        // Collect debug information
+        const debug = {
+          currentCourseId: cid,
+          availableCourseIds: [...new Set(db.enrollments.map((e: any) => e.course))],
+          matchingEnrollments: matchingEnrollments,
+          enrolledUserIds: enrolledUserIds,
+          allCourses: db.courses.map((c: any) => ({ id: c._id, name: c.name }))
+        };
+        setDebugInfo(debug);
+  
+        // Find all enrolled users and format them for display
+        const matchingUsers = db.users.filter((user: any) => 
+          enrolledUserIds.includes(user._id)
+        );
+        
+        console.log("Matching users:", matchingUsers);
+  
+        const enrolledPeople: Person[] = matchingUsers.map((user: any) => ({
+          id: user._id,
+          name: `${user.firstName} ${user.lastName}`,
+          loginId: user.loginId,
+          section: user.section,
+          role: user.role,
+          lastActivity: user.lastActivity,
+          totalActivity: user.totalActivity
+        }));
+  
+        setPeople(enrolledPeople);
+        setLoading(false);
+      }, 0);
     } catch (error) {
       console.error("Error loading people:", error);
-    } finally {
       setLoading(false);
     }
+  }, [cid]);
+
+  // Clear people when course ID changes to prevent stale data
+  useEffect(() => {
+    setPeople([]);
+    setLoading(true);
   }, [cid]);
 
   // Filter people based on search term
