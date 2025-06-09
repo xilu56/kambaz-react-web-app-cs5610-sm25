@@ -5,8 +5,6 @@ export default function EnvironmentVariables() {
     <div id="wd-environment-variables">
       <h3>Environment Variables</h3>
       <p>Remote Server: <strong>{REMOTE_SERVER}</strong></p>
-      <p>Environment: <strong>{import.meta.env.MODE}</strong></p>
-      <p>Development: <strong>{import.meta.env.DEV ? "Yes" : "No"}</strong></p>
       
       {!import.meta.env.VITE_REMOTE_SERVER && (
         <div className="alert alert-warning">

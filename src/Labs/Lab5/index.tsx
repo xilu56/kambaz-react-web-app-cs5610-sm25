@@ -1,4 +1,7 @@
 import EnvironmentVariables from "./EnvironmentVariables";
+import PathParameters from "./PathParameters.tsx";
+import QueryParameters from "./QueryParameters.tsx";
+
 export default function Lab5() {
   return (
     <div id="wd-lab5">
@@ -10,6 +13,8 @@ export default function Lab5() {
         </a>
       </div><hr/>
       <EnvironmentVariables />
+      <PathParameters />
+      <QueryParameters />
     </div>
   );
 }
