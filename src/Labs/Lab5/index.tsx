@@ -1,6 +1,7 @@
 import EnvironmentVariables from "./EnvironmentVariables";
 import PathParameters from "./PathParameters.tsx";
 import QueryParameters from "./QueryParameters.tsx";
+import WorkingWithObjects from "./WorkingWithObjects.tsx";
 
 export default function Lab5() {
   return (
@@ -15,6 +16,7 @@ export default function Lab5() {
       <EnvironmentVariables />
       <PathParameters />
       <QueryParameters />
+      <WorkingWithObjects />
     </div>
   );
 }
