@@ -67,6 +67,16 @@ export default function Lab5(app) {
     res.json(todos);
   });
 
+  app.get("/lab5/todos/:id", (req, res) => {
+    const { id } = req.params;
+    const todo = todos.find((t) => t.id == id);
+    if (todo) {
+      res.json(todo);
+    } else {
+      res.status(404).json({ message: "Todo not found" });
+    }
+  });
+
   app.get("/lab5/todos/create", (req, res) => {
     const newTodo = {
       id: new Date().getTime(),
