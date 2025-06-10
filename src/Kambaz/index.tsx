@@ -6,19 +6,21 @@ import Courses from "./Courses";
 import CoursesList from "./CoursesList";
 import "./styles.css";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "./Account/reducer";
 import * as courseClient from "./Courses/client";
+import * as userClient from "./Account/client";
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
   const [course, setCourse] = useState<any>({
-    _id: "1234", name: "New Course", number: "New Number",
+    name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", 
     image: "/images/reactjs.jpg", description: "New Description",
   });
   
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   // Restore user session from localStorage
   const restoreSession = () => {
@@ -37,7 +39,10 @@ export default function Kambaz() {
 
   const fetchCourses = async () => {
     try {
+      console.log("Fetching courses from server...");
+      // Fetch all courses instead of just enrolled courses for Dashboard
       const courses = await courseClient.fetchAllCourses();
+      console.log("Courses fetched successfully:", courses.length, "courses");
       setCourses(courses);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -46,8 +51,22 @@ export default function Kambaz() {
 
   const addNewCourse = async () => {
     try {
-      const newCourse = await courseClient.createCourse(course);
-      setCourses([...courses, newCourse]);
+      console.log("Creating new course:", course);
+      // Create course object without _id (let server generate it)
+      const courseToCreate = {
+        name: course.name,
+        number: course.number,
+        startDate: course.startDate,
+        endDate: course.endDate,
+        image: course.image,
+        description: course.description
+      };
+      
+      const newCourse = await courseClient.createCourse(courseToCreate);
+      console.log("Course created successfully:", newCourse);
+      
+      // Refresh courses list from server to show all courses
+      await fetchCourses();
     } catch (error) {
       console.error("Error creating course:", error);
     }
@@ -55,8 +74,11 @@ export default function Kambaz() {
 
   const deleteCourse = async (courseId: any) => {
     try {
+      console.log("Deleting course:", courseId);
       await courseClient.deleteCourse(courseId);
-      setCourses(courses.filter((course) => course._id !== courseId));
+      console.log("Course deleted successfully");
+      // Refresh courses list from server to ensure consistency
+      await fetchCourses();
     } catch (error) {
       console.error("Error deleting course:", error);
     }
@@ -64,26 +86,25 @@ export default function Kambaz() {
 
   const updateCourse = async () => {
     try {
-      await courseClient.updateCourse(course._id, course);
-      setCourses(
-        courses.map((c) => {
-          if (c._id === course._id) {
-            return course;
-          } else {
-            return c;
-          }
-        })
-      );
+      console.log("Updating course:", course);
+      await courseClient.updateCourse(course);
+      console.log("Course updated successfully");
+      // Refresh courses list from server to ensure consistency
+      await fetchCourses();
     } catch (error) {
       console.error("Error updating course:", error);
     }
   };
 
   useEffect(() => {
-    // Restore session first, then fetch data
+    // Restore session first
     restoreSession();
-    fetchCourses();
   }, []);
+
+  useEffect(() => {
+    // Fetch courses when currentUser changes or when component mounts
+    fetchCourses();
+  }, [currentUser]);
 
   useEffect(() => {
     const handleImageErrors = () => {

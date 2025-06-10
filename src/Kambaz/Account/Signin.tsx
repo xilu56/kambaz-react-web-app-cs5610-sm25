@@ -51,13 +51,6 @@ export default function Signin() {
           <Col xs={12} md={6}>
             <h3 className="mb-4">Signin</h3>
             {error && <Alert variant="danger">{error}</Alert>}
-            <div className="mb-3">
-              <small className="text-muted">
-                <strong>Test Account:</strong><br/>
-                Username: iron_man<br/>
-                Password: stark123
-              </small>
-            </div>
             <Form>
               <Form.Control 
                 id="wd-username"
