@@ -1,8 +1,18 @@
-import { ListGroup, Badge, Container } from "react-bootstrap";
+import { ListGroup, Badge, Container, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaBook, FaUsers, FaClock } from "react-icons/fa";
 
-export default function CoursesList({ courses }: { courses: any[] }) {
+export default function CoursesList({ 
+  courses, 
+  enrollInCourse, 
+  unenrollFromCourse, 
+  isEnrolled 
+}: { 
+  courses: any[];
+  enrollInCourse?: (courseId: string) => void;
+  unenrollFromCourse?: (courseId: string) => void;
+  isEnrolled?: (courseId: string) => boolean;
+}) {
   return (
     <Container fluid>
       <div id="wd-courses-list">
@@ -49,10 +59,41 @@ export default function CoursesList({ courses }: { courses: any[] }) {
                 </div>
               </div>
               
-              <div className="d-flex flex-column align-items-end">
-                <Badge bg="primary" className="mb-2">
-                  Active
-                </Badge>
+              <div className="d-flex flex-column align-items-end gap-2">
+                {/* Enrollment Status Badge */}
+                {isEnrolled && isEnrolled(course._id) ? (
+                  <Badge bg="success" className="mb-2">
+                    Enrolled
+                  </Badge>
+                ) : (
+                  <Badge bg="secondary" className="mb-2">
+                    Not Enrolled
+                  </Badge>
+                )}
+                
+                {/* Enrollment/Unenrollment Button */}
+                {isEnrolled && enrollInCourse && unenrollFromCourse && (
+                  <div className="d-flex gap-2">
+                    {isEnrolled(course._id) ? (
+                      <Button
+                        variant="outline-warning"
+                        size="sm"
+                        onClick={() => unenrollFromCourse(course._id)}
+                      >
+                        Unenroll
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline-success"
+                        size="sm"
+                        onClick={() => enrollInCourse(course._id)}
+                      >
+                        Enroll
+                      </Button>
+                    )}
+                  </div>
+                )}
+                
                 <Link
                   to={`/Kambaz/Courses/${course._id}/Home`}
                   className="btn btn-outline-danger btn-sm"

@@ -1,11 +1,40 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Form, Container, Row, Col } from "react-bootstrap";
+import * as client from "./client";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "./reducer";
+import { Form, Container, Row, Col, Alert } from "react-bootstrap";
 
 export default function Signup() {
+  const [user, setUser] = useState<any>({});
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSignup = () => {
-    navigate("/Kambaz/Account/Profile");
+  const signup = async () => {
+    try {
+      if (!user.username || !user.password) {
+        setError("Please fill in all fields");
+        return;
+      }
+      const currentUser = await client.signup(user);
+      
+      // Set user in Redux store
+      dispatch(setCurrentUser(currentUser));
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      
+      navigate("/Kambaz/Account/Profile");
+    } catch (err: any) {
+      setError("Error creating account. Please try again.");
+      console.error("Signup error:", err);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setUser({ ...user, [field]: value });
+    setError(""); // Clear error when user starts typing
   };
 
   return (
@@ -16,37 +45,37 @@ export default function Signup() {
             {/* Left column empty */}
           </Col>
           <Col xs={12} md={3} className="border-end d-flex flex-column">
-            <h3 className="mb-4">Signup</h3>
+            <h3 className="mb-4">Account</h3>
             <Link to="/Kambaz/Account/Signin" className="text-danger mb-3">Signin</Link>
             <Link to="/Kambaz/Account/Signup" className="text-danger mb-3">Signup</Link>
             <Link to="/Kambaz/Account/Profile" className="text-danger mb-3">Profile</Link>
           </Col>
           <Col xs={12} md={6}>
-            <h3 className="mb-4">Signup</h3>
+            <h3 className="mb-4">Sign up</h3>
+            {error && <Alert variant="danger">{error}</Alert>}
             <Form>
               <Form.Control 
-                id="wd-signup-username"
-                placeholder="username"
-                className="mb-4"/>
+                value={user.username || ""} 
+                onChange={(e) => handleInputChange("username", e.target.value)}
+                className="mb-3" 
+                placeholder="username" 
+              />
               <Form.Control 
-                id="wd-signup-password"
+                value={user.password || ""} 
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                className="mb-3" 
                 placeholder="password" 
                 type="password"
-                className="mb-4"/>
-              <Link 
-                id="wd-signup-btn"
-                to="/Kambaz/Account/Profile"
-                className="btn btn-primary w-100 mb-3"
-                onClick={handleSignup}
-              >
-                Signup
-              </Link>
+              />
+              <button 
+                onClick={signup} 
+                type="button"
+                className="btn btn-primary mb-3 w-100">
+                Sign up
+              </button>
               <div className="text-center">
-                <Link 
-                  id="wd-signin-link" 
-                  to="/Kambaz/Account/Signin"
-                  className="text-primary">
-                  Signin
+                <Link to="/Kambaz/Account/Signin" className="text-primary">
+                  Already have an account? Sign in
                 </Link>
               </div>
             </Form>
@@ -56,4 +85,3 @@ export default function Signup() {
     </div>
   );
 }
-    

@@ -2,7 +2,8 @@ import { FaUserCircle, FaSearch, FaUserPlus, FaFilter } from "react-icons/fa";
 import { Table, Form, InputGroup, Button, Dropdown } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { db } from "../../Database";
+import * as enrollmentsClient from "../../Enrollments/client";
+import * as usersClient from "../../Account/client";
 
 interface Person {
   id: string;
@@ -19,73 +20,61 @@ export default function PeopleTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log("PeopleTable mounting with course ID:", cid);
-    console.log("Available enrollments:", db.enrollments);
-    
+  const fetchPeopleInCourse = async () => {
     if (!cid) {
-      console.error("No course ID provided");
+      setError("No course ID provided");
       setLoading(false);
       return;
     }
 
     try {
-      // Force re-render by wrapping in setTimeout
-      // This ensures the component re-renders with the updated data
-      setTimeout(() => {
-        // Get users enrolled in the current course
-        const matchingEnrollments = db.enrollments.filter(
-          (enrollment: any) => enrollment.course === cid
-        );
-        
-        console.log("Matching enrollments:", matchingEnrollments);
-        
-        const enrolledUserIds = matchingEnrollments.map(
-          (enrollment: any) => enrollment.user
-        );
-  
-        // Collect debug information
-        const debug = {
-          currentCourseId: cid,
-          availableCourseIds: [...new Set(db.enrollments.map((e: any) => e.course))],
-          matchingEnrollments: matchingEnrollments,
-          enrolledUserIds: enrolledUserIds,
-          allCourses: db.courses.map((c: any) => ({ id: c._id, name: c.name }))
-        };
-        setDebugInfo(debug);
-  
-        // Find all enrolled users and format them for display
-        const matchingUsers = db.users.filter((user: any) => 
-          enrolledUserIds.includes(user._id)
-        );
-        
-        console.log("Matching users:", matchingUsers);
-  
-        const enrolledPeople: Person[] = matchingUsers.map((user: any) => ({
-          id: user._id,
-          name: `${user.firstName} ${user.lastName}`,
-          loginId: user.loginId,
-          section: user.section,
-          role: user.role,
-          lastActivity: user.lastActivity,
-          totalActivity: user.totalActivity
-        }));
-  
-        setPeople(enrolledPeople);
+      setLoading(true);
+      setError(null);
+
+      // Get enrollments for the current course
+      const enrollments = await enrollmentsClient.findEnrollmentsForCourse(cid);
+      console.log("Enrollments for course:", enrollments);
+
+      if (enrollments.length === 0) {
+        setPeople([]);
         setLoading(false);
-      }, 0);
-    } catch (error) {
-      console.error("Error loading people:", error);
+        return;
+      }
+
+      // Get all users
+      const allUsers = await fetch(`${import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000"}/api/users`)
+        .then(res => res.json());
+
+      // Filter users who are enrolled in this course
+      const enrolledUserIds = enrollments.map((enrollment: any) => enrollment.user);
+      const enrolledUsers = allUsers.filter((user: any) => 
+        enrolledUserIds.includes(user._id)
+      );
+
+      // Format users for display
+      const formattedPeople: Person[] = enrolledUsers.map((user: any) => ({
+        id: user._id,
+        name: `${user.firstName} ${user.lastName}`,
+        loginId: user.loginId,
+        section: user.section,
+        role: user.role,
+        lastActivity: user.lastActivity,
+        totalActivity: user.totalActivity
+      }));
+
+      setPeople(formattedPeople);
+    } catch (err) {
+      console.error("Error fetching people:", err);
+      setError("Failed to load people for this course");
+    } finally {
       setLoading(false);
     }
-  }, [cid]);
+  };
 
-  // Clear people when course ID changes to prevent stale data
   useEffect(() => {
-    setPeople([]);
-    setLoading(true);
+    fetchPeopleInCourse();
   }, [cid]);
 
   // Filter people based on search term
@@ -134,22 +123,13 @@ export default function PeopleTable() {
 
       {loading ? (
         <div className="text-center py-4">Loading...</div>
+      ) : error ? (
+        <div className="alert alert-danger">{error}</div>
       ) : (
         <>
           <div className="mb-3">
             <span className="text-muted">{filteredPeople.length} people enrolled in this course</span>
           </div>
-
-          {debugInfo && filteredPeople.length === 0 && (
-            <div className="alert alert-info mb-3">
-              <p><strong>Debug Info:</strong></p>
-              <p>Current Course ID: {debugInfo.currentCourseId}</p>
-              <p>Available Course IDs in enrollments: {debugInfo.availableCourseIds.join(', ')}</p>
-              <p>Matching enrollments found: {debugInfo.matchingEnrollments.length}</p>
-              <p>Enrolled user IDs: {debugInfo.enrolledUserIds.join(', ')}</p>
-              <p>All courses: {JSON.stringify(debugInfo.allCourses)}</p>
-            </div>
-          )}
 
           <Table responsive hover>
             <thead>

@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
 import { useState, useEffect } from 'react';
 import type { CSSProperties } from 'react';
+import * as assignmentsClient from "./client";
 
 // Define the assignment type to match the database structure
 interface Assignment {
@@ -45,6 +46,34 @@ export default function AssignmentEditor() {
     module: existingAssignment?.module || "",
     status: existingAssignment?.status || "not-started"
   });
+
+  // Fetch assignment details if editing
+  const fetchAssignment = async () => {
+    if (aid && aid !== 'new') {
+      try {
+        console.log("Fetching assignment details for:", aid);
+        const assignment = await assignmentsClient.fetchAssignment(aid);
+        console.log("Assignment details fetched successfully:", assignment);
+        setAssignment({
+          title: assignment.title,
+          course: assignment.course,
+          description: assignment.description || "",
+          points: assignment.points || 100,
+          dueDate: assignment.dueDate || "",
+          availableFrom: assignment.availableFrom || "",
+          availableUntil: assignment.availableUntil || "",
+          module: assignment.module || "",
+          status: assignment.status || "not-started"
+        });
+      } catch (error) {
+        console.error("Error fetching assignment:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignment();
+  }, [aid]);
 
   // Update form when existing assignment changes
   useEffect(() => {
@@ -95,23 +124,34 @@ export default function AssignmentEditor() {
     return `${month} ${day} at 11:59pm`;
   };
 
-  const handleSave = () => {
-    const formattedAssignment = {
-      ...assignment,
-      dueDate: assignment.dueDate ? formatDateFromInput(assignment.dueDate) : "",
-      availableFrom: assignment.availableFrom ? formatDateFromInput(assignment.availableFrom) : "",
-      availableUntil: assignment.availableUntil ? formatDateFromInput(assignment.availableUntil) : "",
-    };
+  const handleSave = async () => {
+    try {
+      console.log("Saving assignment:", assignment);
+      const formattedAssignment = {
+        ...assignment,
+        dueDate: assignment.dueDate ? formatDateFromInput(assignment.dueDate) : "",
+        availableFrom: assignment.availableFrom ? formatDateFromInput(assignment.availableFrom) : "",
+        availableUntil: assignment.availableUntil ? formatDateFromInput(assignment.availableUntil) : "",
+      };
 
-    if (aid === 'new' || !existingAssignment) {
-      // Create new assignment
-      dispatch(addAssignment(formattedAssignment));
-    } else {
-      // Update existing assignment
-      dispatch(updateAssignment({ ...formattedAssignment, _id: aid }));
+      if (aid === 'new' || !existingAssignment || !aid) {
+        // Create new assignment
+        console.log("Creating new assignment for course:", cid);
+        const newAssignment = await assignmentsClient.createAssignment(formattedAssignment);
+        console.log("Assignment created successfully:", newAssignment);
+        dispatch(addAssignment(newAssignment));
+      } else {
+        // Update existing assignment
+        console.log("Updating assignment:", aid);
+        const updatedAssignment = await assignmentsClient.updateAssignment(aid, formattedAssignment);
+        console.log("Assignment updated successfully:", updatedAssignment);
+        dispatch(updateAssignment({ ...updatedAssignment, _id: aid }));
+      }
+      
+      navigate(`/Kambaz/Courses/${cid}/Assignments`);
+    } catch (error) {
+      console.error("Error saving assignment:", error);
     }
-    
-    navigate(`/Kambaz/Courses/${cid}/Assignments`);
   };
 
   const handleCancel = () => {

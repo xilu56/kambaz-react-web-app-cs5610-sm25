@@ -7,13 +7,16 @@ import { FaRegBell, FaChartBar } from "react-icons/fa";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { db } from "../../Database";
+import { useSelector } from "react-redux";
 
 export default function CourseStatus() {
   const { cid } = useParams();
   
+  // Get assignments from Redux store
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  
   // Get assignments for the current course
-  const courseAssignments = db.assignments.filter((a: any) => a.course === cid);
+  const courseAssignments = assignments.filter((a: any) => a.course === cid);
   
   // Get the next few upcoming assignments (sorted by due date)
   const upcomingAssignments = courseAssignments

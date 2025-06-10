@@ -5,10 +5,11 @@ import { BsGripVertical } from "react-icons/bs";
 import { FaChevronDown, FaChevronRight, FaFile } from "react-icons/fa";
 import { FaFileLines } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { addModule, editModule, updateModule, deleteModule } from "./reducer";
+import { setModules, addModule, editModule, updateModule, deleteModule } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
+import * as modulesClient from "./client";
 
 export default function Modules() {
   const { cid } = useParams();
@@ -23,6 +24,75 @@ export default function Modules() {
     courseModules.map((module: any) => module._id)
   );
 
+  const fetchModules = async () => {
+    if (cid) {
+      try {
+        console.log("Fetching modules for course:", cid);
+        const modules = await modulesClient.fetchModulesForCourse(cid);
+        console.log("Modules fetched successfully:", modules.length, "modules");
+        dispatch(setModules(modules));
+      } catch (error) {
+        console.error("Error fetching modules:", error);
+      }
+    }
+  };
+
+  const createModule = async () => {
+    if (cid && moduleName) {
+      try {
+        console.log("Creating new module:", moduleName, "for course:", cid);
+        const newModule = await modulesClient.createModule({
+          name: moduleName,
+          course: cid,
+          lessons: []
+        });
+        console.log("Module created successfully:", newModule);
+        dispatch(addModule(newModule));
+        setModuleName("");
+        // Refresh modules from server to ensure consistency
+        await fetchModules();
+      } catch (error) {
+        console.error("Error creating module:", error);
+      }
+    }
+  };
+
+  const removeModule = async (moduleId: string) => {
+    try {
+      console.log("Deleting module:", moduleId);
+      await modulesClient.deleteModule(moduleId);
+      console.log("Module deleted successfully");
+      dispatch(deleteModule(moduleId));
+      // Refresh modules from server to ensure consistency
+      await fetchModules();
+    } catch (error) {
+      console.error("Error deleting module:", error);
+    }
+  };
+
+  const saveModuleUpdate = async (module: any) => {
+    try {
+      console.log("Updating module:", module);
+      // Remove editing flag and send to server
+      const moduleToUpdate = { ...module, editing: false };
+      await modulesClient.updateModule(module._id, moduleToUpdate);
+      console.log("Module updated successfully");
+      dispatch(updateModule(moduleToUpdate));
+      // Refresh modules from server to ensure consistency
+      await fetchModules();
+    } catch (error) {
+      console.error("Error updating module:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchModules();
+  }, [cid]);
+
+  useEffect(() => {
+    setExpandedModules(courseModules.map((module: any) => module._id));
+  }, [courseModules]);
+
   const toggleModule = (moduleId: string) => {
     if (expandedModules.includes(moduleId)) {
       setExpandedModules(expandedModules.filter(id => id !== moduleId));
@@ -36,10 +106,7 @@ export default function Modules() {
       <ModulesControls 
         moduleName={moduleName} 
         setModuleName={setModuleName}
-        addModule={() => {
-          dispatch(addModule({ name: moduleName, course: cid }));
-          setModuleName("");
-        }} 
+        addModule={createModule}
       />
       <ListGroup id="wd-modules" className="rounded-0">
         {courseModules.map((module: any) => (
@@ -77,8 +144,11 @@ export default function Modules() {
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      dispatch(updateModule({ ...module, editing: false }));
+                      saveModuleUpdate({ ...module, name: (e.target as HTMLInputElement).value });
                     }
+                  }}
+                  onBlur={(e) => {
+                    saveModuleUpdate({ ...module, name: e.target.value });
                   }}
                   defaultValue={module.name}
                 />
@@ -86,9 +156,7 @@ export default function Modules() {
               
               <ModuleControlButtons
                 moduleId={module._id}
-                deleteModule={(moduleId) => {
-                  dispatch(deleteModule(moduleId));
-                }}
+                deleteModule={removeModule}
                 editModule={(moduleId) => dispatch(editModule(moduleId))}
               />
             </ListGroup.Item>
