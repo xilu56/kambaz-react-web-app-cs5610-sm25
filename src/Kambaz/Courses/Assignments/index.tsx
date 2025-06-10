@@ -30,7 +30,9 @@ export default function Assignments() {
   const fetchAssignments = async () => {
     if (cid) {
       try {
+        console.log("Fetching assignments for course:", cid);
         const assignments = await assignmentsClient.fetchAssignmentsForCourse(cid);
+        console.log("Assignments fetched successfully:", assignments.length, "assignments");
         dispatch(setAssignments(assignments));
       } catch (error) {
         console.error("Error fetching assignments:", error);
@@ -40,8 +42,12 @@ export default function Assignments() {
 
   const removeAssignment = async (assignmentId: string) => {
     try {
+      console.log("Deleting assignment:", assignmentId);
       await assignmentsClient.deleteAssignment(assignmentId);
+      console.log("Assignment deleted successfully");
       dispatch(deleteAssignment(assignmentId));
+      // Refresh assignments from server to ensure consistency
+      await fetchAssignments();
     } catch (error) {
       console.error("Error deleting assignment:", error);
     }
