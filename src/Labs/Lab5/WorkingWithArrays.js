@@ -76,5 +76,23 @@ export default function WorkingWithArrays(app) {
     res.json(newTodo);
   });
 
+  app.get("/lab5/todos/:id/description/:description", (req, res) => {
+    const { id, description } = req.params;
+    const todo = todos.find((t) => t.id === parseInt(id));
+    todo.description = description;
+    res.json(todos);
+  });
+
+  // DELETE route for deleteTodo function
+  app.delete("/lab5/todos/:id", (req, res) => {
+    const { id } = req.params;
+    const todoIndex = todos.findIndex((t) => t.id === parseInt(id));
+    if (todoIndex !== -1) {
+      todos.splice(todoIndex, 1);
+      res.json(todos);
+    } else {
+      res.status(404).send("Todo not found");
+    }
+  });
 
 };

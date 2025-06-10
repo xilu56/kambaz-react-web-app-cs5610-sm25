@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { TiDelete } from "react-icons/ti";
 import { ListGroup } from "react-bootstrap";
 import { FaPlusCircle } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
@@ -22,6 +23,11 @@ export default function WorkingWithArraysAsynchronously() {
     const updatedTodos = await client.removeTodo(todo);
     setTodos(updatedTodos);
   };
+  const deleteTodo = async (todo: any) => {
+    await client.deleteTodo(todo);
+    const newTodos = todos.filter((t) => t.id !== todo.id);
+    setTodos(newTodos);
+  };
 
   useEffect(() => {
     fetchTodos();
@@ -38,6 +44,7 @@ export default function WorkingWithArraysAsynchronously() {
           <ListGroup.Item key={todo.id}>
             <FaTrash onClick={() => removeTodo(todo)}
                      className="text-danger float-end mt-1" id="wd-remove-todo"/>
+            <TiDelete onClick={() => deleteTodo(todo)} className="text-danger float-end me-2 fs-3" id="wd-delete-todo" />
             <input type="checkbox" className="form-check-input me-2"
                    defaultChecked={todo.completed}/>
             <span style={{ textDecoration: todo.completed ? "line-through" : "none" }}>
