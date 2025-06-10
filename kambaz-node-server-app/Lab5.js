@@ -1,6 +1,7 @@
 import PathParameters from "../src/Labs/Lab5/PathParameters.js";
 import QueryParameters from "../src/Labs/Lab5/QueryParameters.js";
 import WorkingWithObjects from "../src/Labs/Lab5/WorkingWithObjects.js";
+import WorkingWithArrays from "../src/Labs/Lab5/WorkingWithArrays.js";
 
 export default function Lab5(app) {
   app.get("/lab5/welcome", (req, res) => {
@@ -55,92 +56,11 @@ export default function Lab5(app) {
     module.name = newName;
     res.json(module);
   });
-
-  // Working with Arrays
-  let todos = [
-    { id: 1, title: "Task 1", description: "Description 1", due: "2021-10-10", completed: false },
-    { id: 2, title: "Task 2", description: "Description 2", due: "2021-10-15", completed: true },
-    { id: 3, title: "Task 3", description: "Description 3", due: "2021-10-20", completed: false },
-  ];
-
-  app.get("/lab5/todos", (req, res) => {
-    const { completed } = req.query;
-    if (completed !== undefined) {
-      const isCompleted = completed === "true";
-      const filteredTodos = todos.filter(todo => todo.completed === isCompleted);
-      res.json(filteredTodos);
-    } else {
-      res.json(todos);
-    }
-  });
-
-  app.get("/lab5/todos/:id", (req, res) => {
-    const { id } = req.params;
-    const todo = todos.find((t) => t.id == id);
-    if (todo) {
-      res.json(todo);
-    } else {
-      res.status(404).json({ message: "Todo not found" });
-    }
-  });
-
-  app.get("/lab5/todos/create", (req, res) => {
-    const newTodo = {
-      id: new Date().getTime(),
-      title: "New Task",
-      description: "New Description",
-      due: "2021-10-25",
-      completed: false,
-    };
-    todos.push(newTodo);
-    res.json(newTodo);
-  });
-
-  app.get("/lab5/todos/:id/delete", (req, res) => {
-    const { id } = req.params;
-    const todoIndex = todos.findIndex((t) => t.id == id);
-    if (todoIndex !== -1) {
-      const deletedTodo = todos.splice(todoIndex, 1)[0];
-      res.json(deletedTodo);
-    } else {
-      res.status(404).json({ message: "Todo not found" });
-    }
-  });
-
-  app.get("/lab5/todos/:id/title/:title", (req, res) => {
-    const { id, title } = req.params;
-    const todo = todos.find((t) => t.id == id);
-    if (todo) {
-      todo.title = title;
-      res.json(todo);
-    } else {
-      res.status(404).json({ message: "Todo not found" });
-    }
-  });
-
-  app.get("/lab5/todos/:id/description/:description", (req, res) => {
-    const { id, description } = req.params;
-    const todo = todos.find((t) => t.id == id);
-    if (todo) {
-      todo.description = description;
-      res.json(todo);
-    } else {
-      res.status(404).json({ message: "Todo not found" });
-    }
-  });
-
-  app.get("/lab5/todos/:id/completed/:completed", (req, res) => {
-    const { id, completed } = req.params;
-    const todo = todos.find((t) => t.id == id);
-    if (todo) {
-      todo.completed = completed === "true";
-      res.json(todo);
-    } else {
-      res.status(404).json({ message: "Todo not found" });
-    }
-  });
+  
 
   PathParameters(app);
   QueryParameters(app);
   WorkingWithObjects(app);
+  WorkingWithArrays(app);
+
 } 
