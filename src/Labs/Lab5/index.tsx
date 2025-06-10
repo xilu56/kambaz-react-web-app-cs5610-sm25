@@ -3,6 +3,7 @@ import PathParameters from "./PathParameters.tsx";
 import QueryParameters from "./QueryParameters.tsx";
 import WorkingWithObjects from "./WorkingWithObjects.tsx";
 import WorkingWithArrays from "./WorkingWithArrays.tsx";
+import HttpClient from "./HttpClient.tsx";
 
 export default function Lab5() {
   return (
@@ -19,6 +20,7 @@ export default function Lab5() {
       <QueryParameters />
       <WorkingWithObjects />
       <WorkingWithArrays />
+      <HttpClient />
     </div>
   );
 }
