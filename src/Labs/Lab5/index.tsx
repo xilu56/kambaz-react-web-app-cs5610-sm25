@@ -5,6 +5,7 @@ import WorkingWithObjects from "./WorkingWithObjects.tsx";
 import WorkingWithArrays from "./WorkingWithArrays.tsx";
 import HttpClient from "./HttpClient.tsx";
 import WorkingWithObjectsAsynchronously from "./WorkingWithObjectsAsynchronously.tsx";
+import WorkingWithArraysAsynchronously from "./WorkingWithArraysAsynchronously.tsx";
 
 export default function Lab5() {
   return (
@@ -23,6 +24,7 @@ export default function Lab5() {
       <WorkingWithArrays />
       <HttpClient />
       <WorkingWithObjectsAsynchronously />
+      <WorkingWithArraysAsynchronously />
     </div>
   );
 }
