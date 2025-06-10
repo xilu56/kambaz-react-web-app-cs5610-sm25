@@ -70,6 +70,11 @@ export default function WorkingWithArrays(app) {
     todo.title = title;
     res.json(todos);
   });
+    app.post("/lab5/todos", (req, res) => {
+    const newTodo = { ...req.body,  id: new Date().getTime() };
+    todos.push(newTodo);
+    res.json(newTodo);
+  });
 
 
 };
