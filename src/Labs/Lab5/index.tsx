@@ -2,6 +2,7 @@ import EnvironmentVariables from "./EnvironmentVariables";
 import PathParameters from "./PathParameters.tsx";
 import QueryParameters from "./QueryParameters.tsx";
 import WorkingWithObjects from "./WorkingWithObjects.tsx";
+import WorkingWithArrays from "./WorkingWithArrays.tsx";
 
 export default function Lab5() {
   return (
@@ -17,6 +18,7 @@ export default function Lab5() {
       <PathParameters />
       <QueryParameters />
       <WorkingWithObjects />
+      <WorkingWithArrays />
     </div>
   );
 }
