@@ -18,6 +18,17 @@ export const findUserByUsername = (username) => users.find((user) => user.userna
 export const findUserByCredentials = (username, password) =>
   users.find((user) => user.username === username && user.password === password);
 
-export const updateUser = (userId, user) => (users = users.map((u) => (u._id === userId ? user : u)));
+export const updateUser = (userId, updates) => {
+  const userIndex = users.findIndex((user) => user._id === userId);
+  if (userIndex === -1) {
+    return null;
+  }
+  
+  // Merge existing user data with updates
+  const updatedUser = { ...users[userIndex], ...updates };
+  users[userIndex] = updatedUser;
+  
+  return updatedUser;
+};
 
 export const deleteUser = (userId) => (users = users.filter((u) => u._id !== userId)); 

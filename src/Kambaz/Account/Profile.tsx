@@ -1,8 +1,8 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Form, Container, Row, Col, Button } from "react-bootstrap";
+import { Form, Container, Row, Col, Button, Alert } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { clearCurrentUser } from "./reducer";
+import { setCurrentUser, clearCurrentUser } from "./reducer";
 import * as client from "./client";
 
 export default function Profile() {
@@ -17,6 +17,8 @@ export default function Profile() {
   const [dob, setDob] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("STUDENT");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (currentUser) {
@@ -30,13 +32,52 @@ export default function Profile() {
     }
   }, [currentUser]);
 
+  const updateProfile = async () => {
+    try {
+      const updatedUser = {
+        ...currentUser,
+        username,
+        password,
+        firstName,
+        lastName,
+        dob,
+        email,
+        role
+      };
+      
+      const result = await client.updateProfile(updatedUser);
+      dispatch(setCurrentUser(result));
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('currentUser', JSON.stringify(result));
+      
+      setSuccessMessage("Profile updated successfully!");
+      setErrorMessage("");
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setErrorMessage("Failed to update profile. Please try again.");
+      setSuccessMessage("");
+    }
+  };
+
   const signout = async () => {
     try {
       await client.signout();
       dispatch(clearCurrentUser());
+      
+      // Clear localStorage
+      localStorage.removeItem('currentUser');
+      
       navigate("/Kambaz/Account/Signin");
     } catch (error) {
       console.error("Error signing out:", error);
+      // Even if server signout fails, clear local state
+      dispatch(clearCurrentUser());
+      localStorage.removeItem('currentUser');
+      navigate("/Kambaz/Account/Signin");
     }
   };
 
@@ -63,9 +104,14 @@ export default function Profile() {
             <Link to="/Kambaz/Account/Signin" className="text-danger mb-3">Signin</Link>
             <Link to="/Kambaz/Account/Signup" className="text-danger mb-3">Signup</Link>
             <Link to="/Kambaz/Account/Profile" className="text-danger mb-3">Profile</Link>
+            <Link to="/Kambaz/Dashboard" className="text-danger mb-3">Dashboard</Link>
           </Col>
           <Col xs={12} md={6}>
             <h1 className="mb-4">Profile</h1>
+            
+            {successMessage && <Alert variant="success">{successMessage}</Alert>}
+            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+            
             <Form>
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={4}>Username:</Form.Label>
@@ -155,11 +201,19 @@ export default function Profile() {
                 </Col>
               </Form.Group>
               
-              <div className="w-100">
+              <div className="w-100 mb-3">
+                <Button
+                  id="wd-update-btn"
+                  variant="primary"
+                  className="w-100 mb-2"
+                  onClick={updateProfile}
+                >
+                  Update Profile
+                </Button>
                 <Button
                   id="wd-signout-btn"
                   variant="danger"
-                  className="w-100 border border-dark"
+                  className="w-100"
                   onClick={signout}
                 >
                   Signout

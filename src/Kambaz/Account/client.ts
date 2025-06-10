@@ -23,6 +23,10 @@ export const profile = async () => {
 };
 
 export const updateProfile = async (user: any) => {
-  const response = await axios.put(`${USERS_API}/profile`, user);
+  const requestData = {
+    userId: user._id,
+    ...user
+  };
+  const response = await axios.put(`${USERS_API}/profile`, requestData);
   return response.data;
 };

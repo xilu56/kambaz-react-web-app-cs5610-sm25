@@ -27,8 +27,8 @@ export default function UserRoutes(app) {
 
   const updateUser = (req, res) => {
     const { userId } = req.params;
-    const status = dao.updateUser(userId, req.body);
-    res.json(status);
+    const updatedUser = dao.updateUser(userId, req.body);
+    res.json(updatedUser);
   };
 
   const signup = (req, res) => {
@@ -66,13 +66,37 @@ export default function UserRoutes(app) {
     res.json(currentUser);
   };
 
+  const updateProfile = (req, res) => {
+    // Accept userId in the request body
+    const { userId, ...updateData } = req.body;
+    
+    if (!userId) {
+      res.status(400).json({ message: "User ID is required" });
+      return;
+    }
+    
+    // Update the user in the database
+    const updatedUser = dao.updateUser(userId, updateData);
+    if (updatedUser) {
+      // If this is the current user, update the session as well
+      if (currentUser && currentUser._id === userId) {
+        currentUser = updatedUser;
+      }
+      res.json(updatedUser);
+    } else {
+      res.status(400).json({ message: "Failed to update profile" });
+    }
+  };
+
+  // Register routes - IMPORTANT: specific routes before parameterized routes
   app.post("/api/users", createUser);
   app.get("/api/users", findAllUsers);
-  app.get("/api/users/:userId", findUserById);
-  app.put("/api/users/:userId", updateUser);
-  app.delete("/api/users/:userId", deleteUser);
   app.post("/api/users/signup", signup);
   app.post("/api/users/signin", signin);
   app.post("/api/users/signout", signout);
   app.post("/api/users/profile", profile);
+  app.put("/api/users/profile", updateProfile);  // This MUST come before the parameterized route
+  app.get("/api/users/:userId", findUserById);
+  app.put("/api/users/:userId", updateUser);
+  app.delete("/api/users/:userId", deleteUser);
 } 

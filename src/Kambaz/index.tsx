@@ -6,6 +6,8 @@ import Courses from "./Courses";
 import CoursesList from "./CoursesList";
 import "./styles.css";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "./Account/reducer";
 import * as courseClient from "./Courses/client";
 
 export default function Kambaz() {
@@ -15,6 +17,23 @@ export default function Kambaz() {
     startDate: "2023-09-10", endDate: "2023-12-15", 
     image: "/images/reactjs.jpg", description: "New Description",
   });
+  
+  const dispatch = useDispatch();
+
+  // Restore user session from localStorage
+  const restoreSession = () => {
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        dispatch(setCurrentUser(userData));
+        console.log("Session restored for user:", userData.username);
+      } catch (error) {
+        console.error("Error restoring session:", error);
+        localStorage.removeItem('currentUser');
+      }
+    }
+  };
 
   const fetchCourses = async () => {
     try {
@@ -61,6 +80,8 @@ export default function Kambaz() {
   };
 
   useEffect(() => {
+    // Restore session first, then fetch data
+    restoreSession();
     fetchCourses();
   }, []);
 

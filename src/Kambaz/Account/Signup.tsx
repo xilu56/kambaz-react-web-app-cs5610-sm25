@@ -18,7 +18,13 @@ export default function Signup() {
         return;
       }
       const currentUser = await client.signup(user);
+      
+      // Set user in Redux store
       dispatch(setCurrentUser(currentUser));
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      
       navigate("/Kambaz/Account/Profile");
     } catch (err: any) {
       setError("Error creating account. Please try again.");

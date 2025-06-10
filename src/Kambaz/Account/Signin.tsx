@@ -16,7 +16,13 @@ export default function Signin() {
     try {
       const user = await client.signin(credentials);
       if (!user) return;
+      
+      // Set user in Redux store
       dispatch(setCurrentUser(user));
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      
       navigate("/Kambaz/Dashboard");
     } catch (err: any) {
       setError("Invalid credentials. Please try again.");
@@ -45,6 +51,13 @@ export default function Signin() {
           <Col xs={12} md={6}>
             <h3 className="mb-4">Signin</h3>
             {error && <Alert variant="danger">{error}</Alert>}
+            <div className="mb-3">
+              <small className="text-muted">
+                <strong>Test Account:</strong><br/>
+                Username: iron_man<br/>
+                Password: stark123
+              </small>
+            </div>
             <Form>
               <Form.Control 
                 id="wd-username"
