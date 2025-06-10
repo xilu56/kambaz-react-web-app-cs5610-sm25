@@ -64,7 +64,14 @@ export default function Lab5(app) {
   ];
 
   app.get("/lab5/todos", (req, res) => {
-    res.json(todos);
+    const { completed } = req.query;
+    if (completed !== undefined) {
+      const isCompleted = completed === "true";
+      const filteredTodos = todos.filter(todo => todo.completed === isCompleted);
+      res.json(filteredTodos);
+    } else {
+      res.json(todos);
+    }
   });
 
   app.get("/lab5/todos/:id", (req, res) => {
