@@ -13,6 +13,19 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 
+// React DOM client types
+declare module 'react-dom/client' {
+  import { Container, ReactNode } from 'react';
+  
+  export interface Root {
+    render(children: ReactNode): void;
+    unmount(): void;
+  }
+  
+  export function createRoot(container: Container): Root;
+  export function hydrateRoot(container: Container, initialChildren: ReactNode): Root;
+}
+
 // 添加对图片模块的声明
 declare module '*.jpg' {
   const src: string;
