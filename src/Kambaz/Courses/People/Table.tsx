@@ -3,7 +3,6 @@ import { Table, Form, InputGroup, Button, Dropdown } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import * as enrollmentsClient from "../../Enrollments/client";
-import * as usersClient from "../../Account/client";
 
 interface Person {
   id: string;
