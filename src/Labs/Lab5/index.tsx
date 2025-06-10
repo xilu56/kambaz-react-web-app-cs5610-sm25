@@ -4,6 +4,7 @@ import QueryParameters from "./QueryParameters.tsx";
 import WorkingWithObjects from "./WorkingWithObjects.tsx";
 import WorkingWithArrays from "./WorkingWithArrays.tsx";
 import HttpClient from "./HttpClient.tsx";
+import WorkingWithObjectsAsynchronously from "./WorkingWithObjectsAsynchronously.tsx";
 
 export default function Lab5() {
   return (
@@ -21,6 +22,7 @@ export default function Lab5() {
       <WorkingWithObjects />
       <WorkingWithArrays />
       <HttpClient />
+      <WorkingWithObjectsAsynchronously />
     </div>
   );
 }
