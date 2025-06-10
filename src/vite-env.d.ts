@@ -1,5 +1,18 @@
 /// <reference types="vite/client" />
 
+interface ImportMetaEnv {
+  readonly VITE_REMOTE_SERVER?: string;
+  readonly VITE_API_BASE?: string;
+  readonly VITE_NODE_ENV?: string;
+  readonly VITE_APP_TITLE?: string;
+  readonly VITE_PORT?: string;
+  // Add other VITE_ prefixed env vars as needed
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 // 添加对图片模块的声明
 declare module '*.jpg' {
   const src: string;
