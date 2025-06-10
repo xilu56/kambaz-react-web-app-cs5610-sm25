@@ -8,8 +8,10 @@ import "./styles.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "./Account/reducer";
+import { setEnrollments, enrollUserInCourse, unenrollUserFromCourse } from "./Enrollments/reducer";
 import * as courseClient from "./Courses/client";
 import * as userClient from "./Account/client";
+import * as enrollmentsClient from "./Enrollments/client";
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -21,6 +23,7 @@ export default function Kambaz() {
   
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
 
   // Restore user session from localStorage
   const restoreSession = () => {
@@ -40,13 +43,79 @@ export default function Kambaz() {
   const fetchCourses = async () => {
     try {
       console.log("Fetching courses from server...");
-      // Fetch all courses instead of just enrolled courses for Dashboard
+      // Fetch all courses for courses list
       const courses = await courseClient.fetchAllCourses();
       console.log("Courses fetched successfully:", courses.length, "courses");
       setCourses(courses);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
+  };
+
+  const fetchEnrollments = async () => {
+    if (currentUser && currentUser._id) {
+      try {
+        console.log("Fetching enrollments for user:", currentUser._id);
+        const userEnrollments = await enrollmentsClient.findEnrollmentsForUser(currentUser._id);
+        console.log("Enrollments fetched successfully:", userEnrollments.length, "enrollments");
+        dispatch(setEnrollments(userEnrollments));
+      } catch (error) {
+        console.error("Error fetching enrollments:", error);
+      }
+    }
+  };
+
+  const getEnrolledCourses = () => {
+    if (!currentUser || !currentUser._id) {
+      return courses; // Show all courses if no user logged in
+    }
+    
+    // Filter courses to show only enrolled ones for the Dashboard
+    const enrolledCourseIds = enrollments.map((enrollment: any) => enrollment.course);
+    return courses.filter(course => enrolledCourseIds.includes(course._id));
+  };
+
+  const enrollInCourse = async (courseId: string) => {
+    if (!currentUser || !currentUser._id) {
+      console.error("No user logged in");
+      return;
+    }
+
+    try {
+      console.log("Enrolling user", currentUser._id, "in course", courseId);
+      const newEnrollment = await enrollmentsClient.enrollUserInCourse(currentUser._id, courseId);
+      console.log("Enrollment successful:", newEnrollment);
+      dispatch(enrollUserInCourse(newEnrollment));
+      // Refresh enrollments from server
+      await fetchEnrollments();
+    } catch (error) {
+      console.error("Error enrolling in course:", error);
+    }
+  };
+
+  const unenrollFromCourse = async (courseId: string) => {
+    if (!currentUser || !currentUser._id) {
+      console.error("No user logged in");
+      return;
+    }
+
+    try {
+      console.log("Unenrolling user", currentUser._id, "from course", courseId);
+      await enrollmentsClient.unenrollUserFromCourse(currentUser._id, courseId);
+      console.log("Unenrollment successful");
+      dispatch(unenrollUserFromCourse({ userId: currentUser._id, courseId }));
+      // Refresh enrollments from server
+      await fetchEnrollments();
+    } catch (error) {
+      console.error("Error unenrolling from course:", error);
+    }
+  };
+
+  const isEnrolled = (courseId: string) => {
+    if (!currentUser || !currentUser._id) return false;
+    return enrollments.some((enrollment: any) => 
+      enrollment.user === currentUser._id && enrollment.course === courseId
+    );
   };
 
   const addNewCourse = async () => {
@@ -107,6 +176,11 @@ export default function Kambaz() {
   }, [currentUser]);
 
   useEffect(() => {
+    // Fetch enrollments when currentUser changes
+    fetchEnrollments();
+  }, [currentUser]);
+
+  useEffect(() => {
     const handleImageErrors = () => {
       document.addEventListener('error', (event) => {
         const target = event.target as HTMLImageElement;
@@ -134,14 +208,22 @@ return (
           <Route path="/Account/*" element={<Account />} />
           <Route path="/Dashboard" element={
             <Dashboard
-              courses={courses}
+              courses={getEnrolledCourses()}
               course={course}
               setCourse={setCourse}
               addNewCourse={addNewCourse}
               deleteCourse={deleteCourse}
-              updateCourse={updateCourse}/>
+              updateCourse={updateCourse}
+              enrollInCourse={enrollInCourse}
+              unenrollFromCourse={unenrollFromCourse}
+              isEnrolled={isEnrolled}/>
           } />
-          <Route path="/Courses" element={<CoursesList courses={courses} />} />
+          <Route path="/Courses" element={<CoursesList 
+            courses={courses} 
+            enrollInCourse={enrollInCourse}
+            unenrollFromCourse={unenrollFromCourse}
+            isEnrolled={isEnrolled}
+          />} />
           <Route path="/Courses/:cid/*" element={<Courses courses={courses} />} />
           <Route path="/Calendar" element={<h1>Calendar</h1>} />
           <Route path="/Inbox" element={<h1>Inbox</h1>} />

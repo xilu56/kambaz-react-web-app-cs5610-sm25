@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import FormControl from "react-bootstrap/FormControl";
 
 export default function Dashboard(
-{ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: {
+{ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrollInCourse, unenrollFromCourse, isEnrolled }: {
   courses: any[]; course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
-  updateCourse: () => void; }
+  updateCourse: () => void; enrollInCourse?: (courseId: string) => void;
+  unenrollFromCourse?: (courseId: string) => void; isEnrolled?: (courseId: string) => boolean;
+}
 ) {
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
@@ -44,7 +46,7 @@ export default function Dashboard(
       <hr />
       
       <h2 id="wd-dashboard-published">
-        Published Courses ({courses.length})
+        Enrolled Courses ({courses.length})
       </h2>{" "}
       <hr />
       <div id="wd-dashboard-courses">
@@ -76,6 +78,20 @@ export default function Dashboard(
                     </Card.Text>
                     <div className="mt-auto">
                       <Button variant="primary">Go to Course</Button>
+                      
+                      {/* Show enrollment/unenrollment buttons */}
+                      {unenrollFromCourse && isEnrolled && isEnrolled(course._id) && (
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            unenrollFromCourse(course._id);
+                          }}
+                          className="btn btn-warning me-2 float-end"
+                        >
+                          Unenroll
+                        </button>
+                      )}
+                      
                       <button id="wd-edit-course-click"
                         onClick={(event) => {
                           event.preventDefault();
