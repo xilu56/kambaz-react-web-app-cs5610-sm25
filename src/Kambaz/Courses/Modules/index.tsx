@@ -5,10 +5,11 @@ import { BsGripVertical } from "react-icons/bs";
 import { FaChevronDown, FaChevronRight, FaFile } from "react-icons/fa";
 import { FaFileLines } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { addModule, editModule, updateModule, deleteModule } from "./reducer";
+import { setModules, addModule, editModule, updateModule, deleteModule } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
+import * as modulesClient from "./client";
 
 export default function Modules() {
   const { cid } = useParams();
@@ -23,6 +24,50 @@ export default function Modules() {
     courseModules.map((module: any) => module._id)
   );
 
+  const fetchModules = async () => {
+    if (cid) {
+      try {
+        const modules = await modulesClient.fetchModulesForCourse(cid);
+        dispatch(setModules(modules));
+      } catch (error) {
+        console.error("Error fetching modules:", error);
+      }
+    }
+  };
+
+  const createModule = async () => {
+    if (cid && moduleName) {
+      try {
+        const newModule = await modulesClient.createModule({
+          name: moduleName,
+          course: cid,
+          lessons: []
+        });
+        dispatch(addModule(newModule));
+        setModuleName("");
+      } catch (error) {
+        console.error("Error creating module:", error);
+      }
+    }
+  };
+
+  const removeModule = async (moduleId: string) => {
+    try {
+      await modulesClient.deleteModule(moduleId);
+      dispatch(deleteModule(moduleId));
+    } catch (error) {
+      console.error("Error deleting module:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchModules();
+  }, [cid]);
+
+  useEffect(() => {
+    setExpandedModules(courseModules.map((module: any) => module._id));
+  }, [courseModules]);
+
   const toggleModule = (moduleId: string) => {
     if (expandedModules.includes(moduleId)) {
       setExpandedModules(expandedModules.filter(id => id !== moduleId));
@@ -36,10 +81,7 @@ export default function Modules() {
       <ModulesControls 
         moduleName={moduleName} 
         setModuleName={setModuleName}
-        addModule={() => {
-          dispatch(addModule({ name: moduleName, course: cid }));
-          setModuleName("");
-        }} 
+        addModule={createModule}
       />
       <ListGroup id="wd-modules" className="rounded-0">
         {courseModules.map((module: any) => (
@@ -86,9 +128,7 @@ export default function Modules() {
               
               <ModuleControlButtons
                 moduleId={module._id}
-                deleteModule={(moduleId) => {
-                  dispatch(deleteModule(moduleId));
-                }}
+                deleteModule={removeModule}
                 editModule={(moduleId) => dispatch(editModule(moduleId))}
               />
             </ListGroup.Item>

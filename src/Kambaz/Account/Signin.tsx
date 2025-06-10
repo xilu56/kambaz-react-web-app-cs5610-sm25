@@ -1,7 +1,27 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Container, Row, Col } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "./reducer";
+import * as client from "./client";
 
 export default function Signin() {
+  const [credentials, setCredentials] = useState<any>({});
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const signin = async () => {
+    try {
+      const user = await client.signin(credentials);
+      if (!user) return;
+      dispatch(setCurrentUser(user));
+      navigate("/Kambaz/Dashboard");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Invalid credentials");
+    }
+  };
+
   return (
     <div id="wd-signin-screen">
       <Container>
@@ -17,22 +37,34 @@ export default function Signin() {
           </Col>
           <Col xs={12} md={6}>
             <h3 className="mb-4">Signin</h3>
+            {error && (
+              <div className="alert alert-danger" role="alert">
+                {error}
+              </div>
+            )}
             <Form>
               <Form.Control 
                 id="wd-username"
                 placeholder="username"
-                className="mb-4"/>
+                className="mb-4"
+                value={credentials.username || ""}
+                onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+              />
               <Form.Control 
                 id="wd-password"
                 placeholder="password" 
                 type="password"
-                className="mb-4"/>
-              <Link 
+                className="mb-4"
+                value={credentials.password || ""}
+                onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+              />
+              <button 
                 id="wd-signin-btn"
-                to="/Kambaz/Account/Profile"
+                onClick={signin}
+                type="button"
                 className="btn btn-primary w-100 mb-3">
                 Signin
-              </Link>
+              </button>
               <div className="text-center">
                 <Link 
                   id="wd-signup-link" 

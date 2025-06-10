@@ -1,11 +1,12 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { CSSProperties } from "react";
 import { FaSearch, FaEllipsisV, FaGripVertical, FaTrash, FaPencilAlt} from "react-icons/fa";
 import { BsFileText } from "react-icons/bs";
 import { InputGroup, Form, Row, Col, Modal, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { setAssignments, deleteAssignment } from "./reducer";
+import * as assignmentsClient from "./client";
 
 // Import GreenCheckmark component
 import GreenCheckmark from "../Modules/GreenCheckmark";
@@ -26,6 +27,30 @@ export default function Assignments() {
     a.course === cid
   );
 
+  const fetchAssignments = async () => {
+    if (cid) {
+      try {
+        const assignments = await assignmentsClient.fetchAssignmentsForCourse(cid);
+        dispatch(setAssignments(assignments));
+      } catch (error) {
+        console.error("Error fetching assignments:", error);
+      }
+    }
+  };
+
+  const removeAssignment = async (assignmentId: string) => {
+    try {
+      await assignmentsClient.deleteAssignment(assignmentId);
+      dispatch(deleteAssignment(assignmentId));
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid]);
+
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -43,7 +68,7 @@ export default function Assignments() {
 
   const confirmDelete = () => {
     if (assignmentToDelete) {
-      dispatch(deleteAssignment(assignmentToDelete));
+      removeAssignment(assignmentToDelete);
     }
     setShowDeleteDialog(false);
     setAssignmentToDelete(null);

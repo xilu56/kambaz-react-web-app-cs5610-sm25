@@ -1,16 +1,55 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Container, Row, Col, Button } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { clearCurrentUser } from "./reducer";
+import * as client from "./client";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("bobcat");
-  const [password, setPassword] = useState("passw0rd");
-  const [firstName, setFirstName] = useState("Bob");
-  const [lastName, setLastName] = useState("Cat");
-  const [dob, setDob] = useState("1995-05-15");
-  const [email, setEmail] = useState("bobcat@email.com");
-  const [role, setRole] = useState("Student");
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [dob, setDob] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("STUDENT");
+
+  useEffect(() => {
+    if (currentUser) {
+      setUsername(currentUser.username || "");
+      setPassword(currentUser.password || "");
+      setFirstName(currentUser.firstName || "");
+      setLastName(currentUser.lastName || "");
+      setDob(currentUser.dob ? currentUser.dob.substring(0, 10) : "");
+      setEmail(currentUser.email || "");
+      setRole(currentUser.role || "STUDENT");
+    }
+  }, [currentUser]);
+
+  const signout = async () => {
+    try {
+      await client.signout();
+      dispatch(clearCurrentUser());
+      navigate("/Kambaz/Account/Signin");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  if (!currentUser) {
+    return (
+      <div className="alert alert-danger">
+        Please sign in to view your profile.
+        <Link to="/Kambaz/Account/Signin" className="btn btn-primary ms-2">
+          Sign In
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div id="wd-profile-screen">
@@ -108,10 +147,10 @@ export default function Profile() {
                     value={role}
                     onChange={e => setRole(e.target.value)}
                   >
-                    <option value="User">User</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Faculty">Faculty</option>
-                    <option value="Student">Student</option>
+                    <option value="STUDENT">Student</option>
+                    <option value="FACULTY">Faculty</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="TA">TA</option>
                   </Form.Select>
                 </Col>
               </Form.Group>
@@ -121,7 +160,7 @@ export default function Profile() {
                   id="wd-signout-btn"
                   variant="danger"
                   className="w-100 border border-dark"
-                  onClick={() => navigate("/Kambaz/Account/Signin")}
+                  onClick={signout}
                 >
                   Signout
                 </Button>

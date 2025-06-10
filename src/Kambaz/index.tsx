@@ -6,36 +6,63 @@ import Courses from "./Courses";
 import CoursesList from "./CoursesList";
 import "./styles.css";
 import { useEffect, useState } from "react";
-import { db } from "./Database";
-import { v4 as uuidv4 } from "uuid";
+import * as courseClient from "./Courses/client";
 
 export default function Kambaz() {
-  const [courses, setCourses] = useState<any[]>(db.courses);
+  const [courses, setCourses] = useState<any[]>([]);
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", 
     image: "/images/reactjs.jpg", description: "New Description",
   });
 
-  const addNewCourse = () => {
-    setCourses([...courses, { ...course, _id: uuidv4() }]);
+  const fetchCourses = async () => {
+    try {
+      const courses = await courseClient.fetchAllCourses();
+      setCourses(courses);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
   };
 
-  const deleteCourse = (courseId: any) => {
-    setCourses(courses.filter((course) => course._id !== courseId));
+  const addNewCourse = async () => {
+    try {
+      const newCourse = await courseClient.createCourse(course);
+      setCourses([...courses, newCourse]);
+    } catch (error) {
+      console.error("Error creating course:", error);
+    }
   };
 
-  const updateCourse = () => {
-    setCourses(
-      courses.map((c) => {
-        if (c._id === course._id) {
-          return course;
-        } else {
-          return c;
-        }
-      })
-    );
+  const deleteCourse = async (courseId: any) => {
+    try {
+      await courseClient.deleteCourse(courseId);
+      setCourses(courses.filter((course) => course._id !== courseId));
+    } catch (error) {
+      console.error("Error deleting course:", error);
+    }
   };
+
+  const updateCourse = async () => {
+    try {
+      await courseClient.updateCourse(course._id, course);
+      setCourses(
+        courses.map((c) => {
+          if (c._id === course._id) {
+            return course;
+          } else {
+            return c;
+          }
+        })
+      );
+    } catch (error) {
+      console.error("Error updating course:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
 
   useEffect(() => {
     const handleImageErrors = () => {
