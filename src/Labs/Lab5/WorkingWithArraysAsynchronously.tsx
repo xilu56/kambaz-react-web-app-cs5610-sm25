@@ -3,6 +3,8 @@ import { TiDelete } from "react-icons/ti";
 import { ListGroup } from "react-bootstrap";
 import { FaPlusCircle } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
+import { FaPencil } from "react-icons/fa6";
+import { FormControl } from "react-bootstrap";
 import * as client from "./client";
 export default function WorkingWithArraysAsynchronously() {
   const [todos, setTodos] = useState<any[]>([]);
@@ -28,6 +30,15 @@ export default function WorkingWithArraysAsynchronously() {
     const newTodos = todos.filter((t) => t.id !== todo.id);
     setTodos(newTodos);
   };
+const editTodo = (todo: any) => {
+    const updatedTodos = todos.map(
+      (t) => t.id === todo.id ? { ...todo, editing: true } : t );
+    setTodos(updatedTodos);
+  };
+  const updateTodo = async (todo: any) => {
+    await client.updateTodo(todo);
+    setTodos(todos.map((t) => (t.id === todo.id ? todo : t)));
+  };
 
   useEffect(() => {
     fetchTodos();
@@ -42,11 +53,25 @@ export default function WorkingWithArraysAsynchronously() {
       <ListGroup>
         {todos.map((todo) => (
           <ListGroup.Item key={todo.id}>
+            <FaPencil onClick={() => editTodo(todo)} className="text-primary float-end me-2 mt-1" />
             <FaTrash onClick={() => removeTodo(todo)}
                      className="text-danger float-end mt-1" id="wd-remove-todo"/>
             <TiDelete onClick={() => deleteTodo(todo)} className="text-danger float-end me-2 fs-3" id="wd-delete-todo" />
-            <input type="checkbox" className="form-check-input me-2"
-                   defaultChecked={todo.completed}/>
+            <input type="checkbox" defaultChecked={todo.completed} className="form-check-input me-2 float-start"
+              onChange={(e) => updateTodo({ ...todo, completed: e.target.checked }) } />
+              {!todo.editing ? ( todo.title ) : (
+                <FormControl className="w-50 float-start" defaultValue={todo.title}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      updateTodo({ ...todo, editing: false });
+                    }
+                  }}
+                  onChange={(e) =>
+                    updateTodo({ ...todo, title: e.target.value })
+                  }
+                />
+              )}
+
             <span style={{ textDecoration: todo.completed ? "line-through" : "none" }}>
               {todo.title}
             </span>
