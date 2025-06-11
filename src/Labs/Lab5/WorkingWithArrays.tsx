@@ -51,13 +51,12 @@ export default function WorkingWithArrays() {
     }
   };
 
-  const createNewTodo = async () => {
+  const createTodoWithoutData = async () => {
     try {
-      const newTodo: Todo = {
-        id: new Date().getTime().toString(),
-        title: "New Todo",
-        completed: false,
-        description: "New Todo Description"
+      const newTodo = {
+        title: "New Task",
+        description: "New Todo Description",
+        completed: false
       };
       const data = await client.createTodo(newTodo);
       setTodos([...todos, data]);
@@ -121,7 +120,7 @@ export default function WorkingWithArrays() {
       <h4>
         Todos
         <FaPlusCircle 
-          onClick={createTodo} 
+          onClick={createTodoWithoutData} 
           className="text-success float-end fs-3" 
           id="wd-create-todo" 
         />
@@ -136,7 +135,7 @@ export default function WorkingWithArrays() {
         </Button>
         <Button 
           className="btn btn-success me-2"
-          onClick={createNewTodo}
+          onClick={createTodoWithoutData}
         >
           Create Todo
         </Button>
