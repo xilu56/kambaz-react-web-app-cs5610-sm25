@@ -25,15 +25,13 @@ export default function Modules() {
   );
 
   const fetchModules = async () => {
-    if (cid) {
-      try {
-        console.log("Fetching modules for course:", cid);
-        const modules = await modulesClient.fetchModulesForCourse(cid);
-        console.log("Modules fetched successfully:", modules.length, "modules");
+    try {
+      if (cid) {
+        const modules = await modulesClient.findModulesForCourse(cid);
         dispatch(setModules(modules));
-      } catch (error) {
-        console.error("Error fetching modules:", error);
       }
+    } catch (error) {
+      console.error("Error fetching modules:", error);
     }
   };
 

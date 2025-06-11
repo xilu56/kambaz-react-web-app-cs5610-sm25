@@ -1,13 +1,5 @@
-import axios from "axios";
+import axiosWithCredentials, { REMOTE_SERVER } from "../../api/axios";
 
-const axiosWithCredentials = axios.create({ 
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
-
-export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
 export const USERS_API = `${REMOTE_SERVER}/api/users`;
 
 export const signin = async (credentials: any) => {
@@ -41,6 +33,6 @@ export const updateUser = async (user: any) => {
 };
 
 export const findMyCourses = async () => {
-  const { data } = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
-  return data;
+  const response = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
+  return response.data;
 };

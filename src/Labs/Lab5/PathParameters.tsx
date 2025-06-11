@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FormControl, Button } from "react-bootstrap";
-import axios from "axios";
+import axiosWithCredentials from "../../api/axios";
 
 const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
 
@@ -11,7 +11,7 @@ export default function PathParameters() {
 
   const performOperation = async (operation: string) => {
     try {
-      const response = await axios.get(`${REMOTE_SERVER}/lab5/${operation}/${a}/${b}`);
+      const response = await axiosWithCredentials.get(`/lab5/${operation}/${a}/${b}`);
       setResult(response.data);
     } catch (error) {
       console.error(`Error performing ${operation}:`, error);
