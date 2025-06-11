@@ -16,8 +16,10 @@ export default function WorkingWithObjectsAsynchronously() {
 
   const updateAssignmentData = async () => {
     try {
-      const data = await client.updateAssignment(assignment);
-      setAssignment(data);
+      if (assignment.title) {
+        const data = await client.updateTitle(assignment.title);
+        setAssignment(data);
+      }
     } catch (error) {
       console.error("Error updating assignment:", error);
     }

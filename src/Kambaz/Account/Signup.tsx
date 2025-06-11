@@ -17,7 +17,6 @@ export default function Signup() {
         setError("Please fill in all fields");
         return;
       }
-      
       const currentUser = await client.signup(user);
       
       // Set user in Redux store
@@ -28,10 +27,8 @@ export default function Signup() {
       
       navigate("/Kambaz/Account/Profile");
     } catch (err: any) {
+      setError("Error creating account. Please try again.");
       console.error("Signup error:", err);
-      // Display the server's error message if available
-      const errorMessage = err.response?.data?.message || "Error creating account. Please try again.";
-      setError(errorMessage);
     }
   };
 

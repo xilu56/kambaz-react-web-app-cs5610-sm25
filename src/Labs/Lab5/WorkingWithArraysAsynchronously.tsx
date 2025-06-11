@@ -29,7 +29,7 @@ export default function WorkingWithArraysAsynchronously() {
         completed: false,
         description: "New Todo Description"
       };
-      const data = await client.createTodo(newTodo);
+      const data = await client.postTodo(newTodo);
       setTodos([...todos, data]);
     } catch (error) {
       console.error("Error creating todo:", error);
@@ -38,8 +38,11 @@ export default function WorkingWithArraysAsynchronously() {
 
   const deleteTodoById = async (todoId: string) => {
     try {
-      await client.deleteTodo(todoId);
-      setTodos(todos.filter(t => t.id !== todoId));
+      const todoToDelete = todos.find(t => t.id === todoId);
+      if (todoToDelete) {
+        await client.deleteTodo(todoToDelete);
+        setTodos(todos.filter(t => t.id !== todoId));
+      }
     } catch (error) {
       console.error("Error deleting todo:", error);
     }

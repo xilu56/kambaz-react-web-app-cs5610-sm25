@@ -6,7 +6,9 @@ export default defineConfig({
   plugins: [react()],
   base: './',
   define: {
-    'process.env.NODE_ENV': '"production"'
+    'import.meta.env.VITE_REMOTE_SERVER': JSON.stringify(
+      process.env.VITE_REMOTE_SERVER || 'http://localhost:4000'
+    )
   },
   server: {
     proxy: {
@@ -14,6 +16,17 @@ export default defineConfig({
         target: process.env.VITE_REMOTE_SERVER || 'http://localhost:4000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('proxy error', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            console.log('Sending Request to the Target:', req.method, req.url);
+          });
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+          });
+        },
       }
     }
   },
@@ -24,7 +37,6 @@ export default defineConfig({
     allowedHosts: [
       'kambaz-react-web-app-cs5610-sm25.onrender.com',
       '.onrender.com',
-      '.netlify.app',
       'localhost',
       '127.0.0.1',
       '0.0.0.0',

@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { FormControl, Button } from "react-bootstrap";
-import axiosWithCredentials from "../../api/axios";
-import * as client from "./client";
+import { FormControl } from "react-bootstrap";
 
 const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
 
@@ -22,24 +20,6 @@ export default function WorkingWithObjects() {
     course: "CS5610"
   });
 
-  const getAssignment = async () => {
-    try {
-      const data = await client.fetchAssignment();
-      setAssignment(data);
-    } catch (error) {
-      console.error("Error fetching assignment:", error);
-    }
-  };
-
-  const updateAssignment = async () => {
-    try {
-      const data = await client.updateAssignment(assignment);
-      setAssignment(data);
-    } catch (error) {
-      console.error("Error updating assignment:", error);
-    }
-  };
-
   return (
     <div id="wd-working-with-objects">
       <h3>Working With Objects</h3>
@@ -47,12 +27,14 @@ export default function WorkingWithObjects() {
       {/* Assignment Object Section */}
       <h4>Assignment Object</h4>
       <div className="mb-3">
-        <Button 
-          className="btn btn-primary me-2"
-          onClick={getAssignment}
-        >
+        <a href={`${REMOTE_SERVER}/lab5/assignment`} 
+           className="btn btn-primary me-2" target="_blank" rel="noopener noreferrer">
           Get Assignment
-        </Button>
+        </a>
+        <a href={`${REMOTE_SERVER}/lab5/assignment/title`} 
+           className="btn btn-secondary me-2" target="_blank" rel="noopener noreferrer">
+          Get Title
+        </a>
       </div>
 
       <div className="mb-3">
@@ -62,12 +44,10 @@ export default function WorkingWithObjects() {
           value={assignment.title}
           onChange={(e) => setAssignment({...assignment, title: e.target.value})}
         />
-        <Button 
-          className="btn btn-warning me-2"
-          onClick={updateAssignment}
-        >
-          Update Assignment
-        </Button>
+        <a href={`${REMOTE_SERVER}/lab5/assignment/title/${assignment.title}`} 
+           className="btn btn-warning me-2" target="_blank" rel="noopener noreferrer">
+          Update Title
+        </a>
       </div>
 
       <div className="mb-3">

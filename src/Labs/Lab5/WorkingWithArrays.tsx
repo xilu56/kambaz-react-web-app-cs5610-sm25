@@ -11,7 +11,6 @@ interface Todo {
   title: string;
   description: string;
   completed: boolean;
-  editing?: boolean;
 }
 
 export default function WorkingWithArrays() {
@@ -37,13 +36,7 @@ export default function WorkingWithArrays() {
 
   const createTodo = async () => {
     try {
-      const newTodo: Todo = {
-        id: new Date().getTime().toString(),
-        title: "New Todo",
-        description: "New Todo Description",
-        completed: false
-      };
-      const data = await client.createTodo(newTodo);
+      const data = await client.createTodo();
       setTodos([...todos, data]);
       setErrorMessage(null);
     } catch (error: any) {
@@ -59,7 +52,7 @@ export default function WorkingWithArrays() {
         completed: false,
         description: "New Todo Description"
       };
-      const data = await client.createTodo(newTodo);
+      const data = await client.postTodo(newTodo);
       setTodos([...todos, data]);
     } catch (error) {
       console.error("Error creating todo:", error);
@@ -68,8 +61,11 @@ export default function WorkingWithArrays() {
 
   const deleteTodoById = async (todoId: string) => {
     try {
-      await client.deleteTodo(todoId);
-      setTodos(todos.filter(t => t.id !== todoId));
+      const todoToDelete = todos.find(t => t.id === todoId);
+      if (todoToDelete) {
+        await client.deleteTodo(todoToDelete);
+        setTodos(todos.filter(t => t.id !== todoId));
+      }
     } catch (error) {
       console.error("Error deleting todo:", error);
     }
@@ -77,7 +73,7 @@ export default function WorkingWithArrays() {
 
   const deleteTodoAsync = async (todoToDelete: Todo) => {
     try {
-      await client.deleteTodo(todoToDelete.id);
+      await client.deleteTodo(todoToDelete);
       const newTodos = todos.filter((t) => t.id !== todoToDelete.id);
       setTodos(newTodos);
       setErrorMessage(null);
@@ -99,7 +95,7 @@ export default function WorkingWithArrays() {
 
   const editTodo = (todoToEdit: Todo) => {
     const updatedTodos = todos.map(
-      (t) => t.id === todoToEdit.id ? { ...todoToEdit, editing: true } : t
+      (t) => t.id === todoToEdit.id ? { ...todoToEdit, editing: true } : { ...t, editing: false }
     );
     setTodos(updatedTodos);
   };
@@ -165,7 +161,7 @@ export default function WorkingWithArrays() {
               className="form-check-input me-2 float-start"
               onChange={(e) => updateTodoAsync({ ...todoItem, completed: e.target.checked })} 
             />
-            {!todoItem.editing ? (
+            {!(todoItem as any).editing ? (
               <span style={{ textDecoration: todoItem.completed ? "line-through" : "none" }}>
                 {todoItem.title}
               </span>
@@ -175,7 +171,7 @@ export default function WorkingWithArrays() {
                 defaultValue={todoItem.title}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    updateTodoAsync({ ...todoItem, editing: false });
+                    updateTodoAsync({ ...todoItem, editing: false } as any);
                   }
                 }}
                 onChange={(e) =>
