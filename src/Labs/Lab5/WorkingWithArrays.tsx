@@ -1,15 +1,22 @@
 import { useState, useEffect } from "react";
-import { FormControl, ListGroup } from "react-bootstrap";
+import { FormControl, ListGroup, Button } from "react-bootstrap";
 import { FaPlusCircle } from "react-icons/fa";
 import { FaPencil, FaTrash } from "react-icons/fa6";
 import { TiDelete } from "react-icons/ti";
 import * as client from "./client";
 const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 
+interface Todo {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+}
+
 export default function WorkingWithArrays() {
   const API = `${REMOTE_SERVER}/lab5/todos`;
   const [errorMessage, setErrorMessage] = useState(null);
-  const [todos, setTodos] = useState<any[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [todo, setTodo] = useState({
     id: "1", 
     title: "NodeJS Assignment",
@@ -20,10 +27,34 @@ export default function WorkingWithArrays() {
 
   const fetchTodos = async () => {
     try {
-      const todos = await client.fetchTodos();
-      setTodos(todos);
-    } catch (error: any) {
-      console.log("Error fetching todos:", error);
+      const data = await client.fetchTodos();
+      setTodos(data);
+    } catch (error) {
+      console.error("Error fetching todos:", error);
+    }
+  };
+
+  const createNewTodo = async () => {
+    try {
+      const newTodo: Todo = {
+        id: new Date().getTime().toString(),
+        title: "New Todo",
+        completed: false,
+        description: "New Todo Description"
+      };
+      const data = await client.createTodo(newTodo);
+      setTodos([...todos, data]);
+    } catch (error) {
+      console.error("Error creating todo:", error);
+    }
+  };
+
+  const deleteTodoById = async (todoId: string) => {
+    try {
+      await client.deleteTodo(todoId);
+      setTodos(todos.filter(t => t.id !== todoId));
+    } catch (error) {
+      console.error("Error deleting todo:", error);
     }
   };
 
@@ -113,6 +144,21 @@ export default function WorkingWithArrays() {
           id="wd-post-todo" 
         />
       </h4>
+
+      <div className="mb-3">
+        <Button 
+          className="btn btn-primary me-2"
+          onClick={fetchTodos}
+        >
+          Get Todos
+        </Button>
+        <Button 
+          className="btn btn-success me-2"
+          onClick={createNewTodo}
+        >
+          Create Todo
+        </Button>
+      </div>
 
       <ListGroup>
         {todos.map((todoItem) => (
