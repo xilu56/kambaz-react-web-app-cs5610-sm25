@@ -11,6 +11,7 @@ interface Todo {
   title: string;
   description: string;
   completed: boolean;
+  editing?: boolean;
 }
 
 export default function WorkingWithArrays() {
@@ -31,6 +32,22 @@ export default function WorkingWithArrays() {
       setTodos(data);
     } catch (error) {
       console.error("Error fetching todos:", error);
+    }
+  };
+
+  const createTodo = async () => {
+    try {
+      const newTodo: Todo = {
+        id: new Date().getTime().toString(),
+        title: "New Todo",
+        description: "New Todo Description",
+        completed: false
+      };
+      const data = await client.createTodo(newTodo);
+      setTodos([...todos, data]);
+      setErrorMessage(null);
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || "Error creating todo");
     }
   };
 
@@ -58,29 +75,9 @@ export default function WorkingWithArrays() {
     }
   };
 
-  const createTodo = async () => {
+  const deleteTodoAsync = async (todoToDelete: Todo) => {
     try {
-      const todos = await client.createTodo();
-      setTodos(todos);
-      setErrorMessage(null);
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Error creating todo");
-    }
-  };
-
-  const postTodo = async () => {
-    try {
-      const newTodo = await client.postTodo({ title: "New Posted Todo", completed: false });
-      setTodos([...todos, newTodo]);
-      setErrorMessage(null);
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Error posting todo");
-    }
-  };
-
-  const deleteTodoAsync = async (todoToDelete: any) => {
-    try {
-      await client.deleteTodo(todoToDelete);
+      await client.deleteTodo(todoToDelete.id);
       const newTodos = todos.filter((t) => t.id !== todoToDelete.id);
       setTodos(newTodos);
       setErrorMessage(null);
@@ -90,17 +87,7 @@ export default function WorkingWithArrays() {
     }
   };
 
-  const removeTodo = async (todoToRemove: any) => {
-    try {
-      const updatedTodos = await client.removeTodo(todoToRemove);
-      setTodos(updatedTodos);
-      setErrorMessage(null);
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || "Error removing todo");
-    }
-  };
-
-  const updateTodoAsync = async (todoToUpdate: any) => {
+  const updateTodoAsync = async (todoToUpdate: Todo) => {
     try {
       await client.updateTodo(todoToUpdate);
       setTodos(todos.map((t) => (t.id === todoToUpdate.id ? todoToUpdate : t)));
@@ -110,7 +97,7 @@ export default function WorkingWithArrays() {
     }
   };
 
-  const editTodo = (todoToEdit: any) => {
+  const editTodo = (todoToEdit: Todo) => {
     const updatedTodos = todos.map(
       (t) => t.id === todoToEdit.id ? { ...todoToEdit, editing: true } : t
     );
@@ -138,11 +125,6 @@ export default function WorkingWithArrays() {
           className="text-success float-end fs-3" 
           id="wd-create-todo" 
         />
-        <FaPlusCircle 
-          onClick={postTodo} 
-          className="text-primary float-end fs-3 me-3" 
-          id="wd-post-todo" 
-        />
       </h4>
 
       <div className="mb-3">
@@ -168,7 +150,7 @@ export default function WorkingWithArrays() {
               className="text-primary float-end me-2 mt-1" 
             />
             <FaTrash 
-              onClick={() => removeTodo(todoItem)}
+              onClick={() => deleteTodoById(todoItem.id)}
               className="text-danger float-end mt-1" 
               id="wd-remove-todo"
             />
