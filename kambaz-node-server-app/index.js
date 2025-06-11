@@ -16,15 +16,26 @@ const app = express();
 const allowedOrigins = [
   process.env.NETLIFY_URL,
   process.env.RENDER_FRONTEND_URL || "https://kambaz-react-web-app-cs5610-sm25.onrender.com",
+  "https://deploy-preview-28--kambaz-react-web-app-cs5610-sm25.netlify.app",  // Add specific preview URL
   "http://localhost:5173", // Vite dev server
   "http://localhost:4000", // Preview server
   "http://localhost:3000"  // Alternative dev server
-].filter(Boolean); // Remove undefined values
+].filter(Boolean);
 
 app.use(
   cors({
     credentials: true,
-    origin: allowedOrigins,
+    origin: function(origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      // Check if the origin is allowed
+      if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.netlify.app')) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
   })
 );
 

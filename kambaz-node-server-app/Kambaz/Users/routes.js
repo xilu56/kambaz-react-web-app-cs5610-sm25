@@ -34,24 +34,66 @@ export default function UserRoutes(app) {
   };
 
   const signup = (req, res) => {
-    const user = dao.findUserByUsername(req.body.username);
-    if (user) {
-      res.status(400).json({ message: "Username already taken" });
-      return;
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        res.status(400).json({ message: "Username and password are required" });
+        return;
+      }
+
+      const existingUser = dao.findUserByUsername(username);
+      if (existingUser) {
+        res.status(400).json({ message: "Username already taken" });
+        return;
+      }
+
+      const currentUser = dao.createUser(req.body);
+      req.session["currentUser"] = currentUser;
+      
+      res.json({
+        _id: currentUser._id,
+        username: currentUser.username,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        role: currentUser.role,
+        email: currentUser.email
+      });
+    } catch (error) {
+      console.error("Signup error:", error);
+      res.status(500).json({ message: "Internal server error during signup" });
     }
-    const currentUser = dao.createUser(req.body);
-    req.session["currentUser"] = currentUser;
-    res.json(currentUser);
   };
 
   const signin = (req, res) => {
-    const { username, password } = req.body;
-    const currentUser = dao.findUserByCredentials(username, password);
-    if (currentUser) {
-      req.session["currentUser"] = currentUser;
-      res.json(currentUser);
-    } else {
-      res.status(401).json({ message: "Unable to login. Try again later." });
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        res.status(400).json({ message: "Username and password are required" });
+        return;
+      }
+
+      const currentUser = dao.findUserByCredentials(username, password);
+      if (currentUser) {
+        // Store user in session
+        req.session.currentUser = currentUser;
+        
+        // Send user data back to client
+        res.json({
+          _id: currentUser._id,
+          username: currentUser.username,
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName,
+          role: currentUser.role,
+          email: currentUser.email
+        });
+      } else {
+        res.status(401).json({ message: "Invalid credentials" });
+      }
+    } catch (error) {
+      console.error("Signin error:", error);
+      res.status(500).json({ message: "Internal server error during signin" });
     }
   };
 

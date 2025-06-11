@@ -1,29 +1,28 @@
-import axios from "axios";
-const axiosWithCredentials = axios.create({ withCredentials: true });
-const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
+import axiosWithCredentials, { REMOTE_SERVER } from "../../api/axios";
+
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
 
 export const fetchAllCourses = async () => {
-  const { data } = await axios.get(COURSES_API);
-  return data;
+  const response = await axiosWithCredentials.get(COURSES_API);
+  return response.data;
 };
 
 export const createCourse = async (course: any) => {
-  const { data } = await axiosWithCredentials.post(COURSES_API, course);
-  return data;
-};
-
-export const deleteCourse = async (courseId: string) => {
-  const { data } = await axiosWithCredentials.delete(`${COURSES_API}/${courseId}`);
-  return data;
+  const response = await axiosWithCredentials.post(COURSES_API, course);
+  return response.data;
 };
 
 export const updateCourse = async (course: any) => {
-  const { data } = await axiosWithCredentials.put(`${COURSES_API}/${course._id}`, course);
-  return data;
+  const response = await axiosWithCredentials.put(`${COURSES_API}/${course._id}`, course);
+  return response.data;
+};
+
+export const deleteCourse = async (courseId: string) => {
+  const response = await axiosWithCredentials.delete(`${COURSES_API}/${courseId}`);
+  return response.data;
 };
 
 export const findCourseById = async (courseId: string) => {
-  const { data } = await axios.get(`${COURSES_API}/${courseId}`);
+  const { data } = await axiosWithCredentials.get(`${COURSES_API}/${courseId}`);
   return data;
 }; 
