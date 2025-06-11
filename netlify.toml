@@ -1,9 +1,10 @@
 [build]
-  command = "CI=false npm run build"
+  command = "npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
+  VITE_REMOTE_SERVER = "https://kambaz-node-server-app-cs5610-sm25.onrender.com"
 
 [[redirects]]
   from = "/*"
