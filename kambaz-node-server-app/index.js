@@ -16,6 +16,7 @@ const app = express();
 const allowedOrigins = [
   process.env.NETLIFY_URL,
   process.env.RENDER_FRONTEND_URL || "https://kambaz-react-web-app-cs5610-sm25.onrender.com",
+  "https://*.netlify.app",  // Allow all Netlify preview URLs
   "http://localhost:5173", // Vite dev server
   "http://localhost:4000", // Preview server
   "http://localhost:3000"  // Alternative dev server
