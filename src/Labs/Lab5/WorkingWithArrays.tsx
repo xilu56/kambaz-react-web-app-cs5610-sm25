@@ -1,22 +1,15 @@
 import { useState, useEffect } from "react";
-import { FormControl, ListGroup, Button } from "react-bootstrap";
+import { FormControl, ListGroup } from "react-bootstrap";
 import { FaPlusCircle } from "react-icons/fa";
 import { FaPencil, FaTrash } from "react-icons/fa6";
 import { TiDelete } from "react-icons/ti";
 import * as client from "./client";
 const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 
-interface Todo {
-  id: string;
-  title: string;
-  description: string;
-  completed: boolean;
-}
-
 export default function WorkingWithArrays() {
   const API = `${REMOTE_SERVER}/lab5/todos`;
   const [errorMessage, setErrorMessage] = useState(null);
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [todos, setTodos] = useState<any[]>([]);
   const [todo, setTodo] = useState({
     id: "1", 
     title: "NodeJS Assignment",
@@ -27,51 +20,34 @@ export default function WorkingWithArrays() {
 
   const fetchTodos = async () => {
     try {
-      const data = await client.fetchTodos();
-      setTodos(data);
-    } catch (error) {
-      console.error("Error fetching todos:", error);
+      const todos = await client.fetchTodos();
+      setTodos(todos);
+    } catch (error: any) {
+      console.log("Error fetching todos:", error);
     }
   };
 
   const createTodo = async () => {
     try {
-      const data = await client.createTodo();
-      setTodos([...todos, data]);
+      const todos = await client.createTodo();
+      setTodos(todos);
       setErrorMessage(null);
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || "Error creating todo");
     }
   };
 
-  const createNewTodo = async () => {
+  const postTodo = async () => {
     try {
-      const newTodo: Todo = {
-        id: new Date().getTime().toString(),
-        title: "New Todo",
-        completed: false,
-        description: "New Todo Description"
-      };
-      const data = await client.postTodo(newTodo);
-      setTodos([...todos, data]);
-    } catch (error) {
-      console.error("Error creating todo:", error);
+      const newTodo = await client.postTodo({ title: "New Posted Todo", completed: false });
+      setTodos([...todos, newTodo]);
+      setErrorMessage(null);
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || "Error posting todo");
     }
   };
 
-  const deleteTodoById = async (todoId: string) => {
-    try {
-      const todoToDelete = todos.find(t => t.id === todoId);
-      if (todoToDelete) {
-        await client.deleteTodo(todoToDelete);
-        setTodos(todos.filter(t => t.id !== todoId));
-      }
-    } catch (error) {
-      console.error("Error deleting todo:", error);
-    }
-  };
-
-  const deleteTodoAsync = async (todoToDelete: Todo) => {
+  const deleteTodoAsync = async (todoToDelete: any) => {
     try {
       await client.deleteTodo(todoToDelete);
       const newTodos = todos.filter((t) => t.id !== todoToDelete.id);
@@ -83,7 +59,17 @@ export default function WorkingWithArrays() {
     }
   };
 
-  const updateTodoAsync = async (todoToUpdate: Todo) => {
+  const removeTodo = async (todoToRemove: any) => {
+    try {
+      const updatedTodos = await client.removeTodo(todoToRemove);
+      setTodos(updatedTodos);
+      setErrorMessage(null);
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || "Error removing todo");
+    }
+  };
+
+  const updateTodoAsync = async (todoToUpdate: any) => {
     try {
       await client.updateTodo(todoToUpdate);
       setTodos(todos.map((t) => (t.id === todoToUpdate.id ? todoToUpdate : t)));
@@ -93,9 +79,9 @@ export default function WorkingWithArrays() {
     }
   };
 
-  const editTodo = (todoToEdit: Todo) => {
+  const editTodo = (todoToEdit: any) => {
     const updatedTodos = todos.map(
-      (t) => t.id === todoToEdit.id ? { ...todoToEdit, editing: true } : { ...t, editing: false }
+      (t) => t.id === todoToEdit.id ? { ...todoToEdit, editing: true } : t
     );
     setTodos(updatedTodos);
   };
@@ -114,6 +100,20 @@ export default function WorkingWithArrays() {
         </div>
       )}
 
+      <h4>
+        Todos
+        <FaPlusCircle 
+          onClick={createTodo} 
+          className="text-success float-end fs-3" 
+          id="wd-create-todo" 
+        />
+        <FaPlusCircle 
+          onClick={postTodo} 
+          className="text-primary float-end fs-3 me-3" 
+          id="wd-post-todo" 
+        />
+      </h4>
+
       <ListGroup>
         {todos.map((todoItem) => (
           <ListGroup.Item key={todoItem.id}>
@@ -122,7 +122,7 @@ export default function WorkingWithArrays() {
               className="text-primary float-end me-2 mt-1" 
             />
             <FaTrash 
-              onClick={() => deleteTodoById(todoItem.id)}
+              onClick={() => removeTodo(todoItem)}
               className="text-danger float-end mt-1" 
               id="wd-remove-todo"
             />
@@ -137,7 +137,7 @@ export default function WorkingWithArrays() {
               className="form-check-input me-2 float-start"
               onChange={(e) => updateTodoAsync({ ...todoItem, completed: e.target.checked })} 
             />
-            {!(todoItem as any).editing ? (
+            {!todoItem.editing ? (
               <span style={{ textDecoration: todoItem.completed ? "line-through" : "none" }}>
                 {todoItem.title}
               </span>
@@ -147,7 +147,7 @@ export default function WorkingWithArrays() {
                 defaultValue={todoItem.title}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    updateTodoAsync({ ...todoItem, editing: false } as any);
+                    updateTodoAsync({ ...todoItem, editing: false });
                   }
                 }}
                 onChange={(e) =>
@@ -179,6 +179,10 @@ export default function WorkingWithArrays() {
          href={`${API}?completed=true`}>
         Get Completed Todos
       </a>
+      <a id="wd-retrieve-incompleted-todos" className="btn btn-primary"
+         href={`${API}?completed=false`}>
+        Get Incompleted Todos
+      </a>
       <hr/>
       
       <h4>Creating new Items in an Array</h4>
@@ -190,6 +194,7 @@ export default function WorkingWithArrays() {
       
       <h4>Deleting from an Array</h4>
       <div className="mb-2">
+        <h5>Simple Delete (GET request)</h5>
         <a id="wd-delete-todo-with-id" className="btn btn-primary float-end" 
            href={`${API}/${todo.id}/delete`}>
           Delete Todo with ID = {todo.id} 
@@ -201,6 +206,7 @@ export default function WorkingWithArrays() {
       
       <h4>Updating an Item in an Array</h4>
       <div className="mb-2">
+        <h5>Simple Title Update (GET request)</h5>
         <a href={`${API}/${todo.id}/title/${todo.title}`} className="btn btn-primary float-end">
           Update Title
         </a>
