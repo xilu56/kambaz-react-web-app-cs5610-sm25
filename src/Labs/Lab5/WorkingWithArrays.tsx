@@ -114,30 +114,6 @@ export default function WorkingWithArrays() {
         </div>
       )}
 
-      <h4>
-        Todos
-        <FaPlusCircle 
-          onClick={createTodo} 
-          className="text-success float-end fs-3" 
-          id="wd-create-todo" 
-        />
-      </h4>
-
-      <div className="mb-3">
-        <Button 
-          className="btn btn-primary me-2"
-          onClick={fetchTodos}
-        >
-          Get Todos
-        </Button>
-        <Button 
-          className="btn btn-success me-2"
-          onClick={createNewTodo}
-        >
-          Create Todo
-        </Button>
-      </div>
-
       <ListGroup>
         {todos.map((todoItem) => (
           <ListGroup.Item key={todoItem.id}>
@@ -203,10 +179,6 @@ export default function WorkingWithArrays() {
          href={`${API}?completed=true`}>
         Get Completed Todos
       </a>
-      <a id="wd-retrieve-incompleted-todos" className="btn btn-primary"
-         href={`${API}?completed=false`}>
-        Get Incompleted Todos
-      </a>
       <hr/>
       
       <h4>Creating new Items in an Array</h4>
@@ -218,7 +190,6 @@ export default function WorkingWithArrays() {
       
       <h4>Deleting from an Array</h4>
       <div className="mb-2">
-        <h5>Simple Delete (GET request)</h5>
         <a id="wd-delete-todo-with-id" className="btn btn-primary float-end" 
            href={`${API}/${todo.id}/delete`}>
           Delete Todo with ID = {todo.id} 
@@ -230,7 +201,6 @@ export default function WorkingWithArrays() {
       
       <h4>Updating an Item in an Array</h4>
       <div className="mb-2">
-        <h5>Simple Title Update (GET request)</h5>
         <a href={`${API}/${todo.id}/title/${todo.title}`} className="btn btn-primary float-end">
           Update Title
         </a>

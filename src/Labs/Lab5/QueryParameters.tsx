@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FormControl } from "react-bootstrap";
 
-const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
+const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 
 export default function QueryParameters() {
   const [a, setA] = useState("34");

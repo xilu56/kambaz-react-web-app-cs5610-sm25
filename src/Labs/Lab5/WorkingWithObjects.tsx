@@ -31,12 +31,14 @@ export default function WorkingWithObjects() {
            className="btn btn-primary me-2" target="_blank" rel="noopener noreferrer">
           Get Assignment
         </a>
-        <a href={`${REMOTE_SERVER}/lab5/assignment/title`} 
-           className="btn btn-secondary me-2" target="_blank" rel="noopener noreferrer">
-          Get Title
-        </a>
+        <h4>Retrieving Properties</h4>
+      <a id="wd-retrieve-assignment-title" className="btn btn-primary"
+         href={`${REMOTE_SERVER}/lab5/assignment/title`}>
+        Get Title
+      </a><hr/>
       </div>
 
+      <h4>Modifying Properties</h4>
       <div className="mb-3">
         <label className="form-label">Assignment Title:</label>
         <FormControl 

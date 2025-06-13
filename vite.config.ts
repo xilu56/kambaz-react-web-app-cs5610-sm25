@@ -7,28 +7,12 @@ export default defineConfig({
   base: './',
   define: {
     'import.meta.env.VITE_REMOTE_SERVER': JSON.stringify(
-      process.env.VITE_REMOTE_SERVER || 'http://localhost:4000'
+      process.env.VITE_REMOTE_SERVER || 'https://kambaz-node-server-app-cs5610-sm25.onrender.com'
     )
   },
   server: {
-    proxy: {
-      '/api': {
-        target: process.env.VITE_REMOTE_SERVER || 'http://localhost:4000',
-        changeOrigin: true,
-        secure: false,
-        configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
-            console.log('proxy error', err);
-          });
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log('Sending Request to the Target:', req.method, req.url);
-          });
-          proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
-          });
-        },
-      }
-    }
+    port: 5173,
+    host: true
   },
   preview: {
     host: '0.0.0.0',
