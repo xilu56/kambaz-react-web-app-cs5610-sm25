@@ -4,14 +4,12 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import TOC from "./Labs/TOC";
 import store from "./Kambaz/store";
 import { Provider } from "react-redux";
-import EnvDebug from "./EnvDebug";
 
 export default function App() {
   return (
     <HashRouter>
       <Provider store={store}>
         <div>
-          <EnvDebug />
           <TOC />
           <Routes>
             <Route path="/" element={<div>
