@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCurrentUser } from "./Account/reducer";
 import { setEnrollments, enrollUserInCourse, unenrollUserFromCourse } from "./Enrollments/reducer";
 import * as courseClient from "./Courses/client";
+import * as userClient from "./Account/client";
 import * as enrollmentsClient from "./Enrollments/client";
 
 export default function Kambaz() {

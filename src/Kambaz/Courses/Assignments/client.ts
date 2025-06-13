@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
+export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "https://kambaz-node-server-app-cs5610-sm25.onrender.com";
 export const ASSIGNMENTS_API = `${REMOTE_SERVER}/api/assignments`;
 export const COURSES_API = `${REMOTE_SERVER}/api/courses`;
 

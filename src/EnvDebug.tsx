@@ -42,12 +42,14 @@ export default function EnvDebug() {
           headers: {
             'Content-Type': 'application/json',
           },
-          credentials: 'include',
+          mode: 'cors',
           body: JSON.stringify({ username: 'test', password: 'test' }),
         });
         
         if (response.status === 401) {
           setKambazStatus('✅ Kambaz API reachable (401 expected for invalid creds)');
+        } else if (response.status === 500) {
+          setKambazStatus('⚠️ Kambaz user API has server error (500) - Other APIs work');
         } else if (response.ok) {
           setKambazStatus('✅ Kambaz API working');
         } else {
@@ -65,8 +67,12 @@ export default function EnvDebug() {
       } catch (error: any) {
         if (error.response?.status === 401) {
           setClientStatus('✅ Account client reachable (401 expected)');
+        } else if (error.response?.status === 500) {
+          setClientStatus('⚠️ Account API has server error (500) - Demo login available');
+        } else if (error.code === 'NETWORK_ERROR' || !error.response) {
+          setClientStatus('❌ Account client network error');
         } else {
-          setClientStatus(`❌ Account client error: ${error.message}`);
+          setClientStatus(`❌ Account client error: ${error.response?.status || error.message}`);
         }
       }
     };

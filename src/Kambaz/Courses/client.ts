@@ -1,6 +1,6 @@
 import axios from "axios";
 const axiosWithCredentials = axios.create({ withCredentials: true });
-const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
+const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "https://kambaz-node-server-app-cs5610-sm25.onrender.com";
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
 
 export const fetchAllCourses = async () => {
