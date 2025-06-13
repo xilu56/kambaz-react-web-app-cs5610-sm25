@@ -4,6 +4,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { FaPencil, FaTrash } from "react-icons/fa6";
 import { TiDelete } from "react-icons/ti";
 import * as client from "./client";
+import axios from "axios";
 const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 
 export default function WorkingWithArrays() {
@@ -48,16 +49,17 @@ export default function WorkingWithArrays() {
   };
 
   const deleteTodoAsync = async (todoToDelete: any) => {
-    try {
-      await client.deleteTodo(todoToDelete);
-      const newTodos = todos.filter((t) => t.id !== todoToDelete.id);
-      setTodos(newTodos);
-      setErrorMessage(null);
-    } catch (error: any) {
-      console.log(error);
-      setErrorMessage(error.response?.data?.message || `Unable to delete Todo with ID ${todoToDelete.id}`);
-    }
-  };
+  try {
+    await client.deleteTodo(todoToDelete);
+    const newTodos = todos.filter((t) => t.id !== todoToDelete.id);
+    setTodos(newTodos);
+    setErrorMessage(null);
+  } catch (error: any) {
+    console.error("Delete failed:", error);
+    setErrorMessage(error.response?.data?.message || `Unable to delete Todo with ID ${todoToDelete.id}`);
+  }
+};
+
 
   const removeTodo = async (todoToRemove: any) => {
     try {
@@ -70,14 +72,16 @@ export default function WorkingWithArrays() {
   };
 
   const updateTodoAsync = async (todoToUpdate: any) => {
-    try {
-      await client.updateTodo(todoToUpdate);
-      setTodos(todos.map((t) => (t.id === todoToUpdate.id ? todoToUpdate : t)));
-      setErrorMessage(null);
-    } catch (error: any) {
-      setErrorMessage(error.response?.data?.message || `Unable to update Todo with ID ${todoToUpdate.id}`);
-    }
-  };
+  try {
+    await client.updateTodo(todoToUpdate);
+    setTodos(todos.map((t) => (t.id === todoToUpdate.id ? todoToUpdate : t)));
+    setErrorMessage(null);
+  } catch (error: any) {
+    console.error("Update failed:", error);
+    setErrorMessage(error.response?.data?.message || `Unable to update Todo with ID ${todoToUpdate.id}`);
+  }
+};
+
 
   const editTodo = (todoToEdit: any) => {
     const updatedTodos = todos.map(
@@ -87,8 +91,18 @@ export default function WorkingWithArrays() {
   };
 
   useEffect(() => {
-    fetchTodos();
-  }, []);
+  const resetTodos = async () => {
+    await axios.get(`${REMOTE_SERVER}/lab5/todos/reset`);
+  };
+
+  const init = async () => {
+    await resetTodos();      
+    await fetchTodos();      
+  };
+
+  init();
+}, []);
+
   
   return (
     <div id="wd-working-with-arrays">

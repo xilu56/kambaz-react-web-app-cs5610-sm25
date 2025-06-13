@@ -26,16 +26,34 @@ export const postTodo = async (todo: any) => {
   const response = await axios.post(`${TODOS_API}`, todo);
   return response.data;
 };
-export const deleteTodo = async (todo: any) => {
-  const response = await axios.delete(`${TODOS_API}/${todo.id}`);
-  return response.data;
-};
-export const updateTodo = async (todo: any) => {
-  const response = await axios.put(`${TODOS_API}/${todo.id}`, todo);
-  return response.data;
-};
+
 export const removeTodo = async (todo: any) => {
   const response = await axios.get(`${TODOS_API}/${todo.id}/delete`);
+  return response.data;
+};
+
+export const deleteTodo = async (todo: any) => {
+  try {
+    const response = await axios.delete(`${TODOS_API}/${todo.id}`);
+    return response.data;
+  } catch (error: any) {
+    console.error(`Delete failed for ID ${todo.id}:`, error?.response?.data?.message || error.message);
+    throw error; 
+  }
+};
+
+export const updateTodo = async (todo: any) => {
+  try {
+    const response = await axios.put(`${TODOS_API}/${todo.id}`, todo);
+    return response.data;
+  } catch (error: any) {
+    console.error(`Update failed for ID ${todo.id}:`, error?.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+export const resetTodos = async () => {
+  const response = await axios.get(`${TODOS_API}/reset`);
   return response.data;
 };
 
