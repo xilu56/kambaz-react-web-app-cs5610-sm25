@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import FormControl from "react-bootstrap/FormControl";
 
 export default function Dashboard(
-{ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, unenrollFromCourse, isEnrolled }: {
+{ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrollInCourse, unenrollFromCourse, isEnrolled }: {
   courses: any[]; course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
   updateCourse: () => void; enrollInCourse?: (courseId: string) => void;

@@ -28,13 +28,15 @@ export default function Assignments() {
   );
 
   const fetchAssignments = async () => {
-    try {
-      if (cid) {
-        const assignments = await assignmentsClient.findAssignmentsForCourse(cid);
+    if (cid) {
+      try {
+        console.log("Fetching assignments for course:", cid);
+        const assignments = await assignmentsClient.fetchAssignmentsForCourse(cid);
+        console.log("Assignments fetched successfully:", assignments.length, "assignments");
         dispatch(setAssignments(assignments));
+      } catch (error) {
+        console.error("Error fetching assignments:", error);
       }
-    } catch (error) {
-      console.error("Error fetching assignments:", error);
     }
   };
 

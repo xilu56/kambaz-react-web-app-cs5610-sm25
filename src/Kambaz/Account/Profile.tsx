@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Form, Container, Row, Col, Button, Alert } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser, clearCurrentUser } from "./reducer";
-import * as client from "./client";
+import { updateProfile as updateUserProfile, signout as signoutUser } from "./client";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ export default function Profile() {
         role
       };
       
-      const result = await client.updateProfile(updatedUser);
+      const result = await updateUserProfile(updatedUser);
       dispatch(setCurrentUser(result));
       
       // Save to localStorage for persistence
@@ -65,7 +65,7 @@ export default function Profile() {
 
   const signout = async () => {
     try {
-      await client.signout();
+      await signoutUser();
       dispatch(clearCurrentUser());
       
       // Clear localStorage

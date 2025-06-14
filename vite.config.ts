@@ -6,16 +6,13 @@ export default defineConfig({
   plugins: [react()],
   base: './',
   define: {
-    'process.env.NODE_ENV': '"production"'
+    'import.meta.env.VITE_REMOTE_SERVER': JSON.stringify(
+      process.env.VITE_REMOTE_SERVER || 'https://kambaz-node-server-app-cs5610-sm25.onrender.com'
+    )
   },
   server: {
-    proxy: {
-      '/api': {
-        target: process.env.VITE_REMOTE_SERVER || 'http://localhost:4000',
-        changeOrigin: true,
-        secure: false,
-      }
-    }
+    port: 5173,
+    host: true
   },
   preview: {
     host: '0.0.0.0',
@@ -24,7 +21,6 @@ export default defineConfig({
     allowedHosts: [
       'kambaz-react-web-app-cs5610-sm25.onrender.com',
       '.onrender.com',
-      '.netlify.app',
       'localhost',
       '127.0.0.1',
       '0.0.0.0',

@@ -1,5 +1,8 @@
-import axiosWithCredentials, { REMOTE_SERVER } from "../../api/axios";
+import axios from "axios";
 
+const axiosWithCredentials = axios.create({ withCredentials: true });
+
+export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "https://kambaz-node-server-app-cs5610-sm25.onrender.com";
 export const USERS_API = `${REMOTE_SERVER}/api/users`;
 
 export const signin = async (credentials: any) => {
@@ -33,6 +36,8 @@ export const updateUser = async (user: any) => {
 };
 
 export const findMyCourses = async () => {
-  const response = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
-  return response.data;
+  const { data } = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
+  return data;
 };
+
+console.log(import.meta.env.VITE_REMOTE_SERVER);

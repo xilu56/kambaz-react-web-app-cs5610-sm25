@@ -7,6 +7,7 @@ import HttpClient from "./HttpClient.tsx";
 import WorkingWithObjectsAsynchronously from "./WorkingWithObjectsAsynchronously.tsx";
 import WorkingWithArraysAsynchronously from "./WorkingWithArraysAsynchronously.tsx";
 
+
 export default function Lab5() {
   return (
     <div id="wd-lab5">

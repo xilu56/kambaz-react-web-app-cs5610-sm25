@@ -49,13 +49,25 @@ export default function AssignmentEditor() {
 
   // Fetch assignment details if editing
   const fetchAssignment = async () => {
-    try {
-      if (aid) {
-        const assignment = await assignmentsClient.findAssignmentById(aid);
-        setAssignment(assignment);
+    if (aid && aid !== 'new') {
+      try {
+        console.log("Fetching assignment details for:", aid);
+        const assignment = await assignmentsClient.fetchAssignment(aid);
+        console.log("Assignment details fetched successfully:", assignment);
+        setAssignment({
+          title: assignment.title,
+          course: assignment.course,
+          description: assignment.description || "",
+          points: assignment.points || 100,
+          dueDate: assignment.dueDate || "",
+          availableFrom: assignment.availableFrom || "",
+          availableUntil: assignment.availableUntil || "",
+          module: assignment.module || "",
+          status: assignment.status || "not-started"
+        });
+      } catch (error) {
+        console.error("Error fetching assignment:", error);
       }
-    } catch (error) {
-      console.error("Error fetching assignment:", error);
     }
   };
 

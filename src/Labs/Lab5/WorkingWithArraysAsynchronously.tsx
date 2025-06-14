@@ -64,30 +64,60 @@ const editTodo = (todo: any) => {
       <ListGroup>
         {todos.map((todo) => (
           <ListGroup.Item key={todo.id}>
-            <FaPencil onClick={() => editTodo(todo)} className="text-primary float-end me-2 mt-1" />
-            <FaTrash onClick={() => removeTodo(todo)}
-                     className="text-danger float-end mt-1" id="wd-remove-todo"/>
-            <TiDelete onClick={() => deleteTodo(todo)} className="text-danger float-end me-2 fs-3" id="wd-delete-todo" />
-            <input type="checkbox" defaultChecked={todo.completed} className="form-check-input me-2 float-start"
-              onChange={(e) => updateTodo({ ...todo, completed: e.target.checked }) } />
-              {!todo.editing ? ( todo.title ) : (
-                <FormControl className="w-50 float-start" defaultValue={todo.title}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      updateTodo({ ...todo, editing: false });
-                    }
-                  }}
-                  onChange={(e) =>
-                    updateTodo({ ...todo, title: e.target.value })
-                  }
-                />
-              )}
 
-            <span style={{ textDecoration: todo.completed ? "line-through" : "none" }}>
-              {todo.title}
-            </span>
-          </ListGroup.Item>
+    <FaPencil
+      onClick={() => editTodo(todo)}
+      className="text-primary float-end me-2 mt-1"
+    />
+
+    <TiDelete
+    onClick={() => updateTodo({ ...todo, editing: false })}
+    className="text-danger float-end me-2 fs-3 mt-1"
+    />
+
+
+    <FaTrash
+      onClick={() => deleteTodo(todo)}
+      className="text-danger float-end me-2 mt-1"
+      id="wd-delete-todo"
+    />
+
+
+  <input
+    type="checkbox"
+    checked={todo.completed}
+    className="form-check-input me-2 float-start"
+    onChange={(e) =>
+      updateTodo({ ...todo, completed: e.target.checked })
+    }
+  />
+
+  {/* 标题或编辑框 */}
+  {!todo.editing ? (
+    <span
+      className="float-start"
+      style={{
+        textDecoration: todo.completed ? "line-through" : "none",
+      }}
+    >
+      {todo.title}
+    </span>
+  ) : (
+    <FormControl
+      className="w-50 float-start"
+      defaultValue={todo.title}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          updateTodo({ ...todo, editing: false });
+        }
+      }}
+      onChange={(e) =>
+        updateTodo({ ...todo, title: e.target.value })
+      }
+    />
+  )}
+</ListGroup.Item>
         ))}
-      </ListGroup> <hr />
+      </ListGroup>
     </div>
 );}
