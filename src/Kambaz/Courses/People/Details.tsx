@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { FaUserCircle, FaCheck } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
 import { IoCloseSharp } from "react-icons/io5";
@@ -19,6 +20,10 @@ export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}
   const [role, setRole] = useState("");
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  
+  // Check if current user is admin
+  const isAdmin = currentUser && currentUser.role === "ADMIN";
   
   const fetchUser = async () => {
     if (!uid) return;
@@ -36,7 +41,8 @@ export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}
       firstName: firstName || '', 
       lastName: lastName || '',
       email,
-      role
+      // Only update role if user is admin
+      ...(isAdmin && { role })
     };
     await client.updateUser(updatedUser);
     setUser(updatedUser);
@@ -110,7 +116,7 @@ export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}
       <div className="mt-2">
         <b>Roles:</b> 
         {!editing && <span className="wd-roles ms-2">{user.role}</span>}
-        {editing && (
+        {editing && isAdmin && (
           <select 
             className="form-select mt-1 wd-edit-role"
             value={role}
@@ -121,6 +127,9 @@ export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}
             <option value="FACULTY">Faculty</option>
             <option value="ADMIN">Admin</option>
           </select>
+        )}
+        {editing && !isAdmin && (
+          <span className="wd-roles ms-2 text-muted">{user.role} (Read-only)</span>
         )}
       </div>
       
@@ -135,12 +144,14 @@ export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}
       </div>
       
       <hr />
-      <button 
-        onClick={() => deleteUser(uid)} 
-        className="btn btn-danger float-end wd-delete"
-      >
-        Delete
-      </button>
+      {isAdmin && (
+        <button 
+          onClick={() => deleteUser(uid)} 
+          className="btn btn-danger float-end wd-delete"
+        >
+          Delete
+        </button>
+      )}
       <button 
         onClick={() => navigate(-1)}
         className="btn btn-secondary float-start me-2 wd-cancel"

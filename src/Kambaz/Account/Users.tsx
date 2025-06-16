@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaPlus } from "react-icons/fa";
 import { Table } from "react-bootstrap";
 import FormControl from "react-bootstrap/FormControl";
 import { Link } from "react-router-dom";
@@ -48,6 +48,19 @@ export default function Users() {
     }
   };
 
+  const createUser = async () => {
+    const user = await client.createUser({
+      firstName: "New",
+      lastName: `User${users.length + 1}`,
+      username: `newuser${Date.now()}`,
+      password: "password123",
+      email: `email${users.length + 1}@neu.edu`,
+      section: "S101",
+      role: "STUDENT",
+    });
+    setUsers([...users, user]);
+  };
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -83,6 +96,10 @@ export default function Users() {
   return (
     <div id="wd-users">
       <PeopleDetails onUserDeleted={fetchUsers} />
+      <button onClick={createUser} className="float-end btn btn-danger wd-add-people">
+        <FaPlus className="me-2" />
+        Users
+      </button>
       <h1>Users</h1>
       <select value={role} onChange={(e) =>filterUsersByRole(e.target.value)}
               className="form-select float-start w-25 wd-select-role" >
