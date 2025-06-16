@@ -66,7 +66,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
             <Route path="Quizzes" element={<h2>Quizzes</h2>} />
             <Route path="Grades" element={<h2>Grades</h2>} />
-            <Route path="People" element={<PeopleTable users={courseUsers} />} />
+            <Route path="People" element={<PeopleTable users={courseUsers} onUserDeleted={fetchCourseUsers} />} />
             <Route path="People/:uid" element={<PeopleDetails />} />
           </Routes>
         </div>

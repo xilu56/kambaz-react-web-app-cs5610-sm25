@@ -82,7 +82,7 @@ export default function Users() {
 
   return (
     <div id="wd-users">
-      <PeopleDetails />
+      <PeopleDetails onUserDeleted={fetchUsers} />
       <h1>Users</h1>
       <select value={role} onChange={(e) =>filterUsersByRole(e.target.value)}
               className="form-select float-start w-25 wd-select-role" >

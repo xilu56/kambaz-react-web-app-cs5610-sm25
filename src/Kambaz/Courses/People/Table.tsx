@@ -3,7 +3,12 @@ import PeopleDetails from "./Details";
 import { FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-export default function PeopleTable({ users = [] }: { users?: any[] }) {
+interface PeopleTableProps {
+  users?: any[];
+  onUserDeleted?: () => void;
+}
+
+export default function PeopleTable({ users = [], onUserDeleted }: PeopleTableProps) {
   const navigate = useNavigate();
 
   const handleUserClick = (userId: string) => {
@@ -12,7 +17,7 @@ export default function PeopleTable({ users = [] }: { users?: any[] }) {
 
   return (
     <div id="wd-people-table">
-      <PeopleDetails />
+      <PeopleDetails onUserDeleted={onUserDeleted} />
       <table className="table table-striped">
         <thead>
           <tr>

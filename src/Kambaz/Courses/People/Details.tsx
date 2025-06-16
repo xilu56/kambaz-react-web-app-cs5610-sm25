@@ -5,7 +5,11 @@ import { useParams, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import * as client from "../../Account/client";
 
-export default function PeopleDetails() {
+interface PeopleDetailsProps {
+  onUserDeleted?: () => void;
+}
+
+export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}) {
   const { uid } = useParams();
   const [user, setUser] = useState<any>({});
   const navigate = useNavigate();
@@ -17,8 +21,16 @@ export default function PeopleDetails() {
   };
   
   const deleteUser = async (uid: string) => {
-    await client.deleteUser(uid);
-    navigate(-1);
+    try {
+      await client.deleteUser(uid);
+      // Call the callback to update the parent component's user list
+      if (onUserDeleted) {
+        onUserDeleted();
+      }
+      navigate(-1);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
   
   useEffect(() => {
