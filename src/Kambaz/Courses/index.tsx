@@ -6,6 +6,7 @@ import Home from "./Home";
 import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
 import PeopleTable from "./People/Table";
+import PeopleDetails from "./People/Details";
 import * as enrollmentsClient from "../Enrollments/client";
 import * as userClient from "../Account/client";
 
@@ -66,6 +67,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
             <Route path="Quizzes" element={<h2>Quizzes</h2>} />
             <Route path="Grades" element={<h2>Grades</h2>} />
             <Route path="People" element={<PeopleTable users={courseUsers} />} />
+            <Route path="People/:uid" element={<PeopleDetails />} />
           </Routes>
         </div>
       </div>

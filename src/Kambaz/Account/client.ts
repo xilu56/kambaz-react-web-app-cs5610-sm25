@@ -57,3 +57,13 @@ export const findUsersByPartialName = async (name: string) => {
   const response = await axios.get(`${USERS_API}?name=${name}`);
   return response.data;
 };
+
+export const findUserById = async (id: string) => {
+  const response = await axios.get(`${USERS_API}/${id}`);
+  return response.data;
+};
+
+export const deleteUser = async (userId: string) => {
+  const response = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
+  return response.data;
+};

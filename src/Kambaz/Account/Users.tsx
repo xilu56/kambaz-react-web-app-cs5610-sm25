@@ -3,7 +3,9 @@ import { useSelector } from "react-redux";
 import { FaUserCircle } from "react-icons/fa";
 import { Table } from "react-bootstrap";
 import FormControl from "react-bootstrap/FormControl";
+import { Link } from "react-router-dom";
 import * as client from "./client";
+import PeopleDetails from "../Courses/People/Details";
 
 export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
@@ -80,6 +82,7 @@ export default function Users() {
 
   return (
     <div id="wd-users">
+      <PeopleDetails />
       <h1>Users</h1>
       <select value={role} onChange={(e) =>filterUsersByRole(e.target.value)}
               className="form-select float-start w-25 wd-select-role" >
@@ -104,18 +107,23 @@ export default function Users() {
         <tbody>
           {users.map((user) => (
             <tr key={user._id}>
-              <td>
-                <div className="d-flex align-items-center">
+              <td className="wd-full-name text-nowrap">
+                <Link to={`/Kambaz/Account/Users/${user._id}`} className="text-decoration-none">
                   <FaUserCircle className="me-3 fs-1 text-secondary" />
-                  <span>
-                    {user.firstName && user.lastName 
-                      ? `${user.firstName} ${user.lastName}` 
-                      : user.firstName || user.lastName 
-                        ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
-                        : user.username
-                    }
-                  </span>
-                </div>
+                  {user.firstName && user.lastName ? (
+                    <>
+                      <span className="wd-first-name">{user.firstName}</span>{" "}
+                      <span className="wd-last-name">{user.lastName}</span>
+                    </>
+                  ) : user.firstName || user.lastName ? (
+                    <>
+                      <span className="wd-first-name">{user.firstName || ''}</span>{" "}
+                      <span className="wd-last-name">{user.lastName || ''}</span>
+                    </>
+                  ) : (
+                    <span className="wd-username">{user.username}</span>
+                  )}
+                </Link>
               </td>
               <td>
                 {user.loginId || `${user.username}@kambaz.edu`}
