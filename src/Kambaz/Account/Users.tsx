@@ -2,10 +2,32 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { FaUserCircle } from "react-icons/fa";
 import { Table } from "react-bootstrap";
+import FormControl from "react-bootstrap/FormControl";
 import * as client from "./client";
 
 export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
+  const [role, setRole] = useState("");
+  const filterUsersByRole = async (role: string) => {
+    setRole(role);
+    if (role) {
+      const users = await client.findUsersByRole(role);
+      setUsers(users);
+    } else {
+      fetchUsers();
+    }
+  };
+  const [name, setName] = useState("");
+  const filterUsersByName = async (name: string) => {
+    setName(name);
+    if (name) {
+      const users = await client.findUsersByPartialName(name);
+      setUsers(users);
+    } else {
+      fetchUsers();
+    }
+  };
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -59,7 +81,15 @@ export default function Users() {
   return (
     <div id="wd-users">
       <h1>Users</h1>
-      
+      <select value={role} onChange={(e) =>filterUsersByRole(e.target.value)}
+              className="form-select float-start w-25 wd-select-role" >
+        <option value="">All Roles</option>    <option value="STUDENT">Students</option>
+        <option value="TA">Assistants</option> <option value="FACULTY">Faculty</option>
+        <option value="ADMIN">Administrators</option>
+      </select>
+      <FormControl onChange={(e) => filterUsersByName(e.target.value)} placeholder="Search people"
+             className="float-start w-25 me-2 wd-filter-by-name" />
+             
       <Table striped hover responsive className="mt-4">
         <thead>
           <tr>
