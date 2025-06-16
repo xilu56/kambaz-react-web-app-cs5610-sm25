@@ -4,6 +4,7 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 import TOC from "./Labs/TOC";
 import store from "./Kambaz/store";
 import { Provider } from "react-redux";
+import ConnectionTest from "./ConnectionTest";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
             <Route path="/" element={<div>
               <h1>Web Development Course</h1>
               <p>Welcome to the Web Development course. Please use the navigation above to explore Labs and Kambaz.</p>
+              <ConnectionTest />
             </div>} />
             <Route path="/Labs/*" element={<Labs />} />
             <Route path="/Kambaz/*" element={<Kambaz />} />

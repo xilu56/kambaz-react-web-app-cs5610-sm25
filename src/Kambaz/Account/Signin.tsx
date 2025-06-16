@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Form, Container, Row, Col, Alert } from "react-bootstrap";
+import { Form, Alert } from "react-bootstrap";
 import * as client from "./client";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -36,56 +36,41 @@ export default function Signin() {
   };
 
   return (
-    <div id="wd-signin-screen">
-      <Container>
-        <Row>
-          <Col xs={12} md={3}>
-            {/* Left column empty */}
-          </Col>
-          <Col xs={12} md={3} className="border-end d-flex flex-column">
-            <h3 className="mb-4">Signin</h3>
-            <Link to="/Kambaz/Account/Signin" className="text-danger mb-3">Signin</Link>
-            <Link to="/Kambaz/Account/Signup" className="text-danger mb-3">Signup</Link>
-            <Link to="/Kambaz/Account/Profile" className="text-danger mb-3">Profile</Link>
-          </Col>
-          <Col xs={12} md={6}>
-            <h3 className="mb-4">Signin</h3>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form>
-              <Form.Control 
-                id="wd-username"
-                placeholder="username"
-                className="mb-4"
-                value={credentials.username || ""}
-                onChange={(e) => handleInputChange("username", e.target.value)}
-              />
-              <Form.Control 
-                id="wd-password"
-                placeholder="password" 
-                type="password"
-                className="mb-4"
-                value={credentials.password || ""}
-                onChange={(e) => handleInputChange("password", e.target.value)}
-              />
-              <button
-                id="wd-signin-btn"
-                type="button"
-                onClick={signin}
-                className="btn btn-primary w-100 mb-3">
-                Signin
-              </button>
-              <div className="text-center">
-                <Link 
-                  id="wd-signup-link" 
-                  to="/Kambaz/Account/Signup"
-                  className="text-primary">
-                  Signup
-                </Link>
-              </div>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
+    <div id="wd-signin-screen" className="mt-4">
+      <h3 className="mb-4">Signin</h3>
+      {error && <Alert variant="danger">{error}</Alert>}
+      <Form>
+        <Form.Control 
+          id="wd-username"
+          placeholder="username"
+          className="mb-4"
+          value={credentials.username || ""}
+          onChange={(e) => handleInputChange("username", e.target.value)}
+        />
+        <Form.Control 
+          id="wd-password"
+          placeholder="password" 
+          type="password"
+          className="mb-4"
+          value={credentials.password || ""}
+          onChange={(e) => handleInputChange("password", e.target.value)}
+        />
+        <button
+          id="wd-signin-btn"
+          type="button"
+          onClick={signin}
+          className="btn btn-primary w-100 mb-3">
+          Signin
+        </button>
+        <div className="text-center">
+          <Link 
+            id="wd-signup-link" 
+            to="/Kambaz/Account/Signup"
+            className="text-primary">
+            Signup
+          </Link>
+        </div>
+      </Form>
     </div>
   );
 }

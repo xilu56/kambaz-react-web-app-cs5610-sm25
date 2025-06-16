@@ -7,7 +7,7 @@ export default defineConfig({
   base: './',
   define: {
     'import.meta.env.VITE_REMOTE_SERVER': JSON.stringify(
-      process.env.VITE_REMOTE_SERVER || 'https://kambaz-node-server-app-cs5610-sm25.onrender.com'
+      process.env.VITE_REMOTE_SERVER || 'http://localhost:4000'
     )
   },
   server: {

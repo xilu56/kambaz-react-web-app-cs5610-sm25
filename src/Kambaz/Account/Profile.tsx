@@ -1,6 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Form, Container, Row, Col, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser, clearCurrentUser } from "./reducer";
 import { updateProfile as updateUserProfile, signout as signoutUser } from "./client";
@@ -93,136 +93,120 @@ export default function Profile() {
   }
 
   return (
-    <div id="wd-profile-screen">
-      <Container>
-        <Row>
-          <Col xs={12} md={3}>
-            {/* Left column empty */}
-          </Col>
-          <Col xs={12} md={3} className="border-end d-flex flex-column">
-            <h3 className="mb-4">Profile</h3>
-            <Link to="/Kambaz/Account/Signin" className="text-danger mb-3">Signin</Link>
-            <Link to="/Kambaz/Account/Signup" className="text-danger mb-3">Signup</Link>
-            <Link to="/Kambaz/Account/Profile" className="text-danger mb-3">Profile</Link>
-            <Link to="/Kambaz/Dashboard" className="text-danger mb-3">Dashboard</Link>
-          </Col>
-          <Col xs={12} md={6}>
-            <h1 className="mb-4">Profile</h1>
-            
-            {successMessage && <Alert variant="success">{successMessage}</Alert>}
-            {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-            
-            <Form>
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={4}>Username:</Form.Label>
-                <Col sm={8}>
-                  <Form.Control
-                    id="wd-username"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    type="text"
-                  />
-                </Col>
-              </Form.Group>
-              
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={4}>Password:</Form.Label>
-                <Col sm={8}>
-                  <Form.Control
-                    id="wd-password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    type="password"
-                  />
-                </Col>
-              </Form.Group>
-              
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={4}>First Name:</Form.Label>
-                <Col sm={8}>
-                  <Form.Control
-                    id="wd-firstname"
-                    value={firstName}
-                    onChange={e => setFirstName(e.target.value)}
-                    type="text"
-                  />
-                </Col>
-              </Form.Group>
-              
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={4}>Last Name:</Form.Label>
-                <Col sm={8}>
-                  <Form.Control
-                    id="wd-lastname"
-                    value={lastName}
-                    onChange={e => setLastName(e.target.value)}
-                    type="text"
-                  />
-                </Col>
-              </Form.Group>
-              
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={4}>Date of Birth:</Form.Label>
-                <Col sm={8}>
-                  <Form.Control
-                    id="wd-dob"
-                    value={dob}
-                    onChange={e => setDob(e.target.value)}
-                    type="date"
-                  />
-                </Col>
-              </Form.Group>
-              
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={4}>Email:</Form.Label>
-                <Col sm={8}>
-                  <Form.Control
-                    id="wd-email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    type="email"
-                  />
-                </Col>
-              </Form.Group>
-              
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={4}>Role:</Form.Label>
-                <Col sm={8}>
-                  <Form.Select
-                    id="wd-role"
-                    value={role}
-                    onChange={e => setRole(e.target.value)}
-                  >
-                    <option value="STUDENT">Student</option>
-                    <option value="FACULTY">Faculty</option>
-                    <option value="ADMIN">Admin</option>
-                    <option value="TA">TA</option>
-                  </Form.Select>
-                </Col>
-              </Form.Group>
-              
-              <div className="w-100 mb-3">
-                <Button
-                  id="wd-update-btn"
-                  variant="primary"
-                  className="w-100 mb-2"
-                  onClick={updateProfile}
-                >
-                  Update Profile
-                </Button>
-                <Button
-                  id="wd-signout-btn"
-                  variant="danger"
-                  className="w-100"
-                  onClick={signout}
-                >
-                  Signout
-                </Button>
-              </div>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
+    <div id="wd-profile-screen" className="mt-4">
+      <h1 className="mb-4">Profile</h1>
+      
+      {successMessage && <Alert variant="success">{successMessage}</Alert>}
+      {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+      
+      <Form>
+        <Form.Group className="row mb-3">
+          <Form.Label className="col-sm-4 col-form-label">Username:</Form.Label>
+          <div className="col-sm-8">
+            <Form.Control
+              id="wd-username"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              type="text"
+            />
+          </div>
+        </Form.Group>
+        
+        <Form.Group className="row mb-3">
+          <Form.Label className="col-sm-4 col-form-label">Password:</Form.Label>
+          <div className="col-sm-8">
+            <Form.Control
+              id="wd-password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              type="password"
+            />
+          </div>
+        </Form.Group>
+        
+        <Form.Group className="row mb-3">
+          <Form.Label className="col-sm-4 col-form-label">First Name:</Form.Label>
+          <div className="col-sm-8">
+            <Form.Control
+              id="wd-firstname"
+              value={firstName}
+              onChange={e => setFirstName(e.target.value)}
+              type="text"
+            />
+          </div>
+        </Form.Group>
+        
+        <Form.Group className="row mb-3">
+          <Form.Label className="col-sm-4 col-form-label">Last Name:</Form.Label>
+          <div className="col-sm-8">
+            <Form.Control
+              id="wd-lastname"
+              value={lastName}
+              onChange={e => setLastName(e.target.value)}
+              type="text"
+            />
+          </div>
+        </Form.Group>
+        
+        <Form.Group className="row mb-3">
+          <Form.Label className="col-sm-4 col-form-label">Date of Birth:</Form.Label>
+          <div className="col-sm-8">
+            <Form.Control
+              id="wd-dob"
+              value={dob}
+              onChange={e => setDob(e.target.value)}
+              type="date"
+            />
+          </div>
+        </Form.Group>
+        
+        <Form.Group className="row mb-3">
+          <Form.Label className="col-sm-4 col-form-label">Email:</Form.Label>
+          <div className="col-sm-8">
+            <Form.Control
+              id="wd-email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              type="email"
+            />
+          </div>
+        </Form.Group>
+        
+        <Form.Group className="row mb-3">
+          <Form.Label className="col-sm-4 col-form-label">Role:</Form.Label>
+          <div className="col-sm-8">
+            <Form.Select
+              id="wd-role"
+              value={role}
+              onChange={e => setRole(e.target.value)}
+            >
+              <option value="STUDENT">Student</option>
+              <option value="FACULTY">Faculty</option>
+              <option value="ADMIN">Admin</option>
+              <option value="TA">TA</option>
+            </Form.Select>
+          </div>
+        </Form.Group>
+        
+        <div className="w-100 mb-3">
+          <Button
+            id="wd-update-btn"
+            variant="primary"
+            className="w-100 mb-2"
+            onClick={updateProfile}
+          >
+            Update Profile
+          </Button>
+          <Button
+            id="wd-signout-btn"
+            variant="danger"
+            className="w-100"
+            onClick={signout}
+          >
+            Signout
+          </Button>
+        </div>
+      </Form>
     </div>
   );
 }
