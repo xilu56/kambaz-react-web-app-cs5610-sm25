@@ -107,10 +107,19 @@ export default function Users() {
               <td>
                 <div className="d-flex align-items-center">
                   <FaUserCircle className="me-3 fs-1 text-secondary" />
-                  <span>{user.firstName} {user.lastName}</span>
+                  <span>
+                    {user.firstName && user.lastName 
+                      ? `${user.firstName} ${user.lastName}` 
+                      : user.firstName || user.lastName 
+                        ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
+                        : user.username
+                    }
+                  </span>
                 </div>
               </td>
-              <td>{user.loginId}</td>
+              <td>
+                {user.loginId || `${user.username}@kambaz.edu`}
+              </td>
               <td>{user.section || 'S101'}</td>
               <td>
                 <span className={`badge ${
