@@ -41,3 +41,8 @@ export const findMyCourses = async () => {
 };
 
 console.log(import.meta.env.VITE_REMOTE_SERVER);
+
+export const findAllUsers = async () => {
+  const response = await axiosWithCredentials.get(USERS_API);
+  return response.data;
+}

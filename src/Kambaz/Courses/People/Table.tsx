@@ -1,6 +1,6 @@
 import { FaUserCircle, FaSearch, FaUserPlus, FaFilter } from "react-icons/fa";
 import { Table, Form, InputGroup, Button, Dropdown } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+
 import { useState, useEffect } from "react";
 import * as enrollmentsClient from "../../Enrollments/client";
 
@@ -14,8 +14,7 @@ interface Person {
   totalActivity: string;
 }
 
-export default function PeopleTable() {
-  const { cid } = useParams();
+export default function PeopleTable( { users = [] }: { users?: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
