@@ -222,6 +222,15 @@ export default function Dashboard(
                     <div className="mt-auto">
                       <Button variant="primary">Go to Course</Button>
                       
+                      <button id="wd-delete-course-click"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          deleteCourse(course);
+                        }}
+                        className="btn btn-danger me-2 float-end" >
+                        Delete
+                      </button>
+                      
                       <button id="wd-edit-course-click"
                         onClick={(event) => {
                           event.preventDefault();
