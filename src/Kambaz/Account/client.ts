@@ -39,12 +39,19 @@ export const updateProfile = async (user: any) => {
   console.log('User data to update:', user);
   
   try {
+    // First check if we're logged in
+    console.log('Checking login status first...');
+    const profileCheck = await axiosWithCredentials.post(`${USERS_API}/profile`);
+    console.log('Profile check successful:', profileCheck.data);
+    
     const response = await axiosWithCredentials.put(`${USERS_API}/profile`, user);
     console.log('Update profile success:', response.data);
     return response.data;
   } catch (error: any) {
     console.error('Update profile error details:', error);
     console.error('Error response:', error.response);
+    console.error('Error status:', error.response?.status);
+    console.error('Error data:', error.response?.data);
     throw error;
   }
 };
