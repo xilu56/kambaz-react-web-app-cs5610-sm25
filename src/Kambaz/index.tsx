@@ -271,6 +271,7 @@ return (
             enrollInCourse={enrollInCourse}
             unenrollFromCourse={unenrollFromCourse}
             isEnrolled={isEnrolled}
+            enrolledCourses={getEnrolledCourses()} 
           />} />
           <Route path="/Courses/:cid/*" element={<Courses courses={courses} />} />
           <Route path="/Calendar" element={<h1>Calendar</h1>} />
