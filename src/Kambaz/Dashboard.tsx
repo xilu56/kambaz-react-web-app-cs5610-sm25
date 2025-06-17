@@ -172,12 +172,14 @@ export default function Dashboard(
       <hr />
       
       <h2 id="wd-dashboard-published">
-        Enrolled Courses ({courses.length})
+        {enrolling ? "All Courses" : "My Courses"} ({courses.length})
       </h2>{" "}
       <hr />
       <div id="wd-dashboard-courses">
         <Row xs={1} md={3} lg={4} xl={5} className="g-4">
-          {courses.map((course: any) => (
+          {courses
+            .filter((course: any) => course && course._id) // Filter out null/undefined courses
+            .map((course: any) => (
             <Col key={course._id} className="wd-dashboard-course">
               <Card className="h-100">
                 <Link
@@ -203,13 +205,13 @@ export default function Dashboard(
                           {course.enrolled ? "Unenroll" : "Enroll"}
                         </button>
                       )}
-                      {course.number}: {course.name}
+                      {course.number || 'N/A'}: {course.name || 'Untitled Course'}
                     </Card.Title>
                     <Card.Text
                       className="wd-dashboard-course-description overflow-hidden"
                       style={{ height: "75px" }}
                     >
-                      {course.description}
+                      {course.description || 'No description available'}
                     </Card.Text>
                     <div className="mt-auto">
                       <Button variant="primary">Go to Course</Button>

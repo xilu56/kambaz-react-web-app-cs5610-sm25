@@ -103,22 +103,38 @@ export default function Kambaz() {
       try {
         console.log("Fetching enrollments for user:", currentUser._id);
         const userEnrollments = await enrollmentsClient.findEnrollmentsForUser(currentUser._id);
-        console.log("Enrollments fetched successfully:", userEnrollments.length, "enrollments");
-        dispatch(setEnrollments(userEnrollments));
+        console.log("Enrollments fetched successfully:", userEnrollments?.length || 0, "enrollments");
+        // Ensure we always have an array
+        dispatch(setEnrollments(userEnrollments || []));
       } catch (error) {
         console.error("Error fetching enrollments:", error);
+        // Set empty array on error to prevent undefined issues
+        dispatch(setEnrollments([]));
       }
     }
   };
 
   const getEnrolledCourses = () => {
+    // Safety check for courses array
+    if (!courses || !Array.isArray(courses)) {
+      return [];
+    }
+    
     if (!currentUser || !currentUser._id) {
       return courses; // Show all courses if no user logged in
     }
     
     // Filter courses to show only enrolled ones for the Dashboard
-    const enrolledCourseIds = enrollments.map((enrollment: any) => enrollment.course);
-    return courses.filter(course => enrolledCourseIds.includes(course._id));
+    // Add safety check for enrollments array
+    if (!enrollments || !Array.isArray(enrollments)) {
+      return []; // Return empty array if enrollments is not available
+    }
+    
+    const enrolledCourseIds = enrollments
+      .filter(enrollment => enrollment && enrollment.course) // Filter out null/undefined enrollments
+      .map((enrollment: any) => enrollment.course);
+    
+    return courses.filter(course => course && course._id && enrolledCourseIds.includes(course._id));
   };
 
   const enrollInCourse = async (courseId: string) => {
@@ -253,11 +269,8 @@ export default function Kambaz() {
 
   useEffect(() => {
     if (currentUser) {
-      if (enrolling) {
-        fetchCourses();
-      } else {
-        findCoursesForUser();
-      }
+      // Always fetch all courses so we have complete data for filtering
+      fetchCourses();
     }
   }, [currentUser, enrolling]);
 
@@ -294,7 +307,7 @@ return (
           <Route path="/Account/*" element={<Account />} />
           <Route path="/Dashboard" element={
             <Dashboard
-              courses={courses}
+              courses={enrolling ? courses : getEnrolledCourses()}
               course={course}
               setCourse={setCourse}
               addNewCourse={addNewCourse}
