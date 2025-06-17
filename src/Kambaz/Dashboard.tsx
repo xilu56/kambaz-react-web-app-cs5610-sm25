@@ -4,15 +4,16 @@ import FormControl from "react-bootstrap/FormControl";
 import { useState } from "react";
 
 export default function Dashboard(
-{ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrolling, setEnrolling, updateEnrollment }: {
+{ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrollInCourse, unenrollFromCourse, isEnrolled }: {
   courses: any[]; course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
-  updateCourse: () => void; enrolling: boolean; setEnrolling: (enrolling: boolean) => void;
-  updateEnrollment: (courseId: string, enrolled: boolean) => void;
+  updateCourse: () => void; enrollInCourse: (courseId: string) => Promise<void>;
+  unenrollFromCourse: (courseId: string) => Promise<void>; isEnrolled: (courseId: string) => boolean;
 }
 ) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [enrolling, setEnrolling] = useState(false);
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
@@ -197,12 +198,17 @@ export default function Dashboard(
                   <Card.Body className="d-flex flex-column">
                     <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
                       {enrolling && (
-                        <button onClick={(event) => {
+                        <button onClick={async (event) => {
                                   event.preventDefault();
-                                  updateEnrollment(course._id, !course.enrolled);
+                                  const enrolled = isEnrolled(course._id);
+                                  if (enrolled) {
+                                    await unenrollFromCourse(course._id);
+                                  } else {
+                                    await enrollInCourse(course._id);
+                                  }
                                 }}
-                                className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`} >
-                          {course.enrolled ? "Unenroll" : "Enroll"}
+                                className={`btn ${ isEnrolled(course._id) ? "btn-danger" : "btn-success" } float-end`} >
+                          {isEnrolled(course._id) ? "Unenroll" : "Enroll"}
                         </button>
                       )}
                       {course.number || 'N/A'}: {course.name || 'Untitled Course'}
