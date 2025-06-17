@@ -1,6 +1,6 @@
 import axios from "axios";
 const axiosWithCredentials = axios.create({ withCredentials: true });
-const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
+const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 const MODULES_API = `${REMOTE_SERVER}/api/modules`;
 
 export const findModulesForCourse = async (courseId: string) => {
