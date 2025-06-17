@@ -47,7 +47,6 @@ export default function Kambaz() {
       try {
         const userData = JSON.parse(savedUser);
         dispatch(setCurrentUser(userData));
-        console.log("Session restored for user:", userData.username);
       } catch (error) {
         console.error("Error restoring session:", error);
         localStorage.removeItem('currentUser');
@@ -101,9 +100,7 @@ export default function Kambaz() {
   const fetchEnrollments = async () => {
     if (currentUser && currentUser._id) {
       try {
-        console.log("Fetching enrollments for user:", currentUser._id);
         const userEnrollments = await enrollmentsClient.findEnrollmentsForUser(currentUser._id);
-        console.log("Enrollments fetched successfully:", userEnrollments?.length || 0, "enrollments");
         // Ensure we always have an array
         dispatch(setEnrollments(userEnrollments || []));
       } catch (error) {
@@ -145,9 +142,7 @@ export default function Kambaz() {
     }
 
     try {
-      console.log("Enrolling user", currentUser._id, "in course", courseId);
       const newEnrollment = await enrollmentsClient.enrollUserInCourse(currentUser._id, courseId);
-      console.log("Enrollment successful:", newEnrollment);
       dispatch(enrollUserInCourse(newEnrollment));
       // Refresh enrollments from server
       await fetchEnrollments();
@@ -166,9 +161,7 @@ export default function Kambaz() {
     }
 
     try {
-      console.log("Unenrolling user", currentUser._id, "from course", courseId);
       await enrollmentsClient.unenrollUserFromCourse(currentUser._id, courseId);
-      console.log("Unenrollment successful");
       dispatch(unenrollUserFromCourse({ userId: currentUser._id, courseId }));
       // Refresh enrollments from server
       await fetchEnrollments();
@@ -188,7 +181,6 @@ export default function Kambaz() {
 
   const addNewCourse = async () => {
     try {
-      console.log("Creating new course:", course);
       // Create course object without _id (let server generate it)
       const courseToCreate = {
         name: course.name,
@@ -200,7 +192,6 @@ export default function Kambaz() {
       };
       
       const newCourse = await courseClient.createCourse(courseToCreate);
-      console.log("Course created successfully:", newCourse);
       
       // Refresh courses list from server to show all courses
       await fetchCourses();
@@ -228,9 +219,7 @@ export default function Kambaz() {
 
   const deleteCourse = async (courseId: any) => {
     try {
-      console.log("Deleting course:", courseId);
       await courseClient.deleteCourse(courseId);
-      console.log("Course deleted successfully");
       // Refresh courses list from server to ensure consistency
       await fetchCourses();
       showNotification("Course deleted successfully!", "success");
@@ -242,9 +231,7 @@ export default function Kambaz() {
 
   const updateCourse = async () => {
     try {
-      console.log("Updating course:", course);
       await courseClient.updateCourse(course);
-      console.log("Course updated successfully");
       // Refresh courses list from server to ensure consistency
       await fetchCourses();
       

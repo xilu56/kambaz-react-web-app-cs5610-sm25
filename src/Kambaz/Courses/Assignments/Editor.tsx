@@ -51,9 +51,7 @@ export default function AssignmentEditor() {
   const fetchAssignment = async () => {
     if (aid && aid !== 'new') {
       try {
-        console.log("Fetching assignment details for:", aid);
         const assignment = await assignmentsClient.fetchAssignment(aid);
-        console.log("Assignment details fetched successfully:", assignment);
         setAssignment({
           title: assignment.title,
           course: assignment.course,
@@ -126,7 +124,6 @@ export default function AssignmentEditor() {
 
   const handleSave = async () => {
     try {
-      console.log("Saving assignment:", assignment);
       const formattedAssignment = {
         ...assignment,
         dueDate: assignment.dueDate ? formatDateFromInput(assignment.dueDate) : "",
@@ -136,15 +133,11 @@ export default function AssignmentEditor() {
 
       if (aid === 'new' || !existingAssignment || !aid) {
         // Create new assignment
-        console.log("Creating new assignment for course:", cid);
         const newAssignment = await assignmentsClient.createAssignmentForCourse(cid as string, formattedAssignment);
-        console.log("Assignment created successfully:", newAssignment);
         dispatch(addAssignment(newAssignment));
       } else {
         // Update existing assignment
-        console.log("Updating assignment:", aid);
         const updatedAssignment = await assignmentsClient.updateAssignment(aid, formattedAssignment);
-        console.log("Assignment updated successfully:", updatedAssignment);
         dispatch(updateAssignment({ ...updatedAssignment, _id: aid }));
       }
       
