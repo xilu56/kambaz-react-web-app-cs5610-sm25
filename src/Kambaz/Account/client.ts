@@ -2,7 +2,8 @@ import axios from "axios";
 
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
-export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER || "http://localhost:4000";
+// Temporarily use localhost for development
+export const REMOTE_SERVER = "http://localhost:4000";
 export const USERS_API = `${REMOTE_SERVER}/api/users`;
 
 export const signin = async (credentials: any) => {
@@ -40,7 +41,7 @@ export const findMyCourses = async () => {
   return data;
 };
 
-console.log(import.meta.env.VITE_REMOTE_SERVER);
+console.log("Using server:", REMOTE_SERVER);
 
 export const findAllUsers = async () => {
   const response = await axiosWithCredentials.get(USERS_API);
@@ -59,16 +60,16 @@ export const findUsersByPartialName = async (name: string) => {
 };
 
 export const findUserById = async (id: string) => {
-  const response = await axios.get(`${USERS_API}/${id}`);
+  const response = await axiosWithCredentials.get(`${USERS_API}/${id}`);
   return response.data;
 };
 
-export const deleteUser = async (userId: string) => {
-  const response = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
+export const deleteUser = async (id: string) => {
+  const response = await axiosWithCredentials.delete(`${USERS_API}/${id}`);
   return response.data;
 };
 
 export const createUser = async (user: any) => {
-  const response = await axios.post(`${USERS_API}`, user);
+  const response = await axiosWithCredentials.post(`${USERS_API}`, user);
   return response.data;
 };

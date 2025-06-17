@@ -89,3 +89,72 @@
   .green-checkmark {
     color: green;
   }
+
+  /* Toast Notifications */
+  .toast-container {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
+  }
+
+  .toast {
+    min-width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .toast-header {
+    font-weight: 600;
+  }
+
+  .toast-body {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  /* Form validation styles */
+  .is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  }
+
+  /* Button loading states */
+  .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  /* Course cards hover effect */
+  .wd-dashboard-course .card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+
+  .wd-dashboard-course .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Alert improvements */
+  .alert {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+
+  .alert-success {
+    background-color: #d1edff;
+    color: #0c5460;
+  }
+
+  /* Tips section styling */
+  .text-muted.small {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 4px solid #007bff;
+  }

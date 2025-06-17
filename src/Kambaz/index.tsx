@@ -1,17 +1,17 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import KambazNavigation from "./Navigation";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Account from "./Account";
-import Dashboard from "./Dashboard";
+import KambazNavigation from "./Navigation";
 import Courses from "./Courses";
+import Dashboard from "./Dashboard";
 import CoursesList from "./CoursesList";
-import "./styles.css";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "./Account/reducer";
 import { setEnrollments, enrollUserInCourse, unenrollUserFromCourse } from "./Enrollments/reducer";
 import * as courseClient from "./Courses/client";
-import * as userClient from "./Account/client";
 import * as enrollmentsClient from "./Enrollments/client";
+import { Toast, ToastContainer } from "react-bootstrap";
+import "./styles.css";
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -21,9 +21,22 @@ export default function Kambaz() {
     image: "/images/reactjs.jpg", description: "New Description",
   });
   
+  // Toast notification state
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+  
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+
+  // Show toast notification
+  const showNotification = (message: string, type: "success" | "error" = "success") => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+  };
 
   // Restore user session from localStorage
   const restoreSession = () => {
@@ -78,6 +91,7 @@ export default function Kambaz() {
   const enrollInCourse = async (courseId: string) => {
     if (!currentUser || !currentUser._id) {
       console.error("No user logged in");
+      showNotification("Please log in to enroll in courses", "error");
       return;
     }
 
@@ -88,14 +102,17 @@ export default function Kambaz() {
       dispatch(enrollUserInCourse(newEnrollment));
       // Refresh enrollments from server
       await fetchEnrollments();
+      showNotification("Successfully enrolled in course!", "success");
     } catch (error) {
       console.error("Error enrolling in course:", error);
+      showNotification("Failed to enroll in course. Please try again.", "error");
     }
   };
 
   const unenrollFromCourse = async (courseId: string) => {
     if (!currentUser || !currentUser._id) {
       console.error("No user logged in");
+      showNotification("Please log in to manage enrollments", "error");
       return;
     }
 
@@ -106,8 +123,10 @@ export default function Kambaz() {
       dispatch(unenrollUserFromCourse({ userId: currentUser._id, courseId }));
       // Refresh enrollments from server
       await fetchEnrollments();
+      showNotification("Successfully unenrolled from course!", "success");
     } catch (error) {
       console.error("Error unenrolling from course:", error);
+      showNotification("Failed to unenroll from course. Please try again.", "error");
     }
   };
 
@@ -136,8 +155,25 @@ export default function Kambaz() {
       
       // Refresh courses list from server to show all courses
       await fetchCourses();
+      
+      // Show success notification and navigate to courses
+      showNotification(`Course "${course.name}" created successfully! Redirecting to courses page...`, "success");
+      
+      // Reset form
+      setCourse({
+        name: "New Course", number: "New Number",
+        startDate: "2023-09-10", endDate: "2023-12-15", 
+        image: "/images/reactjs.jpg", description: "New Description",
+      });
+      
+      // Navigate to courses page after a short delay
+      setTimeout(() => {
+        navigate("/Kambaz/Courses");
+      }, 2000);
+      
     } catch (error) {
       console.error("Error creating course:", error);
+      showNotification("Failed to create course. Please check all fields and try again.", "error");
     }
   };
 
@@ -148,8 +184,10 @@ export default function Kambaz() {
       console.log("Course deleted successfully");
       // Refresh courses list from server to ensure consistency
       await fetchCourses();
+      showNotification("Course deleted successfully!", "success");
     } catch (error) {
       console.error("Error deleting course:", error);
+      showNotification("Failed to delete course. Please try again.", "error");
     }
   };
 
@@ -160,8 +198,18 @@ export default function Kambaz() {
       console.log("Course updated successfully");
       // Refresh courses list from server to ensure consistency
       await fetchCourses();
+      
+      // Show success notification and navigate to courses
+      showNotification(`Course "${course.name}" updated successfully! Redirecting to courses page...`, "success");
+      
+      // Navigate to courses page after a short delay
+      setTimeout(() => {
+        navigate("/Kambaz/Courses");
+      }, 2000);
+      
     } catch (error) {
       console.error("Error updating course:", error);
+      showNotification("Failed to update course. Please check all fields and try again.", "error");
     }
   };
 
@@ -223,11 +271,33 @@ return (
             enrollInCourse={enrollInCourse}
             unenrollFromCourse={unenrollFromCourse}
             isEnrolled={isEnrolled}
+            enrolledCourses={getEnrolledCourses()}
+            deleteCourse={deleteCourse}
           />} />
           <Route path="/Courses/:cid/*" element={<Courses courses={courses} />} />
           <Route path="/Calendar" element={<h1>Calendar</h1>} />
           <Route path="/Inbox" element={<h1>Inbox</h1>} />
         </Routes>
       </div>
+      
+      {/* Toast Notification */}
+      <ToastContainer position="top-end" className="p-3" style={{ zIndex: 9999 }}>
+        <Toast 
+          show={showToast} 
+          onClose={() => setShowToast(false)} 
+          delay={4000} 
+          autohide
+          bg={toastType === "success" ? "success" : "danger"}
+        >
+          <Toast.Header>
+            <strong className="me-auto">
+              {toastType === "success" ? "✅ Success" : "❌ Error"}
+            </strong>
+          </Toast.Header>
+          <Toast.Body className="text-white">
+            {toastMessage}
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
     </div>
 );}
