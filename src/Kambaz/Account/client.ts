@@ -6,7 +6,13 @@ export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 export const USERS_API = `${REMOTE_SERVER}/api/users`;
 
 export const signin = async (credentials: any) => {
+  console.log('=== SIGNIN CLIENT DEBUG ===');
+  console.log('Signing in with:', credentials);
+  console.log('USERS_API:', USERS_API);
+  
   const response = await axiosWithCredentials.post(`${USERS_API}/signin`, credentials);
+  console.log('Signin response:', response.data);
+  console.log('Cookies after signin:', document.cookie);
   return response.data;
 };
 
@@ -26,8 +32,21 @@ export const profile = async () => {
 };
 
 export const updateProfile = async (user: any) => {
-  const response = await axiosWithCredentials.put(`${USERS_API}/profile`, user);
-  return response.data;
+  console.log('=== UPDATE PROFILE CLIENT DEBUG ===');
+  console.log('REMOTE_SERVER:', REMOTE_SERVER);
+  console.log('USERS_API:', USERS_API);
+  console.log('Document cookies:', document.cookie);
+  console.log('User data to update:', user);
+  
+  try {
+    const response = await axiosWithCredentials.put(`${USERS_API}/profile`, user);
+    console.log('Update profile success:', response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error('Update profile error details:', error);
+    console.error('Error response:', error.response);
+    throw error;
+  }
 };
 
 export const updateUser = async (user: any) => {
