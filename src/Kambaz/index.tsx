@@ -177,9 +177,9 @@ export default function Kambaz() {
     }
   };
 
-  const deleteCourse = async (courseId: any) => {
+  const deleteCourse = async (courseId: string) => {
     try {
-      console.log("Deleting course:", courseId);
+      console.log("Deleting course with ID:", courseId);
       await courseClient.deleteCourse(courseId);
       console.log("Course deleted successfully");
       // Refresh courses list from server to ensure consistency

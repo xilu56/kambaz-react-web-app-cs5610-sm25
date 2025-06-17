@@ -6,7 +6,7 @@ import { useState } from "react";
 export default function Dashboard(
 { courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrollInCourse, unenrollFromCourse, isEnrolled }: {
   courses: any[]; course: any; setCourse: (course: any) => void;
-  addNewCourse: () => void; deleteCourse: (course: any) => void;
+  addNewCourse: () => void; deleteCourse: (courseId: string) => void;
   updateCourse: () => void; enrollInCourse: (courseId: string) => Promise<void>;
   unenrollFromCourse: (courseId: string) => Promise<void>; isEnrolled: (courseId: string) => boolean;
 }
@@ -225,7 +225,9 @@ export default function Dashboard(
                       <button id="wd-delete-course-click"
                         onClick={(event) => {
                           event.preventDefault();
-                          deleteCourse(course);
+                          if (window.confirm(`Are you sure you want to delete "${course.name}"?`)) {
+                            deleteCourse(course._id);
+                          }
                         }}
                         className="btn btn-danger me-2 float-end" >
                         Delete
