@@ -137,21 +137,7 @@ export default function CoursesList({
                 >
                   Enter Course
                 </Link>
-                {/* Unenroll button in My Courses view */}
-                {viewMode === "enrolled" && unenrollFromCourse && (
-                  <Button
-                    variant="outline-warning"
-                    size="sm"
-                    onClick={() => {
-                      if (window.confirm(`Are you sure you want to unenroll from "${course.name}"?`)) {
-                        unenrollFromCourse(course._id);
-                      }
-                    }}
-                    className="mt-2"
-                  >
-                    Unenroll
-                  </Button>
-                )}
+
                 {/* Delete button - only show if deleteCourse function is provided */}
                 {deleteCourse && (
                   <Button
