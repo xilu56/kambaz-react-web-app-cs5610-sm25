@@ -10,13 +10,11 @@ import { setCurrentUser } from "./Account/reducer";
 import { setEnrollments, enrollUserInCourse, unenrollUserFromCourse } from "./Enrollments/reducer";
 import * as courseClient from "./Courses/client";
 import * as enrollmentsClient from "./Enrollments/client";
-import * as userClient from "./Account/client";
 import { Toast, ToastContainer } from "react-bootstrap";
 import "./styles.css";
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
-  const [enrolling, setEnrolling] = useState<boolean>(false);
   const [course, setCourse] = useState<any>({
     name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", 
@@ -47,6 +45,7 @@ export default function Kambaz() {
       try {
         const userData = JSON.parse(savedUser);
         dispatch(setCurrentUser(userData));
+        console.log("Session restored for user:", userData.username);
       } catch (error) {
         console.error("Error restoring session:", error);
         localStorage.removeItem('currentUser');
@@ -54,84 +53,39 @@ export default function Kambaz() {
     }
   };
 
-  const findCoursesForUser = async () => {
-    try {
-      const courses = await userClient.findCoursesForUser(currentUser._id);
-      setCourses(courses);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const fetchCourses = async () => {
     try {
-      const allCourses = await courseClient.fetchAllCourses();
-      const enrolledCourses = await userClient.findCoursesForUser(currentUser._id);
-      const courses = allCourses.map((course: any) => {
-        if (enrolledCourses.find((c: any) => c._id === course._id)) {
-          return { ...course, enrolled: true };
-        } else {
-          return course;
-        }
-      });
+      console.log("Fetching courses from server...");
+      // Fetch all courses for courses list
+      const courses = await courseClient.fetchAllCourses();
+      console.log("Courses fetched successfully:", courses.length, "courses");
       setCourses(courses);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching courses:", error);
     }
-  };
-
-  const updateEnrollment = async (courseId: string, enrolled: boolean) => {
-    if (enrolled) {
-      await userClient.enrollIntoCourse(currentUser._id, courseId);
-    } else {
-      await userClient.unenrollFromCourse(currentUser._id, courseId);
-    }
-    setCourses(
-      courses.map((course) => {
-        if (course._id === courseId) {
-          return { ...course, enrolled: enrolled };
-        } else {
-          return course;
-        }
-      })
-    );
   };
 
   const fetchEnrollments = async () => {
     if (currentUser && currentUser._id) {
       try {
+        console.log("Fetching enrollments for user:", currentUser._id);
         const userEnrollments = await enrollmentsClient.findEnrollmentsForUser(currentUser._id);
-        // Ensure we always have an array
-        dispatch(setEnrollments(userEnrollments || []));
+        console.log("Enrollments fetched successfully:", userEnrollments.length, "enrollments");
+        dispatch(setEnrollments(userEnrollments));
       } catch (error) {
         console.error("Error fetching enrollments:", error);
-        // Set empty array on error to prevent undefined issues
-        dispatch(setEnrollments([]));
       }
     }
   };
 
   const getEnrolledCourses = () => {
-    // Safety check for courses array
-    if (!courses || !Array.isArray(courses)) {
-      return [];
-    }
-    
     if (!currentUser || !currentUser._id) {
       return courses; // Show all courses if no user logged in
     }
     
     // Filter courses to show only enrolled ones for the Dashboard
-    // Add safety check for enrollments array
-    if (!enrollments || !Array.isArray(enrollments)) {
-      return []; // Return empty array if enrollments is not available
-    }
-    
-    const enrolledCourseIds = enrollments
-      .filter(enrollment => enrollment && enrollment.course) // Filter out null/undefined enrollments
-      .map((enrollment: any) => enrollment.course);
-    
-    return courses.filter(course => course && course._id && enrolledCourseIds.includes(course._id));
+    const enrolledCourseIds = enrollments.map((enrollment: any) => enrollment.course);
+    return courses.filter(course => enrolledCourseIds.includes(course._id));
   };
 
   const enrollInCourse = async (courseId: string) => {
@@ -142,7 +96,9 @@ export default function Kambaz() {
     }
 
     try {
+      console.log("Enrolling user", currentUser._id, "in course", courseId);
       const newEnrollment = await enrollmentsClient.enrollUserInCourse(currentUser._id, courseId);
+      console.log("Enrollment successful:", newEnrollment);
       dispatch(enrollUserInCourse(newEnrollment));
       // Refresh enrollments from server
       await fetchEnrollments();
@@ -161,7 +117,9 @@ export default function Kambaz() {
     }
 
     try {
+      console.log("Unenrolling user", currentUser._id, "from course", courseId);
       await enrollmentsClient.unenrollUserFromCourse(currentUser._id, courseId);
+      console.log("Unenrollment successful");
       dispatch(unenrollUserFromCourse({ userId: currentUser._id, courseId }));
       // Refresh enrollments from server
       await fetchEnrollments();
@@ -181,6 +139,7 @@ export default function Kambaz() {
 
   const addNewCourse = async () => {
     try {
+      console.log("Creating new course:", course);
       // Create course object without _id (let server generate it)
       const courseToCreate = {
         name: course.name,
@@ -192,6 +151,7 @@ export default function Kambaz() {
       };
       
       const newCourse = await courseClient.createCourse(courseToCreate);
+      console.log("Course created successfully:", newCourse);
       
       // Refresh courses list from server to show all courses
       await fetchCourses();
@@ -219,7 +179,9 @@ export default function Kambaz() {
 
   const deleteCourse = async (courseId: any) => {
     try {
+      console.log("Deleting course:", courseId);
       await courseClient.deleteCourse(courseId);
+      console.log("Course deleted successfully");
       // Refresh courses list from server to ensure consistency
       await fetchCourses();
       showNotification("Course deleted successfully!", "success");
@@ -231,7 +193,9 @@ export default function Kambaz() {
 
   const updateCourse = async () => {
     try {
+      console.log("Updating course:", course);
       await courseClient.updateCourse(course);
+      console.log("Course updated successfully");
       // Refresh courses list from server to ensure consistency
       await fetchCourses();
       
@@ -255,11 +219,9 @@ export default function Kambaz() {
   }, []);
 
   useEffect(() => {
-    if (currentUser) {
-      // Always fetch all courses so we have complete data for filtering
-      fetchCourses();
-    }
-  }, [currentUser, enrolling]);
+    // Fetch courses when currentUser changes or when component mounts
+    fetchCourses();
+  }, [currentUser]);
 
   useEffect(() => {
     // Fetch enrollments when currentUser changes
@@ -294,23 +256,21 @@ return (
           <Route path="/Account/*" element={<Account />} />
           <Route path="/Dashboard" element={
             <Dashboard
-              courses={enrolling ? courses : getEnrolledCourses()}
+              courses={getEnrolledCourses()}
               course={course}
               setCourse={setCourse}
               addNewCourse={addNewCourse}
               deleteCourse={deleteCourse}
               updateCourse={updateCourse}
-              enrolling={enrolling}
-              setEnrolling={setEnrolling}
-              updateEnrollment={updateEnrollment}/>
+              enrollInCourse={enrollInCourse}
+              unenrollFromCourse={unenrollFromCourse}
+              isEnrolled={isEnrolled}/>
           } />
           <Route path="/Courses" element={<CoursesList 
             courses={courses} 
             enrollInCourse={enrollInCourse}
             unenrollFromCourse={unenrollFromCourse}
             isEnrolled={isEnrolled}
-            enrolledCourses={getEnrolledCourses()}
-            deleteCourse={deleteCourse}
           />} />
           <Route path="/Courses/:cid/*" element={<Courses courses={courses} />} />
           <Route path="/Calendar" element={<h1>Calendar</h1>} />
