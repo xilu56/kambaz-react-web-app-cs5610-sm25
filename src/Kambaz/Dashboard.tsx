@@ -4,11 +4,11 @@ import FormControl from "react-bootstrap/FormControl";
 import { useState } from "react";
 
 export default function Dashboard(
-{ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrollInCourse, unenrollFromCourse, isEnrolled }: {
+{ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrolling, setEnrolling, updateEnrollment }: {
   courses: any[]; course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
-  updateCourse: () => void; enrollInCourse?: (courseId: string) => void;
-  unenrollFromCourse?: (courseId: string) => void; isEnrolled?: (courseId: string) => boolean;
+  updateCourse: () => void; enrolling: boolean; setEnrolling: (enrolling: boolean) => void;
+  updateEnrollment: (courseId: string, enrolled: boolean) => void;
 }
 ) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -84,7 +84,12 @@ export default function Dashboard(
 
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+      <h1 id="wd-dashboard-title">
+        Dashboard
+        <button onClick={() => setEnrolling(!enrolling)} className="float-end btn btn-primary" >
+          {enrolling ? "My Courses" : "All Courses"}
+        </button>
+      </h1> <hr />
       <h5>New Course
           <button 
             className="btn btn-primary float-end"
@@ -189,6 +194,15 @@ export default function Dashboard(
                   />
                   <Card.Body className="d-flex flex-column">
                     <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                      {enrolling && (
+                        <button onClick={(event) => {
+                                  event.preventDefault();
+                                  updateEnrollment(course._id, !course.enrolled);
+                                }}
+                                className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`} >
+                          {course.enrolled ? "Unenroll" : "Enroll"}
+                        </button>
+                      )}
                       {course.number}: {course.name}
                     </Card.Title>
                     <Card.Text
@@ -199,19 +213,6 @@ export default function Dashboard(
                     </Card.Text>
                     <div className="mt-auto">
                       <Button variant="primary">Go to Course</Button>
-                      
-                      {/* Show enrollment/unenrollment buttons */}
-                      {unenrollFromCourse && isEnrolled && isEnrolled(course._id) && (
-                        <button
-                          onClick={(event) => {
-                            event.preventDefault();
-                            unenrollFromCourse(course._id);
-                          }}
-                          className="btn btn-warning me-2 float-end"
-                        >
-                          Unenroll
-                        </button>
-                      )}
                       
                       <button id="wd-edit-course-click"
                         onClick={(event) => {

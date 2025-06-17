@@ -10,11 +10,13 @@ import { setCurrentUser } from "./Account/reducer";
 import { setEnrollments, enrollUserInCourse, unenrollUserFromCourse } from "./Enrollments/reducer";
 import * as courseClient from "./Courses/client";
 import * as enrollmentsClient from "./Enrollments/client";
+import * as userClient from "./Account/client";
 import { Toast, ToastContainer } from "react-bootstrap";
 import "./styles.css";
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
+  const [enrolling, setEnrolling] = useState<boolean>(false);
   const [course, setCourse] = useState<any>({
     name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", 
@@ -53,16 +55,47 @@ export default function Kambaz() {
     }
   };
 
-  const fetchCourses = async () => {
+  const findCoursesForUser = async () => {
     try {
-      console.log("Fetching courses from server...");
-      // Fetch all courses for courses list
-      const courses = await courseClient.fetchAllCourses();
-      console.log("Courses fetched successfully:", courses.length, "courses");
+      const courses = await userClient.findCoursesForUser(currentUser._id);
       setCourses(courses);
     } catch (error) {
-      console.error("Error fetching courses:", error);
+      console.error(error);
     }
+  };
+
+  const fetchCourses = async () => {
+    try {
+      const allCourses = await courseClient.fetchAllCourses();
+      const enrolledCourses = await userClient.findCoursesForUser(currentUser._id);
+      const courses = allCourses.map((course: any) => {
+        if (enrolledCourses.find((c: any) => c._id === course._id)) {
+          return { ...course, enrolled: true };
+        } else {
+          return course;
+        }
+      });
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+    if (enrolled) {
+      await userClient.enrollIntoCourse(currentUser._id, courseId);
+    } else {
+      await userClient.unenrollFromCourse(currentUser._id, courseId);
+    }
+    setCourses(
+      courses.map((course) => {
+        if (course._id === courseId) {
+          return { ...course, enrolled: enrolled };
+        } else {
+          return course;
+        }
+      })
+    );
   };
 
   const fetchEnrollments = async () => {
@@ -219,9 +252,14 @@ export default function Kambaz() {
   }, []);
 
   useEffect(() => {
-    // Fetch courses when currentUser changes or when component mounts
-    fetchCourses();
-  }, [currentUser]);
+    if (currentUser) {
+      if (enrolling) {
+        fetchCourses();
+      } else {
+        findCoursesForUser();
+      }
+    }
+  }, [currentUser, enrolling]);
 
   useEffect(() => {
     // Fetch enrollments when currentUser changes
@@ -256,15 +294,15 @@ return (
           <Route path="/Account/*" element={<Account />} />
           <Route path="/Dashboard" element={
             <Dashboard
-              courses={getEnrolledCourses()}
+              courses={courses}
               course={course}
               setCourse={setCourse}
               addNewCourse={addNewCourse}
               deleteCourse={deleteCourse}
               updateCourse={updateCourse}
-              enrollInCourse={enrollInCourse}
-              unenrollFromCourse={unenrollFromCourse}
-              isEnrolled={isEnrolled}/>
+              enrolling={enrolling}
+              setEnrolling={setEnrolling}
+              updateEnrollment={updateEnrollment}/>
           } />
           <Route path="/Courses" element={<CoursesList 
             courses={courses} 

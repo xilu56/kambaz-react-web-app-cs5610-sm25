@@ -137,7 +137,7 @@ export default function AssignmentEditor() {
       if (aid === 'new' || !existingAssignment || !aid) {
         // Create new assignment
         console.log("Creating new assignment for course:", cid);
-        const newAssignment = await assignmentsClient.createAssignment(formattedAssignment);
+        const newAssignment = await assignmentsClient.createAssignmentForCourse(cid as string, formattedAssignment);
         console.log("Assignment created successfully:", newAssignment);
         dispatch(addAssignment(newAssignment));
       } else {
