@@ -4,7 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  VITE_REMOTE_SERVER = "https://kambaz-mongodb.onrender.com"
+  VITE_REMOTE_SERVER = "https://kambaz-quizzes-project.onrender.com"
 
 [[redirects]]
   from = "/*"

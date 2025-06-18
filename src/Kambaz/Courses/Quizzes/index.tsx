@@ -30,7 +30,10 @@ export default function Quizzes() {
   const fetchQuizzes = async () => {
     if (cid) {
       try {
+        console.log("Fetching quizzes for course:", cid);
+        console.log("REMOTE_SERVER:", import.meta.env.VITE_REMOTE_SERVER);
         const quizzes = await quizzesClient.fetchQuizzesForCourse(cid);
+        console.log("Received quizzes:", quizzes);
         dispatch(setQuizzes(quizzes));
       } catch (error) {
         console.error("Error fetching quizzes:", error);
