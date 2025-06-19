@@ -264,8 +264,8 @@ export default function Quizzes() {
               <div>
                 <Button 
                   style={{ 
-                    backgroundColor: "#0374b5", 
-                    borderColor: "#0374b5",
+                    backgroundColor: "#dc3545", 
+                    borderColor: "#dc3545",
                     fontSize: "16px",
                     padding: "12px 24px",
                     marginBottom: "15px"
@@ -345,7 +345,7 @@ export default function Quizzes() {
               <Button 
                 size="sm"
                 variant="link"
-                style={{ color: "#0374b5", textDecoration: "none", padding: "0" }}
+                style={{ color: "#dc3545", textDecoration: "none", padding: "0" }}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleAddQuiz();
@@ -366,7 +366,7 @@ export default function Quizzes() {
                   <div>
                     <p style={{ marginBottom: "15px" }}>Click the Add Quiz button to create your first quiz.</p>
                     <Button 
-                      style={{ backgroundColor: "#0374b5", borderColor: "#0374b5" }}
+                      style={{ backgroundColor: "#dc3545", borderColor: "#dc3545" }}
                       onClick={handleAddQuiz}
                     >
                       <FaPlus className="me-2" />
