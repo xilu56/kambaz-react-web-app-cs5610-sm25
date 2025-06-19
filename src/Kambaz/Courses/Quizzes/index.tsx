@@ -22,10 +22,24 @@ export default function Quizzes() {
   // Get current user for role-based functionality
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   
-  // Get quizzes for the current course
-  const courseQuizzes = quizzes.filter((q: any) => 
-    q.course === cid
-  );
+  // Determine user role
+  const isFaculty = currentUser && currentUser.role === "FACULTY";
+  const isStudent = currentUser && currentUser.role === "STUDENT";
+  
+  // Get quizzes for the current course with role-based filtering
+  const courseQuizzes = quizzes.filter((q: any) => {
+    // First filter by course
+    if (q.course !== cid) return false;
+    
+    // Faculty can see all quizzes
+    if (isFaculty) return true;
+    
+    // Students can only see published quizzes
+    if (isStudent) return q.published === true;
+    
+    // Default: show all (fallback)
+    return true;
+  });
 
   const fetchQuizzes = async () => {
     if (cid) {
@@ -164,9 +178,6 @@ export default function Quizzes() {
       return "#5bc0de"; // Blue
     }
   };
-
-  const isFaculty = currentUser && currentUser.role === "FACULTY";
-  const isStudent = currentUser && currentUser.role === "STUDENT";
 
   return (
     <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", padding: "20px" }}>
