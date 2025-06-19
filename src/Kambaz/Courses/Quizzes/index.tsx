@@ -1,8 +1,7 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import type { CSSProperties } from "react";
-import { FaSearch, FaEllipsisV, FaGripVertical, FaTrash, FaPencilAlt, FaCheckCircle, FaBan, FaCopy, FaSort } from "react-icons/fa";
-import { BsFileText } from "react-icons/bs";
+import { FaSearch, FaEllipsisV, FaTrash, FaPencilAlt, FaCheckCircle, FaBan, FaCopy, FaSort, FaPlus, FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { InputGroup, Form, Row, Col, Modal, Button, Dropdown } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { setQuizzes, deleteQuiz, updateQuiz } from "./reducer";
@@ -15,6 +14,7 @@ export default function Quizzes() {
   const [isExpanded, setIsExpanded] = useState(true);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [quizToDelete, setQuizToDelete] = useState<string | null>(null);
+  const [showQuizList, setShowQuizList] = useState(false);
   
   // Get quizzes from Redux store
   const { quizzes } = useSelector((state: any) => state.quizzesReducer);
@@ -65,7 +65,11 @@ export default function Quizzes() {
 
   useEffect(() => {
     fetchQuizzes();
-  }, [cid]);
+    // Check if there are existing quizzes to show the list automatically
+    if (courseQuizzes.length > 0) {
+      setShowQuizList(true);
+    }
+  }, [cid, courseQuizzes.length]);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -73,6 +77,10 @@ export default function Quizzes() {
 
   const handleAddQuiz = () => {
     navigate(`/Kambaz/Courses/${cid}/Quizzes/new`);
+  };
+
+  const handleShowQuizzes = () => {
+    setShowQuizList(true);
   };
 
   const handleDeleteClick = (quizId: string, event: React.MouseEvent) => {
@@ -127,212 +135,375 @@ export default function Quizzes() {
     return `Due ${dueDate.toLocaleDateString()} at ${dueDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
   };
 
-  const quizItemStyle: CSSProperties = {
-    position: "relative",
-    padding: "10px 5px",
-    transition: "background-color 0.2s",
-    marginBottom: "0",
-    borderLeft: "0",
-    borderRight: "0",
-    borderTop: "0",
-    borderBottom: "1px solid rgba(0,0,0,.125)",
+  const getStatusIcon = (quiz: any) => {
+    if (!quiz.published) {
+      return "🚫"; // Unpublished symbol
+    }
+    
+    const status = getAvailabilityStatus(quiz);
+    if (status === "Closed") {
+      return "🚫";
+    } else if (status === "Available") {
+      return "✅";
+    } else {
+      return "⏳";
+    }
   };
 
-  const greenBorderStyle: CSSProperties = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "3px",
-    height: "100%",
-    backgroundColor: "#28a745"
-  };
-
-  const fileIconStyle: CSSProperties = {
-    color: "#28a745",
-    marginRight: "10px",
-    fontSize: "1.1rem"
+  const getStatusColor = (quiz: any) => {
+    const status = getAvailabilityStatus(quiz);
+    if (status.includes("Closed")) {
+      return "#d9534f"; // Red
+    } else if (status === "Available") {
+      return "#5cb85c"; // Green
+    } else if (status.includes("Not available")) {
+      return "#f0ad4e"; // Orange
+    } else {
+      return "#5bc0de"; // Blue
+    }
   };
 
   const isFaculty = currentUser && currentUser.role === "FACULTY";
   const isStudent = currentUser && currentUser.role === "STUDENT";
 
   return (
-    <div className="p-3">
-      <Row className="mb-3 align-items-center">
-        <Col md={6}>
-          <InputGroup>
-            <InputGroup.Text style={{borderRight: "none", backgroundColor: "white"}}>
-              <FaSearch />
-            </InputGroup.Text>
-            <Form.Control
-              placeholder="Search for Quiz"
-              style={{borderLeft: "none"}}
-            />
-          </InputGroup>
-        </Col>
-        <Col md={6} className="d-flex justify-content-end">
-          {isFaculty && (
-            <>
-              <Dropdown className="me-2">
-                <Dropdown.Toggle variant="outline-secondary" size="sm">
-                  <FaSort /> Sort
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item>Sort by Name</Dropdown.Item>
-                  <Dropdown.Item>Sort by Due Date</Dropdown.Item>
-                  <Dropdown.Item>Sort by Available Date</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-              <button 
-                className="btn text-white"
-                style={{backgroundColor: "#dc3545", borderColor: "#dc3545"}}
-                onClick={handleAddQuiz}
-              >
-                + Quiz
-              </button>
-            </>
-          )}
-        </Col>
-      </Row>
-      
-      <div 
-        className="d-flex justify-content-between align-items-center py-2 border-bottom mb-0 px-2 bg-light"
-        onClick={toggleExpand}
-        style={{ cursor: 'pointer' }}
-      >
-        <div className="d-flex align-items-center">
-          <FaGripVertical className="text-muted me-2" />
-          <span className="fw-bold">QUIZZES</span>
+    <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", padding: "20px" }}>
+      {/* Show search/controls only when quiz list is visible */}
+      {showQuizList && (
+        <div style={{ backgroundColor: "white", borderRadius: "8px", padding: "20px", marginBottom: "20px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
+          <Row className="align-items-center">
+            <Col md={6}>
+              <InputGroup>
+                <InputGroup.Text style={{ borderRight: "none", backgroundColor: "white", border: "1px solid #ddd" }}>
+                  <FaSearch style={{ color: "#999" }} />
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder="Search for Quiz"
+                  style={{ borderLeft: "none", border: "1px solid #ddd" }}
+                />
+              </InputGroup>
+            </Col>
+            <Col md={6} className="d-flex justify-content-end">
+              {isFaculty && (
+                <>
+                  <Dropdown className="me-2">
+                    <Dropdown.Toggle variant="outline-secondary" size="sm" style={{ border: "1px solid #ddd" }}>
+                      <FaSort className="me-1" /> Sort
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item>Sort by Name</Dropdown.Item>
+                      <Dropdown.Item>Sort by Due Date</Dropdown.Item>
+                      <Dropdown.Item>Sort by Available Date</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                  <Button 
+                    style={{ backgroundColor: "#0374b5", borderColor: "#0374b5", color: "white" }}
+                    onClick={handleAddQuiz}
+                  >
+                    <FaPlus className="me-1" /> Quiz
+                  </Button>
+                </>
+              )}
+            </Col>
+          </Row>
         </div>
-        <div className="d-flex align-items-center">
-          <span 
-            className="me-3 rounded-pill px-2 py-1 bg-secondary bg-opacity-10 text-muted"
-            style={{ fontSize: "0.85rem" }}
-          >
-            {courseQuizzes.length} quizzes
-          </span>
-          {isFaculty && (
-            <button className="btn p-0 fs-5 text-muted">+</button>
-          )}
-          <div className="ms-3 text-muted">
-            <FaEllipsisV />
+      )}
+      
+      {/* Default Empty State or Assignment Quizzes Section */}
+      {!showQuizList && courseQuizzes.length === 0 ? (
+        /* Empty State - Default View */
+        <div style={{ 
+          backgroundColor: "white", 
+          borderRadius: "8px", 
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+          padding: "60px 40px",
+          textAlign: "center"
+        }}>
+          <div style={{ marginBottom: "30px" }}>
+            <div style={{ 
+              fontSize: "48px", 
+              color: "#ccc", 
+              marginBottom: "20px"
+            }}>
+              📋
+            </div>
+            <h3 style={{ 
+              color: "#333", 
+              marginBottom: "15px",
+              fontSize: "24px",
+              fontWeight: "normal"
+            }}>
+              No Quizzes Available
+            </h3>
+            <p style={{ 
+              color: "#666", 
+              fontSize: "16px",
+              lineHeight: "1.5",
+              maxWidth: "400px",
+              margin: "0 auto 30px"
+            }}>
+              {isFaculty 
+                ? "Get started by creating your first quiz. Click the Add Quiz button below to begin."
+                : "Your instructor hasn't created any quizzes yet. Check back later!"
+              }
+            </p>
+            
+            {isFaculty && (
+              <div>
+                <Button 
+                  style={{ 
+                    backgroundColor: "#0374b5", 
+                    borderColor: "#0374b5",
+                    fontSize: "16px",
+                    padding: "12px 24px",
+                    marginBottom: "15px"
+                  }}
+                  onClick={handleAddQuiz}
+                >
+                  <FaPlus className="me-2" />
+                  Add Quiz
+                </Button>
+                <div style={{ fontSize: "14px", color: "#888" }}>
+                  or{" "}
+                  <button 
+                    style={{ 
+                      background: "none", 
+                      border: "none", 
+                      color: "#0374b5", 
+                      textDecoration: "underline",
+                      cursor: "pointer"
+                    }}
+                    onClick={handleShowQuizzes}
+                  >
+                    view existing quizzes
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {!isFaculty && courseQuizzes.length > 0 && (
+              <Button 
+                variant="outline-primary"
+                onClick={handleShowQuizzes}
+                style={{ 
+                  borderColor: "#0374b5",
+                  color: "#0374b5"
+                }}
+              >
+                View Available Quizzes
+              </Button>
+            )}
           </div>
         </div>
-      </div>
-      
-      {isExpanded && (
-        <>
-          {courseQuizzes.length === 0 ? (
-            <div className="text-center p-4">
-              <p className="text-muted">No quizzes available.</p>
-              {isFaculty && (
-                <Button 
-                  variant="primary" 
-                  onClick={handleAddQuiz}
-                  style={{backgroundColor: "#dc3545", borderColor: "#dc3545"}}
-                >
-                  + Quiz
-                </Button>
-              )}
+      ) : (
+        /* Assignment Quizzes Section */
+        <div style={{ backgroundColor: "white", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}>
+          {/* Section Header */}
+          <div 
+            style={{ 
+              padding: "15px 20px", 
+              borderBottom: "1px solid #e7e7e7",
+              backgroundColor: "#f8f9fa",
+              borderRadius: "8px 8px 0 0",
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}
+            onClick={toggleExpand}
+          >
+            <div style={{ display: "flex", alignItems: "center", fontWeight: "bold", fontSize: "16px" }}>
+              {isExpanded ? <FaCaretDown style={{ marginRight: "8px" }} /> : <FaCaretRight style={{ marginRight: "8px" }} />}
+              Assignment Quizzes
             </div>
-          ) : (
-            <ul className="list-group list-group-flush">
-              {courseQuizzes.map((quiz: any) => (
-                <li 
-                  key={quiz._id}
-                  className="list-group-item d-flex"
-                  style={quizItemStyle}
-                >
-                  <div style={greenBorderStyle}></div>
-                  <div className="me-2">
-                    <FaGripVertical className="text-muted" style={{opacity: 0.3}} />
+            {isFaculty && (
+              <Button 
+                size="sm"
+                variant="link"
+                style={{ color: "#0374b5", textDecoration: "none", padding: "0" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddQuiz();
+                }}
+              >
+                <FaPlus />
+              </Button>
+            )}
+          </div>
+        
+        {/* Quiz List */}
+        {isExpanded && (
+          <div>
+            {courseQuizzes.length === 0 ? (
+              <div style={{ padding: "40px", textAlign: "center", color: "#666" }}>
+                <p style={{ fontSize: "16px", marginBottom: "20px" }}>No quizzes available.</p>
+                {isFaculty && (
+                  <div>
+                    <p style={{ marginBottom: "15px" }}>Click the Add Quiz button to create your first quiz.</p>
+                    <Button 
+                      style={{ backgroundColor: "#0374b5", borderColor: "#0374b5" }}
+                      onClick={handleAddQuiz}
+                    >
+                      <FaPlus className="me-2" />
+                      Quiz
+                    </Button>
                   </div>
-                  <div className="me-2">
-                    <BsFileText style={fileIconStyle} />
-                  </div>
-                  <div className="flex-grow-1">
-                    <div className="d-flex justify-content-between align-items-start">
-                      <div>
-                        <h5 className="mb-0">
-                          <Link 
-                            to={isFaculty 
-                              ? `/Kambaz/Courses/${cid}/Quizzes/${quiz._id}` 
-                              : `/Kambaz/Courses/${cid}/Quizzes/${quiz._id}/take`
-                            } 
-                            style={{color: "#212529", textDecoration: "none"}}
-                          >
-                            {quiz.title}
-                          </Link>
-                          {isFaculty && (
+                )}
+              </div>
+            ) : (
+              <div>
+                {courseQuizzes.map((quiz: any, index: number) => (
+                  <div 
+                    key={quiz._id}
+                    style={{
+                      padding: "15px 20px",
+                      borderBottom: index < courseQuizzes.length - 1 ? "1px solid #e7e7e7" : "none",
+                      display: "flex",
+                      alignItems: "center",
+                      backgroundColor: "white"
+                    }}
+                  >
+                    {/* Status Icon */}
+                    <div style={{ marginRight: "15px", fontSize: "20px" }}>
+                      <div 
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          borderRadius: "50%",
+                          backgroundColor: getStatusColor(quiz),
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "white",
+                          fontSize: "16px",
+                          fontWeight: "bold"
+                        }}
+                      >
+                        {quiz.published && getAvailabilityStatus(quiz) === "Available" ? "✓" : 
+                         quiz.published && getAvailabilityStatus(quiz) === "Closed" ? "✕" : "🚫"}
+                      </div>
+                    </div>
+                    
+                    {/* Quiz Content */}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div>
+                          <h5 style={{ margin: "0 0 5px 0", fontSize: "16px" }}>
+                            <Link 
+                              to={isFaculty 
+                                ? `/Kambaz/Courses/${cid}/Quizzes/${quiz._id}` 
+                                : `/Kambaz/Courses/${cid}/Quizzes/${quiz._id}/take`
+                              } 
+                              style={{ color: "#0374b5", textDecoration: "none" }}
+                            >
+                              {quiz.title}
+                            </Link>
+                          </h5>
+                          
+                          <div style={{ fontSize: "14px", color: "#666", marginBottom: "5px" }}>
+                            <span style={{ color: getStatusColor(quiz), fontWeight: "500" }}>
+                              {getAvailabilityStatus(quiz)}
+                            </span>
+                            
+                            {/* Multiple Dates and Due information */}
+                            {quiz.availableDate && (
+                              <>
+                                <span style={{ margin: "0 8px" }}>|</span>
+                                <span>Available {new Date(quiz.availableDate).toLocaleDateString()}</span>
+                              </>
+                            )}
+                            
+                            {quiz.dueDate && (
+                              <>
+                                <span style={{ margin: "0 8px" }}>|</span>
+                                <span>{formatDueDate(quiz)}</span>
+                              </>
+                            )}
+                            
+                            <span style={{ margin: "0 8px" }}>|</span>
+                            <span>{quiz.points || 0} pts</span>
+                            
+                            <span style={{ margin: "0 8px" }}>|</span>
+                            <span>{quiz.questions?.length || 0} Questions</span>
+                            
+                            {/* Student Score Display */}
+                            {isStudent && quiz.latestScore !== undefined && (
+                              <>
+                                <span style={{ margin: "0 8px" }}>|</span>
+                                <span>Score: {quiz.latestScore}/{quiz.points || 0}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {/* Action Buttons for Faculty */}
+                        {isFaculty && (
+                          <div style={{ display: "flex", alignItems: "center" }}>
                             <button
-                              className="btn p-0 ms-2"
                               onClick={(e) => {
                                 e.preventDefault();
                                 togglePublishStatus(quiz);
                               }}
-                              style={{ fontSize: "0.9rem" }}
+                              style={{ 
+                                background: "none", 
+                                border: "none", 
+                                fontSize: "16px", 
+                                marginRight: "10px",
+                                cursor: "pointer"
+                              }}
+                              title={quiz.published ? "Unpublish" : "Publish"}
                             >
-                              {quiz.published ? (
-                                <FaCheckCircle className="text-success" title="Published" />
-                              ) : (
-                                <FaBan className="text-danger" title="Unpublished" />
-                              )}
+                              {quiz.published ? "✅" : "🚫"}
                             </button>
-                          )}
-                        </h5>
-                        <div style={{fontSize: "0.9rem"}}>
-                          <span style={{color: getAvailabilityStatus(quiz).includes("Closed") ? "#dc3545" : 
-                                      getAvailabilityStatus(quiz).includes("Not available") ? "#ffc107" : "#28a745"}}>
-                            {getAvailabilityStatus(quiz)}
-                          </span>
-                          <span className="text-muted"> | {formatDueDate(quiz)} | </span>
-                          <span className="text-muted">{quiz.points || 0} pts | </span>
-                          <span className="text-muted">{quiz.questions?.length || 0} questions</span>
-                          {!isFaculty && quiz.latestScore !== undefined && (
-                            <span className="text-muted"> | Score: {quiz.latestScore}/{quiz.points || 0}</span>
-                          )}
-                        </div>
+                            
+                            <Dropdown>
+                              <Dropdown.Toggle 
+                                variant="link" 
+                                style={{ 
+                                  color: "#666", 
+                                  border: "none", 
+                                  background: "none",
+                                  boxShadow: "none",
+                                  padding: "0",
+                                  fontSize: "16px"
+                                }}
+                              >
+                                <FaEllipsisV />
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu>
+                                <Dropdown.Item onClick={(e) => handleEditClick(quiz._id, e)}>
+                                  <FaPencilAlt className="me-2" />
+                                  Edit
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={(e) => handleDeleteClick(quiz._id, e)}>
+                                  <FaTrash className="me-2" />
+                                  Delete
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={(e) => {
+                                  e.preventDefault();
+                                  togglePublishStatus(quiz);
+                                }}>
+                                  {quiz.published ? <FaBan className="me-2" /> : <FaCheckCircle className="me-2" />}
+                                  {quiz.published ? "Unpublish" : "Publish"}
+                                </Dropdown.Item>
+                                <Dropdown.Divider />
+                                <Dropdown.Item>
+                                  <FaCopy className="me-2" />
+                                  Copy to Another Course
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </div>
+                        )}
                       </div>
-                      {isFaculty && (
-                        <Dropdown>
-                          <Dropdown.Toggle 
-                            variant="link" 
-                            className="text-muted p-0"
-                            style={{ boxShadow: "none", border: "none" }}
-                          >
-                            <FaEllipsisV />
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item onClick={(e) => handleEditClick(quiz._id, e)}>
-                              <FaPencilAlt className="me-2" />
-                              Edit
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={(e) => handleDeleteClick(quiz._id, e)}>
-                              <FaTrash className="me-2" />
-                              Delete
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={(e) => {
-                              e.preventDefault();
-                              togglePublishStatus(quiz);
-                            }}>
-                              {quiz.published ? <FaBan className="me-2" /> : <FaCheckCircle className="me-2" />}
-                              {quiz.published ? "Unpublish" : "Publish"}
-                            </Dropdown.Item>
-                            <Dropdown.Divider />
-                            <Dropdown.Item>
-                              <FaCopy className="me-2" />
-                              Copy to Another Course
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      )}
                     </div>
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
       )}
 
       {/* Delete Confirmation Modal */}
