@@ -65,11 +65,8 @@ export default function Quizzes() {
 
   useEffect(() => {
     fetchQuizzes();
-    // Check if there are existing quizzes to show the list automatically
-    if (courseQuizzes.length > 0) {
-      setShowQuizList(true);
-    }
-  }, [cid, courseQuizzes.length]);
+    // Don't automatically show quiz list - always start with empty state
+  }, [cid]);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -210,7 +207,7 @@ export default function Quizzes() {
       )}
       
       {/* Default Empty State or Assignment Quizzes Section */}
-      {!showQuizList && courseQuizzes.length === 0 ? (
+      {!showQuizList ? (
         /* Empty State - Default View */
         <div style={{ 
           backgroundColor: "white", 
@@ -233,7 +230,7 @@ export default function Quizzes() {
               fontSize: "24px",
               fontWeight: "normal"
             }}>
-              No Quizzes Available
+              {courseQuizzes.length === 0 ? "No Quizzes Available" : "Quiz Management"}
             </h3>
             <p style={{ 
               color: "#666", 
@@ -243,8 +240,12 @@ export default function Quizzes() {
               margin: "0 auto 30px"
             }}>
               {isFaculty 
-                ? "Get started by creating your first quiz. Click the Add Quiz button below to begin."
-                : "Your instructor hasn't created any quizzes yet. Check back later!"
+                ? (courseQuizzes.length === 0 
+                   ? "Get started by creating your first quiz. Click the Add Quiz button below to begin."
+                   : "Manage your course quizzes. Create new quizzes or view existing ones.")
+                : (courseQuizzes.length === 0
+                   ? "Your instructor hasn't created any quizzes yet. Check back later!"
+                   : "Your instructor has created quizzes for this course.")
               }
             </p>
             
@@ -281,17 +282,21 @@ export default function Quizzes() {
               </div>
             )}
             
-            {!isFaculty && courseQuizzes.length > 0 && (
-              <Button 
-                variant="outline-primary"
-                onClick={handleShowQuizzes}
-                style={{ 
-                  borderColor: "#0374b5",
-                  color: "#0374b5"
-                }}
-              >
-                View Available Quizzes
-              </Button>
+            {!isFaculty && (
+              courseQuizzes.length > 0 ? (
+                <Button 
+                  variant="outline-primary"
+                  onClick={handleShowQuizzes}
+                  style={{ 
+                    borderColor: "#0374b5",
+                    color: "#0374b5",
+                    fontSize: "16px",
+                    padding: "12px 24px"
+                  }}
+                >
+                  View Available Quizzes
+                </Button>
+              ) : null
             )}
           </div>
         </div>
