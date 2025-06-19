@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Card, Button, Badge, Row, Col, Alert } from "react-bootstrap";
+import { Card, Button, Badge, Row, Col, Alert, Table } from "react-bootstrap";
 import { FaEdit, FaEye, FaPlay, FaCalendarAlt, FaClock, FaQuestionCircle, FaStar } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentQuiz } from "./reducer";
@@ -116,161 +116,166 @@ export default function QuizDetails() {
   const availability = getAvailabilityStatus();
 
   return (
-    <div className="p-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2>{currentQuiz.title}</h2>
-          <Badge bg={availability.color} className="me-2">
-            {availability.status}
-          </Badge>
-        </div>
-        <div>
-          {isFaculty && (
-            <>
-              <Button variant="outline-primary" onClick={handleEdit} className="me-2">
-                <FaEdit className="me-1" />
-                Edit
+    <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", padding: "20px" }}>
+      <div style={{ backgroundColor: "white", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", padding: "20px" }}>
+        
+        {/* Header with buttons */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
+          <div>
+            <Link to={`/Kambaz/Courses/${cid}/Quizzes`} style={{ textDecoration: "none", color: "#666", fontSize: "14px" }}>
+              ← Back to Quizzes
+            </Link>
+          </div>
+          <div>
+            {isFaculty && (
+              <>
+                <Button variant="outline-secondary" onClick={handlePreview} className="me-2">
+                  Preview
+                </Button>
+                <Button variant="outline-primary" onClick={handleEdit}>
+                  <FaEdit className="me-1" />
+                  Edit
+                </Button>
+              </>
+            )}
+            {isStudent && canTakeQuiz() && (
+              <Button variant="primary" onClick={handleTakeQuiz} size="lg">
+                <FaPlay className="me-1" />
+                Take Quiz
               </Button>
-              <Button variant="outline-info" onClick={handlePreview}>
-                <FaEye className="me-1" />
-                Preview
-              </Button>
-            </>
-          )}
-          {!isFaculty && canTakeQuiz() && (
-            <Button variant="primary" onClick={handleTakeQuiz}>
-              <FaPlay className="me-1" />
-              Take Quiz
-            </Button>
-          )}
+            )}
+          </div>
         </div>
-      </div>
 
-      <Row>
-        <Col md={8}>
-          <Card className="mb-4">
-            <Card.Header>
-              <h5 className="mb-0">Quiz Information</h5>
-            </Card.Header>
-            <Card.Body>
+        {/* Quiz Title */}
+        <h2 style={{ marginBottom: "30px", borderBottom: "2px solid #eee", paddingBottom: "10px" }}>
+          {currentQuiz.title}
+        </h2>
+
+        {/* For Students - Show Take Quiz button and basic info */}
+        {isStudent && (
+          <div style={{ textAlign: "center", padding: "40px 0" }}>
+            {!canTakeQuiz() && (
+              <Alert variant="warning" style={{ marginBottom: "20px" }}>
+                <h6>Quiz Not Available</h6>
+                <p className="mb-0">{availability.status}</p>
+              </Alert>
+            )}
+            
+            {latestAttempt && (
+              <Alert variant="info" style={{ marginBottom: "20px" }}>
+                <h6>Your Latest Score: {latestAttempt.score}/{latestAttempt.totalPoints}</h6>
+                <p className="mb-0">
+                  Attempt {latestAttempt.attemptNumber}
+                  {currentQuiz.multipleAttempts && ` of ${currentQuiz.howManyAttempts}`}
+                </p>
+              </Alert>
+            )}
+
+            <div style={{ fontSize: "16px", color: "#666", marginBottom: "20px" }}>
+              <div><strong>Points:</strong> {currentQuiz.points || 0}</div>
+              <div><strong>Time Limit:</strong> {currentQuiz.timeLimit || 20} minutes</div>
+              <div><strong>Questions:</strong> {currentQuiz.questions?.length || 0}</div>
+            </div>
+          </div>
+        )}
+
+        {/* For Faculty - Show detailed properties */}
+        {isFaculty && (
+          <Row>
+            <Col md={7}>
+              {/* Left side - empty or description */}
               {currentQuiz.description && (
-                <div className="mb-3">
-                  <p>{currentQuiz.description}</p>
+                <div style={{ padding: "20px", fontSize: "16px", lineHeight: "1.6" }}>
+                  {currentQuiz.description}
                 </div>
               )}
-              
-              <Row>
-                <Col md={6}>
-                  <div className="mb-3">
-                    <strong>Quiz Type:</strong> {currentQuiz.quizType || "Graded Quiz"}
-                  </div>
-                  <div className="mb-3">
-                    <strong>Points:</strong> {currentQuiz.points || 0}
-                  </div>
-                  <div className="mb-3">
-                    <strong>Assignment Group:</strong> {currentQuiz.assignmentGroup || "QUIZZES"}
-                  </div>
-                  <div className="mb-3">
-                    <strong>Time Limit:</strong> {currentQuiz.timeLimit || 20} minutes
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="mb-3">
-                    <strong>Multiple Attempts:</strong> {currentQuiz.multipleAttempts ? "Yes" : "No"}
-                  </div>
-                  {currentQuiz.multipleAttempts && (
-                    <div className="mb-3">
-                      <strong>Number of Attempts:</strong> {currentQuiz.howManyAttempts || 1}
-                    </div>
-                  )}
-                  <div className="mb-3">
-                    <strong>Show Correct Answers:</strong> {currentQuiz.showCorrectAnswers || "Immediately"}
-                  </div>
-                  <div className="mb-3">
-                    <strong>Questions:</strong> {currentQuiz.questions?.length || 0}
-                  </div>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={4}>
-          <Card className="mb-4">
-            <Card.Header>
-              <h6 className="mb-0">
-                <FaCalendarAlt className="me-2" />
-                Due Dates
-              </h6>
-            </Card.Header>
-            <Card.Body>
-              <div className="mb-2">
-                <strong>Due:</strong><br />
-                {formatDate(currentQuiz.dueDate)}
+            </Col>
+            
+            <Col md={5}>
+              {/* Right side - Quiz properties */}
+              <div style={{ fontSize: "14px" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500", width: "50%" }}>Quiz Type</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.quizType || "Graded Quiz"}</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f9fa" }}>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Points</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.points || 0}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Assignment Group</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.assignmentGroup || "QUIZZES"}</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f9fa" }}>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Shuffle Answers</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.shuffleAnswers ? "Yes" : "No"}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Time Limit</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.timeLimit || 20} Minutes</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f9fa" }}>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Multiple Attempts</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.multipleAttempts ? "Yes" : "No"}</td>
+                    </tr>
+                    {currentQuiz.multipleAttempts && (
+                      <tr>
+                        <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>How Many Attempts</td>
+                        <td style={{ padding: "8px 12px" }}>{currentQuiz.howManyAttempts || 1}</td>
+                      </tr>
+                    )}
+                    <tr style={{ backgroundColor: "#f8f9fa" }}>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Show Correct Answers</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.showCorrectAnswers || "Immediately"}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Access Code</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.accessCode || "None"}</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f9fa" }}>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>One Question at a Time</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.oneQuestionAtATime ? "Yes" : "No"}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Webcam Required</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.webcamRequired ? "Yes" : "No"}</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f9fa" }}>
+                      <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Lock Questions After Answering</td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.lockQuestionsAfterAnswering ? "Yes" : "No"}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <div className="mb-2">
-                <strong>Available from:</strong><br />
-                {formatDate(currentQuiz.availableDate)}
+
+              {/* Due date table */}
+              <div style={{ marginTop: "30px" }}>
+                <Table striped bordered size="sm" style={{ fontSize: "14px" }}>
+                  <thead>
+                    <tr>
+                      <th>Due</th>
+                      <th>For</th>
+                      <th>Available from</th>
+                      <th>Until</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{currentQuiz.dueDate ? new Date(currentQuiz.dueDate).toLocaleDateString() + " at " + new Date(currentQuiz.dueDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Not set"}</td>
+                      <td>Everyone</td>
+                      <td>{currentQuiz.availableDate ? new Date(currentQuiz.availableDate).toLocaleDateString() + " at " + new Date(currentQuiz.availableDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Not set"}</td>
+                      <td>{currentQuiz.untilDate ? new Date(currentQuiz.untilDate).toLocaleDateString() + " at " + new Date(currentQuiz.untilDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Not set"}</td>
+                    </tr>
+                  </tbody>
+                </Table>
               </div>
-              <div className="mb-2">
-                <strong>Until:</strong><br />
-                {formatDate(currentQuiz.untilDate)}
-              </div>
-            </Card.Body>
-          </Card>
-
-          {!isFaculty && latestAttempt && (
-            <Card className="mb-4">
-              <Card.Header>
-                <h6 className="mb-0">
-                  <FaStar className="me-2" />
-                  Your Attempts
-                </h6>
-              </Card.Header>
-              <Card.Body>
-                <div className="mb-2">
-                  <strong>Latest Score:</strong> {latestAttempt.score}/{latestAttempt.totalPoints}
-                </div>
-                <div className="mb-2">
-                  <strong>Attempt:</strong> {latestAttempt.attemptNumber}
-                  {currentQuiz.multipleAttempts && ` of ${currentQuiz.howManyAttempts}`}
-                </div>
-                <div className="mb-2">
-                  <strong>Submitted:</strong><br />
-                  {formatDate(latestAttempt.submittedAt)}
-                </div>
-              </Card.Body>
-            </Card>
-          )}
-
-          {!isFaculty && !canTakeQuiz() && latestAttempt && (
-            <Alert variant="info">
-              <h6>Quiz Completed</h6>
-              <p className="mb-0">
-                You have completed this quiz. 
-                {currentQuiz.multipleAttempts && latestAttempt.attemptNumber >= currentQuiz.howManyAttempts
-                  ? " You have used all available attempts."
-                  : !currentQuiz.multipleAttempts 
-                    ? " Multiple attempts are not allowed."
-                    : ""
-                }
-              </p>
-            </Alert>
-          )}
-
-          {!isFaculty && availability.status !== "Available" && (
-            <Alert variant="warning">
-              <h6>Quiz Not Available</h6>
-              <p className="mb-0">{availability.status}</p>
-            </Alert>
-          )}
-        </Col>
-      </Row>
-
-      <div className="mt-4">
-        <Link to={`/Kambaz/Courses/${cid}/Quizzes`} className="btn btn-outline-secondary">
-          ← Back to Quizzes
-        </Link>
+            </Col>
+          </Row>
+        )}
+        
       </div>
     </div>
   );
