@@ -23,7 +23,7 @@ export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   
   // Check if current user is admin
-  const isAdmin = currentUser && currentUser.role === "ADMIN";
+  const isFaculty = currentUser && currentUser.role === "FACULTY";
   
   const fetchUser = async () => {
     if (!uid) return;
@@ -41,8 +41,8 @@ export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}
       firstName: firstName || '', 
       lastName: lastName || '',
       email,
-      // Only update role if user is admin
-      ...(isAdmin && { role })
+      // Only update role if user is faculty
+      ...(isFaculty && { role })
     };
     await client.updateUser(updatedUser);
     setUser(updatedUser);
@@ -116,19 +116,17 @@ export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}
       <div className="mt-2">
         <b>Roles:</b> 
         {!editing && <span className="wd-roles ms-2">{user.role}</span>}
-        {editing && isAdmin && (
+        {editing && isFaculty && (
           <select 
             className="form-select mt-1 wd-edit-role"
             value={role}
             onChange={(e) => setRole(e.target.value)}
           >
             <option value="STUDENT">Student</option>
-            <option value="TA">TA</option>
             <option value="FACULTY">Faculty</option>
-            <option value="ADMIN">Admin</option>
           </select>
         )}
-        {editing && !isAdmin && (
+        {editing && !isFaculty && (
           <span className="wd-roles ms-2 text-muted">{user.role} (Read-only)</span>
         )}
       </div>
@@ -144,7 +142,7 @@ export default function PeopleDetails({ onUserDeleted }: PeopleDetailsProps = {}
       </div>
       
       <hr />
-      {isAdmin && (
+      {isFaculty && (
         <button 
           onClick={() => deleteUser(uid)} 
           className="btn btn-danger float-end wd-delete"

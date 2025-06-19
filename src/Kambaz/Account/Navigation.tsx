@@ -10,7 +10,7 @@ export default function AccountNavigation() {
       <Link to={`/Kambaz/Account/Signup`}  > Signup  </Link> <br/>
       <Link to={`/Kambaz/Account/Profile`} > Profile </Link> <br/>
       <Link to={`/Kambaz/Dashboard`}      > Dashboard </Link> <br/>
-      {currentUser && currentUser.role === "ADMIN" && (
+      {currentUser && currentUser.role === "FACULTY" && (
        <Link to={`/Kambaz/Account/Users`} > Users </Link> )} <br/>
     </div>
   );

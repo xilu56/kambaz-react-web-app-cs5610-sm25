@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Form, Alert } from "react-bootstrap";
+import { Form, Alert, Container, Card } from "react-bootstrap";
 import * as client from "./client";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -36,41 +36,73 @@ export default function Signin() {
   };
 
   return (
-    <div id="wd-signin-screen" className="mt-4">
-      <h3 className="mb-4">Signin</h3>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <Form>
-        <Form.Control 
-          id="wd-username"
-          placeholder="username"
-          className="mb-4"
-          value={credentials.username || ""}
-          onChange={(e) => handleInputChange("username", e.target.value)}
-        />
-        <Form.Control 
-          id="wd-password"
-          placeholder="password" 
-          type="password"
-          className="mb-4"
-          value={credentials.password || ""}
-          onChange={(e) => handleInputChange("password", e.target.value)}
-        />
-        <button
-          id="wd-signin-btn"
-          type="button"
-          onClick={signin}
-          className="btn btn-primary w-100 mb-3">
-          Signin
-        </button>
-        <div className="text-center">
-          <Link 
-            id="wd-signup-link" 
-            to="/Kambaz/Account/Signup"
-            className="text-primary">
-            Signup
-          </Link>
+    <div className="d-flex justify-content-center align-items-center min-vh-100" style={{ backgroundColor: "#f8f9fa" }}>
+      <Container>
+        <div className="row justify-content-center">
+          <div className="col-md-6 col-lg-4">
+            <Card className="shadow-lg border-0" style={{ borderRadius: "15px" }}>
+              <Card.Body className="p-5">
+                <div className="text-center mb-4">
+                  <h2 className="fw-bold" style={{ color: "#000", fontSize: "1.8rem", lineHeight: "1.2" }}>
+                    Northeastern University
+                  </h2>
+                </div>
+                
+                {error && <Alert variant="danger" className="mb-3">{error}</Alert>}
+                
+                <Form>
+                  <div className="mb-3">
+                    <label className="form-label text-muted fw-medium">myNortheastern Username</label>
+                    <Form.Control 
+                      id="wd-username"
+                      className="form-control-lg"
+                      style={{ borderRadius: "8px", border: "2px solid #e9ecef" }}
+                      value={credentials.username || ""}
+                      onChange={(e) => handleInputChange("username", e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label className="form-label text-muted fw-medium">myNortheastern Password</label>
+                    <Form.Control 
+                      id="wd-password"
+                      type="password"
+                      className="form-control-lg"
+                      style={{ borderRadius: "8px", border: "2px solid #e9ecef" }}
+                      value={credentials.password || ""}
+                      onChange={(e) => handleInputChange("password", e.target.value)}
+                    />
+                  </div>
+                  
+                  <button
+                    id="wd-signin-btn"
+                    type="button"
+                    onClick={signin}
+                    className="btn btn-lg w-100 text-white fw-medium"
+                    style={{ 
+                      backgroundColor: "#d32f2f", 
+                      borderColor: "#d32f2f",
+                      borderRadius: "8px",
+                      padding: "12px"
+                    }}>
+                    Log In
+                  </button>
+                </Form>
+                
+                <div className="text-center mt-4">
+                  <Link 
+                    id="wd-signup-link" 
+                    to="/Kambaz/Account/Signup"
+                    className="text-decoration-none"
+                    style={{ color: "#d32f2f" }}>
+                    Don't have an account? Sign up
+                  </Link>
+                </div>
+              </Card.Body>
+            </Card>
+          </div>
         </div>
-      </Form>
+      </Container>
     </div>
   );
 }

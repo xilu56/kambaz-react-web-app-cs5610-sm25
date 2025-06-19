@@ -153,7 +153,8 @@ export default function Quizzes() {
     fontSize: "1.1rem"
   };
 
-  const isFaculty = currentUser && (currentUser.role === "FACULTY" || currentUser.role === "ADMIN");
+  const isFaculty = currentUser && currentUser.role === "FACULTY";
+  const isStudent = currentUser && currentUser.role === "STUDENT";
 
   return (
     <div className="p-3">

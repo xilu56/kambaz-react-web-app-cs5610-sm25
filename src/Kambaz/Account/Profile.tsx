@@ -182,9 +182,13 @@ export default function Profile() {
             >
               <option value="STUDENT">Student</option>
               <option value="FACULTY">Faculty</option>
-              <option value="ADMIN">Admin</option>
-              <option value="TA">TA</option>
             </Form.Select>
+            <div className="form-text text-muted mt-1">
+              <small>
+                <strong>Student:</strong> Can view and take quizzes, see grades<br/>
+                <strong>Faculty:</strong> Can create, edit, delete, and preview quizzes
+              </small>
+            </div>
           </div>
         </Form.Group>
         
