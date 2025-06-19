@@ -65,12 +65,12 @@ export default function Users() {
     fetchUsers();
   }, []);
 
-  // Only show this page to ADMIN users
-  if (!currentUser || currentUser.role !== "ADMIN") {
+  // Only show this page to FACULTY users
+  if (!currentUser || currentUser.role !== "FACULTY") {
     return (
       <div className="alert alert-danger">
         <h3>Access Denied</h3>
-        <p>You must be an administrator to view this page.</p>
+        <p>You must be a faculty member to view this page.</p>
       </div>
     );
   }
@@ -103,9 +103,9 @@ export default function Users() {
       <h1>Users</h1>
       <select value={role} onChange={(e) =>filterUsersByRole(e.target.value)}
               className="form-select float-start w-25 wd-select-role" >
-        <option value="">All Roles</option>    <option value="STUDENT">Students</option>
-        <option value="TA">Assistants</option> <option value="FACULTY">Faculty</option>
-        <option value="ADMIN">Administrators</option>
+        <option value="">All Roles</option>
+        <option value="STUDENT">Students</option>
+        <option value="FACULTY">Faculty</option>
       </select>
       <FormControl onChange={(e) => filterUsersByName(e.target.value)} placeholder="Search people"
              className="float-start w-25 me-2 wd-filter-by-name" />
@@ -148,9 +148,7 @@ export default function Users() {
               <td>{user.section || 'S101'}</td>
               <td>
                 <span className={`badge ${
-                  user.role === 'ADMIN' ? 'bg-danger' : 
-                  user.role === 'FACULTY' ? 'bg-primary' : 
-                  user.role === 'TA' ? 'bg-warning' : 'bg-success'
+                  user.role === 'FACULTY' ? 'bg-primary' : 'bg-success'
                 }`}>
                   {user.role || 'STUDENT'}
                 </span>

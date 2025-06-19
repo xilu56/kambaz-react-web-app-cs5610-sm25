@@ -43,9 +43,7 @@ export default function PeopleTable({ users = [], onUserDeleted }: PeopleTablePr
               <td>{user.section || 'S101'}</td>
               <td>
                 <span className={`badge ${
-                  user.role === 'ADMIN' ? 'bg-danger' : 
-                  user.role === 'FACULTY' ? 'bg-primary' : 
-                  user.role === 'TA' ? 'bg-warning' : 'bg-success'
+                  user.role === 'FACULTY' ? 'bg-primary' : 'bg-success'
                 }`}>
                   {user.role || 'STUDENT'}
                 </span>
