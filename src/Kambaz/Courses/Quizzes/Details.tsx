@@ -180,22 +180,13 @@ export default function QuizDetails() {
           </div>
         )}
 
-        {/* For Faculty - Show detailed properties */}
-        {isFaculty && (
-          <Row>
-            <Col md={7}>
-              {/* Left side - empty or description */}
-              {currentQuiz.description && (
-                <div style={{ padding: "20px", fontSize: "16px", lineHeight: "1.6" }}>
-                  {currentQuiz.description}
-                </div>
-              )}
-            </Col>
-            
-            <Col md={5}>
-              {/* Right side - Quiz properties */}
-              <div style={{ fontSize: "14px" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                 {/* For Faculty - Show detailed properties */}
+         {isFaculty && (
+           <Row>
+                          <Col md={12}>
+               {/* Quiz properties table */}
+               <div style={{ fontSize: "14px", maxWidth: "600px", margin: "0 auto" }}>
+                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
                   <tbody>
                     <tr>
                       <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500", width: "50%" }}>Quiz Type</td>
@@ -251,9 +242,9 @@ export default function QuizDetails() {
                 </table>
               </div>
 
-              {/* Due date table */}
-              <div style={{ marginTop: "30px" }}>
-                <Table striped bordered size="sm" style={{ fontSize: "14px" }}>
+                             {/* Due date table */}
+               <div style={{ marginTop: "30px", maxWidth: "600px", margin: "30px auto 0 auto" }}>
+                 <Table striped bordered size="sm" style={{ fontSize: "14px" }}>
                   <thead>
                     <tr>
                       <th>Due</th>
