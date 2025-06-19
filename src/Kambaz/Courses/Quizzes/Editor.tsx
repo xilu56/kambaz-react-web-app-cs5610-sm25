@@ -22,6 +22,13 @@ export default function QuizEditor() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isNew = qid === "new";
+  
+  // Debug URL params on component mount
+  console.log("=== QUIZ EDITOR MOUNT DEBUG ===");
+  console.log("Current URL:", window.location.href);
+  console.log("URL pathname:", window.location.pathname);
+  console.log("useParams result:", { cid, qid });
+  console.log("isNew calculated:", isNew);
 
   const [activeTab, setActiveTab] = useState("details");
   const [quiz, setQuiz] = useState<any>({

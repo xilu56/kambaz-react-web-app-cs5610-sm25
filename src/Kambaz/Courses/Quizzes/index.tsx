@@ -73,7 +73,12 @@ export default function Quizzes() {
   };
 
   const handleAddQuiz = () => {
-    navigate(`/Kambaz/Courses/${cid}/Quizzes/new`);
+    const targetUrl = `/Kambaz/Courses/${cid}/Quizzes/new`;
+    console.log("=== ADD QUIZ NAVIGATION DEBUG ===");
+    console.log("Current cid:", cid);
+    console.log("Navigating to:", targetUrl);
+    console.log("Current URL before navigation:", window.location.href);
+    navigate(targetUrl);
   };
 
   const handleShowQuizzes = () => {
