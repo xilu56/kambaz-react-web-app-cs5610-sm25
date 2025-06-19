@@ -1,7 +1,7 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import type { CSSProperties } from "react";
-import { FaSearch, FaEllipsisV, FaTrash, FaPencilAlt, FaCheckCircle, FaBan, FaCopy, FaSort, FaPlus, FaCaretDown, FaCaretRight } from "react-icons/fa";
+import { FaSearch, FaEllipsisV, FaTrash, FaPencilAlt, FaCheckCircle, FaBan, FaCopy, FaPlus, FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { InputGroup, Form, Row, Col, Modal, Button, Dropdown } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { setQuizzes, deleteQuiz, updateQuiz } from "./reducer";
@@ -26,20 +26,27 @@ export default function Quizzes() {
   const isFaculty = currentUser && currentUser.role === "FACULTY";
   const isStudent = currentUser && currentUser.role === "STUDENT";
   
-  // Get quizzes for the current course with role-based filtering
-  const courseQuizzes = quizzes.filter((q: any) => {
-    // First filter by course
-    if (q.course !== cid) return false;
-    
-    // Faculty can see all quizzes
-    if (isFaculty) return true;
-    
-    // Students can only see published quizzes
-    if (isStudent) return q.published === true;
-    
-    // Default: show all (fallback)
-    return true;
-  });
+  // Get quizzes for the current course with role-based filtering and auto-sorting
+  const courseQuizzes = quizzes
+    .filter((q: any) => {
+      // First filter by course
+      if (q.course !== cid) return false;
+      
+      // Faculty can see all quizzes
+      if (isFaculty) return true;
+      
+      // Students can only see published quizzes
+      if (isStudent) return q.published === true;
+      
+      // Default: show all (fallback)
+      return true;
+    })
+    .sort((a: any, b: any) => {
+      // Sort by available date (earliest first)
+      const dateA = a.availableDate ? new Date(a.availableDate).getTime() : 0;
+      const dateB = b.availableDate ? new Date(b.availableDate).getTime() : 0;
+      return dateA - dateB;
+    });
 
   const fetchQuizzes = async () => {
     if (cid) {
@@ -198,24 +205,12 @@ export default function Quizzes() {
             </Col>
             <Col md={6} className="d-flex justify-content-end">
               {isFaculty && (
-                <>
-                  <Dropdown className="me-2">
-                    <Dropdown.Toggle variant="outline-secondary" size="sm" style={{ border: "1px solid #ddd" }}>
-                      <FaSort className="me-1" /> Sort
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item>Sort by Name</Dropdown.Item>
-                      <Dropdown.Item>Sort by Due Date</Dropdown.Item>
-                      <Dropdown.Item>Sort by Available Date</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                  <Button 
-                    style={{ backgroundColor: "#0374b5", borderColor: "#0374b5", color: "white" }}
-                    onClick={handleAddQuiz}
-                  >
-                    <FaPlus className="me-1" /> Quiz
-                  </Button>
-                </>
+                <Button 
+                  style={{ backgroundColor: "#0374b5", borderColor: "#0374b5", color: "white" }}
+                  onClick={handleAddQuiz}
+                >
+                  <FaPlus className="me-1" /> Quiz
+                </Button>
               )}
             </Col>
           </Row>
@@ -336,6 +331,15 @@ export default function Quizzes() {
             <div style={{ display: "flex", alignItems: "center", fontWeight: "bold", fontSize: "16px" }}>
               {isExpanded ? <FaCaretDown style={{ marginRight: "8px" }} /> : <FaCaretRight style={{ marginRight: "8px" }} />}
               Assignment Quizzes
+              <span style={{ 
+                fontSize: "12px", 
+                fontWeight: "normal", 
+                color: "#666", 
+                marginLeft: "10px",
+                fontStyle: "italic"
+              }}>
+                (sorted by available date)
+              </span>
             </div>
             {isFaculty && (
               <Button 
