@@ -97,6 +97,13 @@ export default function QuizEditor() {
   const handleSaveAndPublish = async () => {
     try {
       console.log("=== QUIZ SAVE & PUBLISH DEBUG ===");
+      console.log("Is new quiz:", isNew);
+      console.log("Course ID:", cid);
+      console.log("Quiz ID:", qid);
+      console.log("qid === 'new':", qid === "new");
+      console.log("typeof qid:", typeof qid);
+      console.log("Current URL params:", { cid, qid });
+      
       const publishedQuiz = { ...quiz, published: true };
       console.log("Published quiz data:", publishedQuiz);
       
@@ -107,6 +114,7 @@ export default function QuizEditor() {
         dispatch(addQuiz(newQuiz));
       } else {
         console.log("Updating and publishing existing quiz...");
+        console.log("Attempting to update quiz with ID:", qid);
         await quizzesClient.updateQuiz(qid!, publishedQuiz);
         console.log("Quiz updated and published");
         dispatch(updateQuiz({ quizId: qid!, updates: publishedQuiz }));
