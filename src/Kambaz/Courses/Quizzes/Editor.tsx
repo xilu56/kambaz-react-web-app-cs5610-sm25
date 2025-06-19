@@ -66,33 +66,57 @@ export default function QuizEditor() {
 
   const handleSave = async () => {
     try {
+      console.log("=== QUIZ SAVE DEBUG ===");
+      console.log("Is new quiz:", isNew);
+      console.log("Course ID:", cid);
+      console.log("Quiz ID:", qid);
+      console.log("Quiz data:", quiz);
+      console.log("REMOTE_SERVER:", import.meta.env.VITE_REMOTE_SERVER);
+      
       if (isNew) {
+        console.log("Creating new quiz...");
         const newQuiz = await quizzesClient.createQuizForCourse(cid!, quiz);
+        console.log("New quiz created:", newQuiz);
         dispatch(addQuiz(newQuiz));
         navigate(`/Kambaz/Courses/${cid}/Quizzes/${newQuiz._id}`);
       } else {
+        console.log("Updating existing quiz...");
         const updatedQuiz = await quizzesClient.updateQuiz(qid!, quiz);
+        console.log("Quiz updated:", updatedQuiz);
         dispatch(updateQuiz({ quizId: qid!, updates: quiz }));
         navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
       }
-    } catch (error) {
-      console.error("Error saving quiz:", error);
+    } catch (error: any) {
+      console.error("=== QUIZ SAVE ERROR ===");
+      console.error("Error details:", error);
+      console.error("Error response:", error.response);
+      alert(`Error saving quiz: ${error.message || "Unknown error occurred"}`);
     }
   };
 
   const handleSaveAndPublish = async () => {
     try {
+      console.log("=== QUIZ SAVE & PUBLISH DEBUG ===");
       const publishedQuiz = { ...quiz, published: true };
+      console.log("Published quiz data:", publishedQuiz);
+      
       if (isNew) {
+        console.log("Creating and publishing new quiz...");
         const newQuiz = await quizzesClient.createQuizForCourse(cid!, publishedQuiz);
+        console.log("New quiz created and published:", newQuiz);
         dispatch(addQuiz(newQuiz));
       } else {
+        console.log("Updating and publishing existing quiz...");
         await quizzesClient.updateQuiz(qid!, publishedQuiz);
+        console.log("Quiz updated and published");
         dispatch(updateQuiz({ quizId: qid!, updates: publishedQuiz }));
       }
       navigate(`/Kambaz/Courses/${cid}/Quizzes`);
-    } catch (error) {
-      console.error("Error saving and publishing quiz:", error);
+    } catch (error: any) {
+      console.error("=== QUIZ SAVE & PUBLISH ERROR ===");
+      console.error("Error details:", error);
+      console.error("Error response:", error.response);
+      alert(`Error saving and publishing quiz: ${error.message || "Unknown error occurred"}`);
     }
   };
 
