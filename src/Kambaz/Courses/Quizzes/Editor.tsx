@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Form, Button, Card, Row, Col, Nav, Tab, Alert, Modal } from "react-bootstrap";
 import { FaPlus, FaTrash, FaEdit, FaSave } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -21,12 +21,15 @@ export default function QuizEditor() {
   const { cid, qid } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isNew = qid === "new";
+  const location = useLocation();
+  
+  // More robust check for new quiz using React Router location
+  const isNew = qid === "new" || location.pathname.includes("/new");
   
   // Debug URL params on component mount
   console.log("=== QUIZ EDITOR MOUNT DEBUG ===");
   console.log("Current URL:", window.location.href);
-  console.log("URL pathname:", window.location.pathname);
+  console.log("React Router pathname:", location.pathname);
   console.log("useParams result:", { cid, qid });
   console.log("isNew calculated:", isNew);
 
