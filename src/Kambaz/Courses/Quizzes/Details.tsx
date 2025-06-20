@@ -131,7 +131,7 @@ export default function QuizDetails() {
 
   return (
     <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", padding: "20px" }}>
-      <div style={{ backgroundColor: "white", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", padding: "20px" }}>
+      <div style={{ backgroundColor: "white", borderRadius: "8px", padding: "20px" }}>
         
         {/* Header with buttons */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
@@ -145,13 +145,6 @@ export default function QuizDetails() {
               <>
                 <Button variant="outline-secondary" onClick={handlePreview} className="me-2">
                   Preview
-                </Button>
-                <Button 
-                  variant={currentQuiz?.published ? "outline-warning" : "outline-success"} 
-                  onClick={handleTogglePublish}
-                  className="me-2"
-                >
-                  {currentQuiz?.published ? "Unpublish" : "Publish"}
                 </Button>
                 <Button variant="outline-primary" onClick={handleEdit}>
                   <FaEdit className="me-1" />
@@ -286,6 +279,20 @@ export default function QuizDetails() {
               </div>
             </Col>
           </Row>
+        )}
+
+        {/* Publish/Unpublish Button at Bottom */}
+        {isFaculty && (
+          <div style={{ textAlign: "center", marginTop: "40px", paddingTop: "30px", borderTop: "1px solid #eee" }}>
+            <Button 
+              variant={currentQuiz?.published ? "warning" : "success"} 
+              onClick={handleTogglePublish}
+              size="lg"
+              style={{ minWidth: "150px" }}
+            >
+              {currentQuiz?.published ? "Unpublish" : "Publish"}
+            </Button>
+          </div>
         )}
         
       </div>
