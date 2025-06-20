@@ -251,10 +251,7 @@ export default function QuizDetails() {
                     </tr>
                     <tr style={{ backgroundColor: "#f8f9fa" }}>
                       <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Points</td>
-                      <td style={{ padding: "8px 12px" }}>
-                        {currentQuiz.points || 0}
-                        {console.log("Details page rendering - currentQuiz.points:", currentQuiz.points, "type:", typeof currentQuiz.points)}
-                      </td>
+                      <td style={{ padding: "8px 12px" }}>{currentQuiz.points || 0}</td>
                     </tr>
                     <tr>
                       <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Assignment Group</td>
