@@ -206,7 +206,7 @@ export default function Quizzes() {
             <Col md={6} className="d-flex justify-content-end">
               {isFaculty && (
                 <Button 
-                  style={{ backgroundColor: "#0374b5", borderColor: "#0374b5", color: "white" }}
+                  style={{ backgroundColor: "#dc3545", borderColor: "#dc3545", color: "white" }}
                   onClick={handleAddQuiz}
                 >
                   <FaPlus className="me-1" /> Quiz
@@ -341,19 +341,6 @@ export default function Quizzes() {
                 (sorted by available date)
               </span>
             </div>
-            {isFaculty && (
-              <Button 
-                size="sm"
-                variant="link"
-                style={{ color: "#dc3545", textDecoration: "none", padding: "0" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAddQuiz();
-                }}
-              >
-                <FaPlus />
-              </Button>
-            )}
           </div>
         
         {/* Quiz List */}
