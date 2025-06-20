@@ -38,7 +38,7 @@ export default function QuizEditor() {
     title: "New Quiz",
     description: "",
     quizType: "Graded Quiz",
-    points: 10,
+    points: 0,
     assignmentGroup: "QUIZZES",
     shuffleAnswers: true,
     timeLimit: 20,
@@ -109,8 +109,8 @@ export default function QuizEditor() {
         const updatedQuiz = await quizzesClient.updateQuiz(qid!, quiz);
         console.log("Quiz updated:", updatedQuiz);
         console.log("Updated quiz points:", updatedQuiz.points);
-        dispatch(updateQuiz({ quizId: qid!, updates: quiz }));
-        console.log("Redux update dispatched with points:", quiz.points);
+        dispatch(updateQuiz({ quizId: qid!, updates: updatedQuiz }));
+        console.log("Redux update dispatched with points:", updatedQuiz.points);
         await refreshQuizList(); // Refresh the quiz list to ensure latest data
         navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
       }
@@ -143,9 +143,9 @@ export default function QuizEditor() {
       } else {
         console.log("Updating and publishing existing quiz...");
         console.log("Attempting to update quiz with ID:", qid);
-        await quizzesClient.updateQuiz(qid!, publishedQuiz);
-        console.log("Quiz updated and published");
-        dispatch(updateQuiz({ quizId: qid!, updates: publishedQuiz }));
+        const updatedQuiz = await quizzesClient.updateQuiz(qid!, publishedQuiz);
+        console.log("Quiz updated and published:", updatedQuiz);
+        dispatch(updateQuiz({ quizId: qid!, updates: updatedQuiz }));
       }
       await refreshQuizList(); // Refresh the quiz list to ensure latest data
       navigate(`/Kambaz/Courses/${cid}/Quizzes`);
@@ -319,7 +319,7 @@ export default function QuizEditor() {
                       <Form.Label>Points</Form.Label>
                       <Form.Control
                         type="number"
-                        value={quiz.points || 10}
+                        value={quiz.points !== undefined ? quiz.points : 0}
                         onChange={(e) => {
                           const value = e.target.value;
                           const numValue = value === '' ? 0 : parseInt(value, 10);

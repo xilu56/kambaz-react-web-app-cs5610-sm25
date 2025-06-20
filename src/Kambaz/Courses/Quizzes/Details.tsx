@@ -23,7 +23,10 @@ export default function QuizDetails() {
     const fetchQuiz = async () => {
       if (qid) {
         try {
+          console.log("Fetching quiz details for ID:", qid);
           const quiz = await quizzesClient.fetchQuiz(qid);
+          console.log("Fetched quiz data:", quiz);
+          console.log("Quiz points from server:", quiz.points);
           dispatch(setCurrentQuiz(quiz));
           
           // If student, fetch their latest attempt
@@ -45,6 +48,28 @@ export default function QuizDetails() {
 
     fetchQuiz();
   }, [qid, isFaculty, dispatch]);
+
+  // Add effect to refetch quiz when navigating back from editor
+  useEffect(() => {
+    const handleFocus = () => {
+      console.log("Window focused, refetching quiz data...");
+      if (qid) {
+        const refetchQuiz = async () => {
+          try {
+            const quiz = await quizzesClient.fetchQuiz(qid);
+            console.log("Refetched quiz data:", quiz);
+            dispatch(setCurrentQuiz(quiz));
+          } catch (error) {
+            console.error("Error refetching quiz:", error);
+          }
+        };
+        refetchQuiz();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [qid, dispatch]);
 
   const handleEdit = () => {
     navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}/edit`);
