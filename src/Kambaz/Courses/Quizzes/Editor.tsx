@@ -304,12 +304,7 @@ export default function QuizEditor() {
                         type="number"
                         value={quiz.points || 0}
                         onChange={(e) => setQuiz({ ...quiz, points: parseInt(e.target.value) })}
-                        readOnly
-                        className="bg-light"
                       />
-                      <Form.Text className="text-muted">
-                        Total points are automatically calculated from questions
-                      </Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
