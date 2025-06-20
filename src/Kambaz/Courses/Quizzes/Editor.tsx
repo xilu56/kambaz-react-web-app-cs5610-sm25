@@ -230,26 +230,38 @@ export default function QuizEditor() {
                 <h5>Quiz Details</h5>
               </Card.Header>
               <Card.Body>
+                {/* Title and Description - Full Width */}
                 <Row>
-                  <Col md={6}>
+                  <Col md={12}>
                     <Form.Group className="mb-3">
                       <Form.Label>Title</Form.Label>
                       <Form.Control
                         type="text"
                         value={quiz.title}
                         onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
+                        placeholder="Enter quiz title"
                       />
                     </Form.Group>
 
-                    <Form.Group className="mb-3">
+                    <Form.Group className="mb-4">
                       <Form.Label>Description</Form.Label>
                       <Form.Control
                         as="textarea"
-                        rows={3}
+                        rows={4}
                         value={quiz.description}
                         onChange={(e) => setQuiz({ ...quiz, description: e.target.value })}
+                        placeholder="Enter quiz description (optional)"
                       />
+                      <Form.Text className="text-muted">
+                        Provide instructions or context for students taking this quiz
+                      </Form.Text>
                     </Form.Group>
+                  </Col>
+                </Row>
+
+                {/* Quiz Settings - Two Columns */}
+                <Row>
+                  <Col md={6}>
 
                     <Form.Group className="mb-3">
                       <Form.Label>Quiz Type</Form.Label>
@@ -284,6 +296,45 @@ export default function QuizEditor() {
                         value={quiz.timeLimit}
                         onChange={(e) => setQuiz({ ...quiz, timeLimit: parseInt(e.target.value) })}
                       />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                      <Form.Label>Points</Form.Label>
+                      <Form.Control
+                        type="number"
+                        value={quiz.points || 0}
+                        onChange={(e) => setQuiz({ ...quiz, points: parseInt(e.target.value) })}
+                        readOnly
+                        className="bg-light"
+                      />
+                      <Form.Text className="text-muted">
+                        Total points are automatically calculated from questions
+                      </Form.Text>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                      <Form.Label>Show Correct Answers</Form.Label>
+                      <Form.Select
+                        value={quiz.showCorrectAnswers}
+                        onChange={(e) => setQuiz({ ...quiz, showCorrectAnswers: e.target.value })}
+                      >
+                        <option value="Immediately">Immediately</option>
+                        <option value="After due date">After due date</option>
+                        <option value="Never">Never</option>
+                      </Form.Select>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                      <Form.Label>Access Code</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={quiz.accessCode}
+                        onChange={(e) => setQuiz({ ...quiz, accessCode: e.target.value })}
+                        placeholder="Leave blank if no access code required"
+                      />
+                      <Form.Text className="text-muted">
+                        Optional passcode students need to enter to access the quiz
+                      </Form.Text>
                     </Form.Group>
                   </Col>
 
@@ -343,6 +394,33 @@ export default function QuizEditor() {
                         />
                       </Form.Group>
                     )}
+
+                    <Form.Group className="mb-3">
+                      <Form.Check
+                        type="checkbox"
+                        label="One Question at a Time"
+                        checked={quiz.oneQuestionAtATime}
+                        onChange={(e) => setQuiz({ ...quiz, oneQuestionAtATime: e.target.checked })}
+                      />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                      <Form.Check
+                        type="checkbox"
+                        label="Webcam Required"
+                        checked={quiz.webcamRequired}
+                        onChange={(e) => setQuiz({ ...quiz, webcamRequired: e.target.checked })}
+                      />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                      <Form.Check
+                        type="checkbox"
+                        label="Lock Questions After Answering"
+                        checked={quiz.lockQuestionsAfterAnswering}
+                        onChange={(e) => setQuiz({ ...quiz, lockQuestionsAfterAnswering: e.target.checked })}
+                      />
+                    </Form.Group>
                   </Col>
                 </Row>
               </Card.Body>
