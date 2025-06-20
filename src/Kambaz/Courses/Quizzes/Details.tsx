@@ -49,7 +49,7 @@ export default function QuizDetails() {
     fetchQuiz();
   }, [qid, isFaculty, dispatch]);
 
-  // Add effect to refetch quiz when navigating back from editor
+  // Add effect to refetch quiz when navigating back from editor or when qid changes
   useEffect(() => {
     const handleFocus = () => {
       console.log("Window focused, refetching quiz data...");
@@ -70,6 +70,24 @@ export default function QuizDetails() {
     window.addEventListener('focus', handleFocus);
     return () => window.removeEventListener('focus', handleFocus);
   }, [qid, dispatch]);
+
+  // Additional effect to refetch when quiz ID changes (navigation from editor)
+  useEffect(() => {
+    if (qid && !loading) {
+      console.log("Quiz ID changed, refetching quiz data...");
+      const refetchQuiz = async () => {
+        try {
+          const quiz = await quizzesClient.fetchQuiz(qid);
+          console.log("Quiz data after ID change:", quiz);
+          console.log("Quiz points after ID change:", quiz.points);
+          dispatch(setCurrentQuiz(quiz));
+        } catch (error) {
+          console.error("Error refetching quiz after ID change:", error);
+        }
+      };
+      refetchQuiz();
+    }
+  }, [qid, dispatch, loading]);
 
   const handleEdit = () => {
     navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}/edit`);
@@ -233,7 +251,10 @@ export default function QuizDetails() {
                     </tr>
                     <tr style={{ backgroundColor: "#f8f9fa" }}>
                       <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Points</td>
-                      <td style={{ padding: "8px 12px" }}>{currentQuiz.points || 0}</td>
+                      <td style={{ padding: "8px 12px" }}>
+                        {currentQuiz.points || 0}
+                        {console.log("Details page rendering - currentQuiz.points:", currentQuiz.points, "type:", typeof currentQuiz.points)}
+                      </td>
                     </tr>
                     <tr>
                       <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "500" }}>Assignment Group</td>

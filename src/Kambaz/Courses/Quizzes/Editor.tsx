@@ -110,6 +110,8 @@ export default function QuizEditor() {
         console.log("Quiz updated:", updatedQuiz);
         console.log("Updated quiz points:", updatedQuiz.points);
         dispatch(updateQuiz({ quizId: qid!, updates: updatedQuiz }));
+        // Also update the current quiz in Redux store
+        dispatch(setCurrentQuiz(updatedQuiz));
         console.log("Redux update dispatched with points:", updatedQuiz.points);
         await refreshQuizList(); // Refresh the quiz list to ensure latest data
         navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
@@ -146,6 +148,7 @@ export default function QuizEditor() {
         const updatedQuiz = await quizzesClient.updateQuiz(qid!, publishedQuiz);
         console.log("Quiz updated and published:", updatedQuiz);
         dispatch(updateQuiz({ quizId: qid!, updates: updatedQuiz }));
+        dispatch(setCurrentQuiz(updatedQuiz));
       }
       await refreshQuizList(); // Refresh the quiz list to ensure latest data
       navigate(`/Kambaz/Courses/${cid}/Quizzes`);
