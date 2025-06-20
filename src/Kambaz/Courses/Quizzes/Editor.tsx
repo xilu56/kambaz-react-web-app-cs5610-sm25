@@ -323,8 +323,9 @@ export default function QuizEditor() {
                         onChange={(e) => {
                           const value = e.target.value;
                           const numValue = value === '' ? 0 : parseInt(value, 10);
-                          console.log("Points input changed:", { inputValue: value, parsedValue: numValue });
-                          setQuiz({ ...quiz, points: isNaN(numValue) ? 0 : numValue });
+                          const finalValue = isNaN(numValue) ? 0 : numValue;
+                          console.log(`Points changed: ${value} -> ${finalValue}`);
+                          setQuiz({ ...quiz, points: finalValue });
                         }}
                         min="0"
                         placeholder="Enter total points"

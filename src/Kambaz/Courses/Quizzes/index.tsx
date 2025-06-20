@@ -55,6 +55,10 @@ export default function Quizzes() {
         console.log("REMOTE_SERVER:", import.meta.env.VITE_REMOTE_SERVER);
         const quizzes = await quizzesClient.fetchQuizzesForCourse(cid);
         console.log("Received quizzes:", quizzes);
+        console.log("Quiz points from server:");
+        quizzes.forEach((quiz: any, index: number) => {
+          console.log(`  Quiz ${index + 1}: ${quiz.title} - Points: ${quiz.points} (type: ${typeof quiz.points})`);
+        });
         dispatch(setQuizzes(quizzes));
       } catch (error) {
         console.error("Error fetching quizzes:", error);
