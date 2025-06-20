@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Form, Button, Card, Row, Col, Nav, Tab, Alert, Modal } from "react-bootstrap";
 import { FaPlus, FaTrash, FaEdit, FaSave } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { setCurrentQuiz, addQuiz, updateQuiz } from "./reducer";
+import { setCurrentQuiz, addQuiz, updateQuiz, setQuizzes } from "./reducer";
 import * as quizzesClient from "./client";
 
 interface Question {
@@ -75,6 +75,17 @@ export default function QuizEditor() {
     }
   }, [qid, isNew, dispatch]);
 
+  const refreshQuizList = async () => {
+    try {
+      console.log("Refreshing quiz list for course:", cid);
+      const quizzes = await quizzesClient.fetchQuizzesForCourse(cid!);
+      console.log("Refreshed quizzes:", quizzes);
+      dispatch(setQuizzes(quizzes));
+    } catch (error) {
+      console.error("Error refreshing quiz list:", error);
+    }
+  };
+
   const handleSave = async () => {
     try {
       console.log("=== QUIZ SAVE DEBUG ===");
@@ -82,6 +93,8 @@ export default function QuizEditor() {
       console.log("Course ID:", cid);
       console.log("Quiz ID:", qid);
       console.log("Quiz data:", quiz);
+      console.log("Quiz points value:", quiz.points);
+      console.log("Quiz points type:", typeof quiz.points);
       console.log("REMOTE_SERVER:", import.meta.env.VITE_REMOTE_SERVER);
       
       if (isNew) {
@@ -89,12 +102,16 @@ export default function QuizEditor() {
         const newQuiz = await quizzesClient.createQuizForCourse(cid!, quiz);
         console.log("New quiz created:", newQuiz);
         dispatch(addQuiz(newQuiz));
+        await refreshQuizList(); // Refresh the quiz list to ensure latest data
         navigate(`/Kambaz/Courses/${cid}/Quizzes/${newQuiz._id}`);
       } else {
         console.log("Updating existing quiz...");
         const updatedQuiz = await quizzesClient.updateQuiz(qid!, quiz);
         console.log("Quiz updated:", updatedQuiz);
+        console.log("Updated quiz points:", updatedQuiz.points);
         dispatch(updateQuiz({ quizId: qid!, updates: quiz }));
+        console.log("Redux update dispatched with points:", quiz.points);
+        await refreshQuizList(); // Refresh the quiz list to ensure latest data
         navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}`);
       }
     } catch (error: any) {
@@ -130,6 +147,7 @@ export default function QuizEditor() {
         console.log("Quiz updated and published");
         dispatch(updateQuiz({ quizId: qid!, updates: publishedQuiz }));
       }
+      await refreshQuizList(); // Refresh the quiz list to ensure latest data
       navigate(`/Kambaz/Courses/${cid}/Quizzes`);
     } catch (error: any) {
       console.error("=== QUIZ SAVE & PUBLISH ERROR ===");
@@ -302,7 +320,12 @@ export default function QuizEditor() {
                       <Form.Control
                         type="number"
                         value={quiz.points || 10}
-                        onChange={(e) => setQuiz({ ...quiz, points: parseInt(e.target.value) || 0 })}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const numValue = value === '' ? 0 : parseInt(value, 10);
+                          console.log("Points input changed:", { inputValue: value, parsedValue: numValue });
+                          setQuiz({ ...quiz, points: isNaN(numValue) ? 0 : numValue });
+                        }}
                         min="0"
                         placeholder="Enter total points"
                       />

@@ -40,14 +40,13 @@ const quizzesSlice = createSlice({
       const { quizId, question } = action.payload;
       state.quizzes = state.quizzes.map((q: any) =>
         q._id === quizId 
-          ? { ...q, questions: [...(q.questions || []), question], points: (q.points || 0) + (question.points || 0) }
+          ? { ...q, questions: [...(q.questions || []), question] }
           : q
       );
       if (state.currentQuiz && state.currentQuiz._id === quizId) {
         state.currentQuiz = {
           ...state.currentQuiz,
-          questions: [...(state.currentQuiz.questions || []), question],
-          points: (state.currentQuiz.points || 0) + (question.points || 0)
+          questions: [...(state.currentQuiz.questions || []), question]
         };
       }
     },
@@ -58,8 +57,7 @@ const quizzesSlice = createSlice({
           const questions = q.questions.map((question: any) =>
             question._id === questionId ? { ...question, ...updates } : question
           );
-          const points = questions.reduce((total: number, q: any) => total + (q.points || 0), 0);
-          return { ...q, questions, points };
+          return { ...q, questions };
         }
         return q;
       });
@@ -67,8 +65,7 @@ const quizzesSlice = createSlice({
         const questions = state.currentQuiz.questions.map((question: any) =>
           question._id === questionId ? { ...question, ...updates } : question
         );
-        const points = questions.reduce((total: number, q: any) => total + (q.points || 0), 0);
-        state.currentQuiz = { ...state.currentQuiz, questions, points };
+        state.currentQuiz = { ...state.currentQuiz, questions };
       }
     },
     deleteQuestionFromQuiz: (state, action) => {
@@ -76,15 +73,13 @@ const quizzesSlice = createSlice({
       state.quizzes = state.quizzes.map((q: any) => {
         if (q._id === quizId) {
           const questions = q.questions.filter((question: any) => question._id !== questionId);
-          const points = questions.reduce((total: number, q: any) => total + (q.points || 0), 0);
-          return { ...q, questions, points };
+          return { ...q, questions };
         }
         return q;
       });
       if (state.currentQuiz && state.currentQuiz._id === quizId) {
         const questions = state.currentQuiz.questions.filter((question: any) => question._id !== questionId);
-        const points = questions.reduce((total: number, q: any) => total + (q.points || 0), 0);
-        state.currentQuiz = { ...state.currentQuiz, questions, points };
+        state.currentQuiz = { ...state.currentQuiz, questions };
       }
     },
     // Attempt management
