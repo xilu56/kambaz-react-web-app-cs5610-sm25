@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card, Button, Badge, Row, Col, Alert, Table } from "react-bootstrap";
 import { FaEdit, FaEye, FaPlay, FaCalendarAlt, FaClock, FaQuestionCircle, FaStar } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { setCurrentQuiz } from "./reducer";
+import { setCurrentQuiz, updateQuiz } from "./reducer";
 import * as quizzesClient from "./client";
 
 export default function QuizDetails() {
@@ -56,6 +56,20 @@ export default function QuizDetails() {
 
   const handleTakeQuiz = () => {
     navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}/take`);
+  };
+
+  const handleTogglePublish = async () => {
+    if (!currentQuiz) return;
+    
+    try {
+      const updatedQuiz = await quizzesClient.updateQuiz(currentQuiz._id, {
+        published: !currentQuiz.published
+      });
+      dispatch(updateQuiz({ quizId: currentQuiz._id, updates: { published: !currentQuiz.published } }));
+      dispatch(setCurrentQuiz({ ...currentQuiz, published: !currentQuiz.published }));
+    } catch (error) {
+      console.error("Error updating quiz publish status:", error);
+    }
   };
 
   const formatDate = (date: string | Date) => {
@@ -131,6 +145,13 @@ export default function QuizDetails() {
               <>
                 <Button variant="outline-secondary" onClick={handlePreview} className="me-2">
                   Preview
+                </Button>
+                <Button 
+                  variant={currentQuiz?.published ? "outline-warning" : "outline-success"} 
+                  onClick={handleTogglePublish}
+                  className="me-2"
+                >
+                  {currentQuiz?.published ? "Unpublish" : "Publish"}
                 </Button>
                 <Button variant="outline-primary" onClick={handleEdit}>
                   <FaEdit className="me-1" />
