@@ -38,6 +38,7 @@ export default function QuizEditor() {
     title: "New Quiz",
     description: "",
     quizType: "Graded Quiz",
+    points: 10,
     assignmentGroup: "QUIZZES",
     shuffleAnswers: true,
     timeLimit: 20,
@@ -176,16 +177,14 @@ export default function QuizEditor() {
       questions.push(editingQuestion);
     }
 
-    const totalPoints = questions.reduce((sum, q) => sum + (q.points || 0), 0);
-    setQuiz({ ...quiz, questions, points: totalPoints });
+    setQuiz({ ...quiz, questions });
     setShowQuestionModal(false);
     setEditingQuestion(null);
   };
 
   const deleteQuestion = (questionId: string) => {
     const questions = quiz.questions.filter((q: Question) => q._id !== questionId);
-    const totalPoints = questions.reduce((sum: number, q: Question) => sum + (q.points || 0), 0);
-    setQuiz({ ...quiz, questions, points: totalPoints });
+    setQuiz({ ...quiz, questions });
   };
 
   const formatDateForInput = (date: string | Date) => {
@@ -302,9 +301,14 @@ export default function QuizEditor() {
                       <Form.Label>Points</Form.Label>
                       <Form.Control
                         type="number"
-                        value={quiz.points || 0}
-                        onChange={(e) => setQuiz({ ...quiz, points: parseInt(e.target.value) })}
+                        value={quiz.points || 10}
+                        onChange={(e) => setQuiz({ ...quiz, points: parseInt(e.target.value) || 0 })}
+                        min="0"
+                        placeholder="Enter total points"
                       />
+                      <Form.Text className="text-muted">
+                        The sum of the points of all questions in the quiz
+                      </Form.Text>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
