@@ -1,7 +1,7 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import type { CSSProperties } from "react";
-import { FaSearch, FaEllipsisV, FaTrash, FaPencilAlt, FaCheckCircle, FaBan, FaCopy, FaPlus, FaCaretDown, FaCaretRight } from "react-icons/fa";
+import { FaSearch, FaEllipsisV, FaTrash, FaPencilAlt, FaCheckCircle, FaBan, FaPlus, FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { InputGroup, Form, Row, Col, Modal, Button, Dropdown } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { setQuizzes, deleteQuiz, updateQuiz } from "./reducer";
@@ -501,11 +501,6 @@ export default function Quizzes() {
                                 }}>
                                   {quiz.published ? <FaBan className="me-2" /> : <FaCheckCircle className="me-2" />}
                                   {quiz.published ? "Unpublish" : "Publish"}
-                                </Dropdown.Item>
-                                <Dropdown.Divider />
-                                <Dropdown.Item>
-                                  <FaCopy className="me-2" />
-                                  Copy to Another Course
                                 </Dropdown.Item>
                               </Dropdown.Menu>
                             </Dropdown>
