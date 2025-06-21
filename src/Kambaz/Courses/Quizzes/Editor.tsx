@@ -5,6 +5,7 @@ import { FaPlus, FaTrash, FaEdit, FaSave } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentQuiz, addQuiz, updateQuiz, setQuizzes } from "./reducer";
 import * as quizzesClient from "./client";
+import { formatDateForInput } from "./dateUtils";
 
 interface Question {
   _id: string;
@@ -208,11 +209,7 @@ export default function QuizEditor() {
     setQuiz({ ...quiz, questions });
   };
 
-  const formatDateForInput = (date: string | Date) => {
-    if (!date) return "";
-    const d = new Date(date);
-    return d.toISOString().slice(0, 16);
-  };
+
 
   return (
     <div className="p-4">
@@ -370,7 +367,10 @@ export default function QuizEditor() {
                       <Form.Control
                         type="datetime-local"
                         value={formatDateForInput(quiz.dueDate)}
-                        onChange={(e) => setQuiz({ ...quiz, dueDate: e.target.value })}
+                        onChange={(e) => {
+                          console.log("Due date changed:", e.target.value);
+                          setQuiz({ ...quiz, dueDate: e.target.value });
+                        }}
                       />
                     </Form.Group>
 
@@ -379,7 +379,10 @@ export default function QuizEditor() {
                       <Form.Control
                         type="datetime-local"
                         value={formatDateForInput(quiz.availableDate)}
-                        onChange={(e) => setQuiz({ ...quiz, availableDate: e.target.value })}
+                        onChange={(e) => {
+                          console.log("Available date changed:", e.target.value);
+                          setQuiz({ ...quiz, availableDate: e.target.value });
+                        }}
                       />
                     </Form.Group>
 
@@ -388,7 +391,10 @@ export default function QuizEditor() {
                       <Form.Control
                         type="datetime-local"
                         value={formatDateForInput(quiz.untilDate)}
-                        onChange={(e) => setQuiz({ ...quiz, untilDate: e.target.value })}
+                        onChange={(e) => {
+                          console.log("Until date changed:", e.target.value);
+                          setQuiz({ ...quiz, untilDate: e.target.value });
+                        }}
                       />
                     </Form.Group>
 

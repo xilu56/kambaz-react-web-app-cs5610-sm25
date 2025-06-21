@@ -5,6 +5,7 @@ import { FaEdit, FaEye, FaPlay, FaCalendarAlt, FaClock, FaQuestionCircle, FaStar
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentQuiz, updateQuiz } from "./reducer";
 import * as quizzesClient from "./client";
+import { formatDateForDisplay } from "./dateUtils";
 
 export default function QuizDetails() {
   const { cid, qid } = useParams();
@@ -115,11 +116,7 @@ export default function QuizDetails() {
     }
   };
 
-  const formatDate = (date: string | Date) => {
-    if (!date) return "Not set";
-    const d = new Date(date);
-    return `${d.toLocaleDateString()} at ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-  };
+
 
   const getAvailabilityStatus = () => {
     if (!currentQuiz) return { status: "Loading...", color: "secondary" };
@@ -312,10 +309,10 @@ export default function QuizDetails() {
                   </thead>
                   <tbody>
                     <tr>
-                      <td>{currentQuiz.dueDate ? new Date(currentQuiz.dueDate).toLocaleDateString() + " at " + new Date(currentQuiz.dueDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Not set"}</td>
+                      <td>{formatDateForDisplay(currentQuiz.dueDate)}</td>
                       <td>Everyone</td>
-                      <td>{currentQuiz.availableDate ? new Date(currentQuiz.availableDate).toLocaleDateString() + " at " + new Date(currentQuiz.availableDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Not set"}</td>
-                      <td>{currentQuiz.untilDate ? new Date(currentQuiz.untilDate).toLocaleDateString() + " at " + new Date(currentQuiz.untilDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Not set"}</td>
+                      <td>{formatDateForDisplay(currentQuiz.availableDate)}</td>
+                      <td>{formatDateForDisplay(currentQuiz.untilDate)}</td>
                     </tr>
                   </tbody>
                 </Table>

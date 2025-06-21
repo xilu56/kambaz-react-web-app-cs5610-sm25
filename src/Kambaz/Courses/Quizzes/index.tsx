@@ -6,6 +6,7 @@ import { InputGroup, Form, Row, Col, Modal, Button, Dropdown } from "react-boots
 import { useSelector, useDispatch } from "react-redux";
 import { setQuizzes, deleteQuiz, updateQuiz } from "./reducer";
 import * as quizzesClient from "./client";
+import { formatDateForDisplay, formatDateShort, formatDueDate } from "./dateUtils";
 
 export default function Quizzes() {
   const { cid } = useParams();
@@ -156,11 +157,7 @@ export default function Quizzes() {
     return "Available";
   };
 
-  const formatDueDate = (quiz: any) => {
-    if (!quiz.dueDate) return "No due date";
-    const dueDate = new Date(quiz.dueDate);
-    return `Due ${dueDate.toLocaleDateString()} at ${dueDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-  };
+
 
   const getStatusIcon = (quiz: any) => {
     if (!quiz.published) {
@@ -425,7 +422,7 @@ export default function Quizzes() {
                             {quiz.availableDate && (
                               <>
                                 <span style={{ margin: "0 8px" }}>|</span>
-                                <span>Available {new Date(quiz.availableDate).toLocaleDateString()}</span>
+                                <span>Available {formatDateShort(quiz.availableDate)}</span>
                               </>
                             )}
                             
