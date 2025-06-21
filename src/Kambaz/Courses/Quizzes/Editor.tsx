@@ -5,7 +5,7 @@ import { FaPlus, FaTrash, FaEdit, FaSave } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentQuiz, addQuiz, updateQuiz, setQuizzes } from "./reducer";
 import * as quizzesClient from "./client";
-import { formatDateForInput } from "./dateUtils";
+import { formatDateForInput, parseLocalDateTime } from "./dateUtils";
 
 interface Question {
   _id: string;
@@ -368,8 +368,13 @@ export default function QuizEditor() {
                         type="datetime-local"
                         value={formatDateForInput(quiz.dueDate)}
                         onChange={(e) => {
-                          console.log("Due date changed:", e.target.value);
-                          setQuiz({ ...quiz, dueDate: e.target.value });
+                          const value = e.target.value;
+                          console.log("Due date changed:", value);
+                          // 将datetime-local值转换为正确的Date对象
+                          const localDate = parseLocalDateTime(value);
+                          console.log("Due date parsed:", localDate);
+                          // 保存ISO字符串到状态中
+                          setQuiz({ ...quiz, dueDate: localDate ? localDate.toISOString() : "" });
                         }}
                       />
                     </Form.Group>
@@ -380,8 +385,11 @@ export default function QuizEditor() {
                         type="datetime-local"
                         value={formatDateForInput(quiz.availableDate)}
                         onChange={(e) => {
-                          console.log("Available date changed:", e.target.value);
-                          setQuiz({ ...quiz, availableDate: e.target.value });
+                          const value = e.target.value;
+                          console.log("Available date changed:", value);
+                          const localDate = parseLocalDateTime(value);
+                          console.log("Available date parsed:", localDate);
+                          setQuiz({ ...quiz, availableDate: localDate ? localDate.toISOString() : "" });
                         }}
                       />
                     </Form.Group>
@@ -392,8 +400,11 @@ export default function QuizEditor() {
                         type="datetime-local"
                         value={formatDateForInput(quiz.untilDate)}
                         onChange={(e) => {
-                          console.log("Until date changed:", e.target.value);
-                          setQuiz({ ...quiz, untilDate: e.target.value });
+                          const value = e.target.value;
+                          console.log("Until date changed:", value);
+                          const localDate = parseLocalDateTime(value);
+                          console.log("Until date parsed:", localDate);
+                          setQuiz({ ...quiz, untilDate: localDate ? localDate.toISOString() : "" });
                         }}
                       />
                     </Form.Group>
