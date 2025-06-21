@@ -203,7 +203,7 @@ export default function QuizEditor() {
           title: "Fill Question",
           points: 2,
           questionText: "2 + 2 = ____",
-          correctAnswers: ["4", "four"]
+          correctAnswers: ["4", "four", "Four"]
         };
       default:
         return baseQuestion;
@@ -345,6 +345,40 @@ export default function QuizEditor() {
           newChoices[0].isCorrect = true;
         }
         return { ...q, choices: newChoices };
+      }
+      return q;
+    });
+    setQuiz({ ...quiz, questions });
+  };
+
+  const addFillAnswer = (questionId: string) => {
+    const questions = quiz.questions.map((q: Question) => {
+      if (q._id === questionId && q.correctAnswers) {
+        const newAnswers = [...q.correctAnswers, ""];
+        return { ...q, correctAnswers: newAnswers };
+      }
+      return q;
+    });
+    setQuiz({ ...quiz, questions });
+  };
+
+  const removeFillAnswer = (questionId: string, answerIndex: number) => {
+    const questions = quiz.questions.map((q: Question) => {
+      if (q._id === questionId && q.correctAnswers && q.correctAnswers.length > 1) {
+        const newAnswers = q.correctAnswers.filter((_, index) => index !== answerIndex);
+        return { ...q, correctAnswers: newAnswers };
+      }
+      return q;
+    });
+    setQuiz({ ...quiz, questions });
+  };
+
+  const updateFillAnswer = (questionId: string, answerIndex: number, value: string) => {
+    const questions = quiz.questions.map((q: Question) => {
+      if (q._id === questionId && q.correctAnswers) {
+        const newAnswers = [...q.correctAnswers];
+        newAnswers[answerIndex] = value;
+        return { ...q, correctAnswers: newAnswers };
       }
       return q;
     });
@@ -821,19 +855,46 @@ export default function QuizEditor() {
                               )}
 
                               {question.type === "Fill in the Blank" && (
-                                <Form.Group className="mb-3">
-                                  <Form.Label>Correct Answers (one per line)</Form.Label>
-                                  <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    value={question.correctAnswers?.join('\n') || ''}
-                                    onChange={(e) => updateQuestionField(question._id, 'correctAnswers', e.target.value.split('\n').filter(line => line.trim()))}
-                                    placeholder="Enter possible correct answers, one per line"
-                                  />
-                                  <Form.Text className="text-muted">
+                                <div>
+                                  <Form.Label className="mb-3">Answers:</Form.Label>
+                                  {question.correctAnswers?.map((answer, answerIndex) => (
+                                    <div key={answerIndex} className="mb-3">
+                                      <div className="d-flex align-items-start">
+                                        <div className="flex-grow-1">
+                                          <div className="d-flex align-items-center mb-1">
+                                            <span className="text-muted">Possible Answer</span>
+                                            <Button
+                                              variant="link"
+                                              size="sm"
+                                              className="ms-auto text-danger p-0"
+                                              onClick={() => removeFillAnswer(question._id, answerIndex)}
+                                              style={{ textDecoration: 'none' }}
+                                            >
+                                              <FaTrash />
+                                            </Button>
+                                          </div>
+                                          <Form.Control
+                                            type="text"
+                                            value={answer}
+                                            onChange={(e) => updateFillAnswer(question._id, answerIndex, e.target.value)}
+                                            placeholder={`Enter possible answer ${answerIndex + 1}`}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                  <Button
+                                    variant="link"
+                                    className="text-primary p-0 mb-3"
+                                    onClick={() => addFillAnswer(question._id)}
+                                    style={{ textDecoration: 'none' }}
+                                  >
+                                    <FaPlus /> Add Another Answer
+                                  </Button>
+                                  <Form.Text className="text-muted d-block">
                                     Multiple correct answers are supported (case-insensitive matching)
                                   </Form.Text>
-                                </Form.Group>
+                                </div>
                               )}
 
                               {/* Action Buttons */}
