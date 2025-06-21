@@ -655,35 +655,6 @@ export default function QuizEditor() {
                               {/* Question Section */}
                               <div className="mb-4">
                                 <Form.Label><strong>Question:</strong></Form.Label>
-                                <div className="border rounded p-2 mb-2" style={{ backgroundColor: '#f8f9fa' }}>
-                                  <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <div className="btn-toolbar" role="toolbar">
-                                      <div className="btn-group me-2" role="group">
-                                        <button type="button" className="btn btn-sm btn-outline-secondary">Edit</button>
-                                        <button type="button" className="btn btn-sm btn-outline-secondary">View</button>
-                                        <button type="button" className="btn btn-sm btn-outline-secondary">Insert</button>
-                                        <button type="button" className="btn btn-sm btn-outline-secondary">Format</button>
-                                        <button type="button" className="btn btn-sm btn-outline-secondary">Tools</button>
-                                        <button type="button" className="btn btn-sm btn-outline-secondary">Table</button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="border-top pt-2">
-                                    <div className="d-flex align-items-center mb-2">
-                                      <Form.Select size="sm" className="me-2" style={{ width: '80px' }}>
-                                        <option>12pt</option>
-                                      </Form.Select>
-                                      <Form.Select size="sm" className="me-2" style={{ width: '120px' }}>
-                                        <option>Paragraph</option>
-                                      </Form.Select>
-                                      <div className="btn-group me-2">
-                                        <button type="button" className="btn btn-sm btn-outline-secondary"><strong>B</strong></button>
-                                        <button type="button" className="btn btn-sm btn-outline-secondary"><em>I</em></button>
-                                        <button type="button" className="btn btn-sm btn-outline-secondary"><u>U</u></button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
                                 <Form.Control
                                   as="textarea"
                                   rows={4}
@@ -804,7 +775,7 @@ export default function QuizEditor() {
                                   variant="danger"
                                   onClick={() => saveQuestionEdit(question._id)}
                                 >
-                                  Update Question
+                                  {originalQuestions.some(q => q._id === question._id) ? "Update Question" : "Save"}
                                 </Button>
                               </div>
                             </div>
