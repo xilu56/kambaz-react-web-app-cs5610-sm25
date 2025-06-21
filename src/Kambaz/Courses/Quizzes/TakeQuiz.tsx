@@ -49,12 +49,76 @@ export default function TakeQuiz() {
 
   const isStudent = currentUser && currentUser.role === "STUDENT";
 
+  // Helper functions
+  const checkCanTakeQuiz = (quiz: any, latestAttempt: any) => {
+    if (!quiz.multipleAttempts) {
+      // Single attempt only - can't retake if already attempted
+      return !latestAttempt;
+    }
+    
+    // Multiple attempts allowed - check if under limit
+    return latestAttempt.attemptNumber < quiz.howManyAttempts;
+  };
+
+  const getCorrectAnswer = (question: any) => {
+    if (!question) return "";
+    
+    if (question.type === "Multiple Choice") {
+      return question.choices?.find((c: any) => c.isCorrect)?.text || "";
+    } else if (question.type === "True/False") {
+      return question.answer?.toString() || "";
+    } else if (question.type === "Fill in the Blank") {
+      return question.correctAnswers?.join(", ") || "";
+    }
+    return "";
+  };
+
+  const getQuizAvailabilityStatus = (quiz = currentQuiz) => {
+    if (!quiz) return { status: "Loading...", color: "secondary", canTake: false, message: "" };
+    
+    const now = new Date();
+    const availableDate = quiz.availableDate ? new Date(quiz.availableDate) : null;
+    const untilDate = quiz.untilDate ? new Date(quiz.untilDate) : null;
+    
+    if (!quiz.published) {
+      return { 
+        status: "Quiz Not Available", 
+        color: "warning", 
+        canTake: false,
+        message: "This quiz has not been published yet. Please contact your instructor for more information."
+      };
+    }
+    
+    if (untilDate && now > untilDate) {
+      return { 
+        status: "Quiz Not Available", 
+        color: "danger", 
+        canTake: false,
+        message: "This quiz is no longer available. The due date has passed. Please contact instructor of the course."
+      };
+    }
+    
+    if (availableDate && now < availableDate) {
+      return { 
+        status: "Quiz Not Available", 
+        color: "warning", 
+        canTake: false,
+        message: `This quiz will be available starting ${availableDate.toLocaleDateString()} at ${availableDate.toLocaleTimeString()}.`
+      };
+    }
+    
+    return { status: "Available", color: "success", canTake: true, message: "" };
+  };
+
   useEffect(() => {
     const fetchQuizAndAttempts = async () => {
       if (qid) {
         try {
           const quiz = await quizzesClient.fetchQuiz(qid);
           dispatch(setCurrentQuiz(quiz));
+          
+          // Check quiz availability first (we need to pass the quiz since currentQuiz might not be set yet)
+          const availability = getQuizAvailabilityStatus(quiz);
           
           // Check if student has previous attempts
           const latestAttemptData = await quizzesClient.getLatestAttemptForStudent(qid);
@@ -83,8 +147,8 @@ export default function TakeQuiz() {
             }
           }
           
-          // Initialize answers array for new attempt
-          if (!latestAttemptData || checkCanTakeQuiz(quiz, latestAttemptData)) {
+          // Only initialize answers if quiz is available and student can take it
+          if (availability.canTake && (!latestAttemptData || checkCanTakeQuiz(quiz, latestAttemptData))) {
             const initialAnswers = quiz.questions?.map((question: any) => ({
               questionId: question._id,
               answer: null,
@@ -103,29 +167,6 @@ export default function TakeQuiz() {
 
     fetchQuizAndAttempts();
   }, [qid, dispatch]);
-
-  const checkCanTakeQuiz = (quiz: any, latestAttempt: any) => {
-    if (!quiz.multipleAttempts) {
-      // Single attempt only - can't retake if already attempted
-      return !latestAttempt;
-    }
-    
-    // Multiple attempts allowed - check if under limit
-    return latestAttempt.attemptNumber < quiz.howManyAttempts;
-  };
-
-  const getCorrectAnswer = (question: any) => {
-    if (!question) return "";
-    
-    if (question.type === "Multiple Choice") {
-      return question.choices?.find((c: any) => c.isCorrect)?.text || "";
-    } else if (question.type === "True/False") {
-      return question.answer?.toString() || "";
-    } else if (question.type === "Fill in the Blank") {
-      return question.correctAnswers?.join(", ") || "";
-    }
-    return "";
-  };
 
   const handleAnswerChange = (questionId: string, answer: any) => {
     setAnswers(prev => prev.map(a => 
@@ -275,43 +316,6 @@ export default function TakeQuiz() {
     })) || [];
     setAnswers(initialAnswers);
     setStartTime(new Date());
-  };
-
-  const getQuizAvailabilityStatus = () => {
-    if (!currentQuiz) return { status: "Loading...", color: "secondary", canTake: false, message: "" };
-    
-    const now = new Date();
-    const availableDate = currentQuiz.availableDate ? new Date(currentQuiz.availableDate) : null;
-    const untilDate = currentQuiz.untilDate ? new Date(currentQuiz.untilDate) : null;
-    
-    if (!currentQuiz.published) {
-      return { 
-        status: "Quiz Not Available", 
-        color: "warning", 
-        canTake: false,
-        message: "This quiz has not been published yet. Please contact your instructor for more information."
-      };
-    }
-    
-    if (untilDate && now > untilDate) {
-      return { 
-        status: "Quiz Not Available", 
-        color: "danger", 
-        canTake: false,
-        message: "This quiz is no longer available. The due date has passed. Please contact your instructor for more information."
-      };
-    }
-    
-    if (availableDate && now < availableDate) {
-      return { 
-        status: "Quiz Not Available", 
-        color: "warning", 
-        canTake: false,
-        message: `This quiz will be available starting ${availableDate.toLocaleDateString()} at ${availableDate.toLocaleTimeString()}.`
-      };
-    }
-    
-    return { status: "Available", color: "success", canTake: true, message: "" };
   };
 
   // Show quiz overview if student has attempts but isn't currently taking quiz
