@@ -166,24 +166,55 @@ export default function QuizEditor() {
     navigate(`/Kambaz/Courses/${cid}/Quizzes`);
   };
 
+  const createDefaultQuestion = (type: "Multiple Choice" | "True/False" | "Fill in the Blank") => {
+    const baseQuestion = {
+      _id: new Date().getTime().toString(),
+      isEditing: true
+    };
+
+    switch (type) {
+      case "Multiple Choice":
+        return {
+          ...baseQuestion,
+          type: "Multiple Choice" as const,
+          title: "Easy Question",
+          points: 4,
+          questionText: "How much is 2 + 2?",
+          choices: [
+            { text: "4", isCorrect: true },
+            { text: "3", isCorrect: false },
+            { text: "5", isCorrect: false },
+            { text: "7", isCorrect: false }
+          ]
+        };
+      case "True/False":
+        return {
+          ...baseQuestion,
+          type: "True/False" as const,
+          title: "Is 2 + 2 = 4?",
+          points: 3,
+          questionText: "Is it true that 2 + 2 = 4?",
+          answer: true
+        };
+      case "Fill in the Blank":
+        return {
+          ...baseQuestion,
+          type: "Fill in the Blank" as const,
+          title: "Fill Question",
+          points: 2,
+          questionText: "2 + 2 = ____",
+          correctAnswers: ["4", "four"]
+        };
+      default:
+        return baseQuestion;
+    }
+  };
+
   const addNewQuestion = () => {
     // Save current state as original before adding new question
     setOriginalQuestions([...quiz.questions]);
     
-    const newQuestion = {
-      _id: new Date().getTime().toString(),
-      type: "Multiple Choice" as const,
-      title: "Easy Question",
-      points: 4,
-      questionText: "How much is 2 + 2?",
-      choices: [
-        { text: "4", isCorrect: true },
-        { text: "3", isCorrect: false },
-        { text: "5", isCorrect: false },
-        { text: "7", isCorrect: false }
-      ],
-      isEditing: true // Add editing state flag
-    };
+    const newQuestion = createDefaultQuestion("Multiple Choice");
     
     // Add question to the list in edit mode
     const questions = [...quiz.questions, newQuestion];
@@ -251,6 +282,7 @@ export default function QuizEditor() {
             delete updatedQuestion.correctAnswers;
           } else if (value === 'True/False') {
             updatedQuestion.answer = true;
+            updatedQuestion.points = 3; // Default points for True/False
             delete updatedQuestion.choices;
             delete updatedQuestion.correctAnswers;
           } else if (value === 'Fill in the Blank') {
@@ -649,7 +681,9 @@ export default function QuizEditor() {
 
                               {/* Instruction Text */}
                               <p className="text-muted mb-3" style={{ fontSize: '0.9em' }}>
-                                Enter your question and multiple answers, then select the one correct answer.
+                                {question.type === "Multiple Choice" && "Enter your question and multiple answers, then select the one correct answer."}
+                                {question.type === "True/False" && "Enter your question text, then select if True or False is the correct answer."}
+                                {question.type === "Fill in the Blank" && "Enter your question text and the correct answers."}
                               </p>
 
                               {/* Question Section */}
@@ -725,25 +759,69 @@ export default function QuizEditor() {
                               )}
 
                               {question.type === "True/False" && (
-                                <Form.Group className="mb-3">
-                                  <Form.Label>Correct Answer</Form.Label>
-                                  <div>
-                                    <Form.Check
-                                      type="radio"
-                                      label="True"
-                                      name={`trueFalseAnswer-${question._id}`}
-                                      checked={question.answer === true}
-                                      onChange={() => updateQuestionField(question._id, 'answer', true)}
-                                    />
-                                    <Form.Check
-                                      type="radio"
-                                      label="False"
-                                      name={`trueFalseAnswer-${question._id}`}
-                                      checked={question.answer === false}
-                                      onChange={() => updateQuestionField(question._id, 'answer', false)}
-                                    />
+                                <div>
+                                  <Form.Label className="mb-3">Answers:</Form.Label>
+                                  
+                                  {/* True Option */}
+                                  <div className="mb-3">
+                                    <div className="d-flex align-items-center">
+                                      {question.answer === true && (
+                                        <span className="badge bg-success me-2">
+                                          → True
+                                        </span>
+                                      )}
+                                      {question.answer !== true && (
+                                        <span className="text-muted me-2">True</span>
+                                      )}
+                                    </div>
+                                    <div className="d-flex align-items-center mt-1">
+                                      <Form.Check
+                                        type="radio"
+                                        name={`trueFalseAnswer-${question._id}`}
+                                        checked={question.answer === true}
+                                        onChange={() => updateQuestionField(question._id, 'answer', true)}
+                                        className="me-2"
+                                        style={{ transform: 'scale(1.2)' }}
+                                      />
+                                      <span style={{ 
+                                        color: question.answer === true ? '#28a745' : '#6c757d',
+                                        fontWeight: question.answer === true ? 'bold' : 'normal'
+                                      }}>
+                                        True
+                                      </span>
+                                    </div>
                                   </div>
-                                </Form.Group>
+
+                                  {/* False Option */}
+                                  <div className="mb-3">
+                                    <div className="d-flex align-items-center">
+                                      {question.answer === false && (
+                                        <span className="badge bg-success me-2">
+                                          → False
+                                        </span>
+                                      )}
+                                      {question.answer !== false && (
+                                        <span className="text-muted me-2">False</span>
+                                      )}
+                                    </div>
+                                    <div className="d-flex align-items-center mt-1">
+                                      <Form.Check
+                                        type="radio"
+                                        name={`trueFalseAnswer-${question._id}`}
+                                        checked={question.answer === false}
+                                        onChange={() => updateQuestionField(question._id, 'answer', false)}
+                                        className="me-2"
+                                        style={{ transform: 'scale(1.2)' }}
+                                      />
+                                      <span style={{ 
+                                        color: question.answer === false ? '#28a745' : '#6c757d',
+                                        fontWeight: question.answer === false ? 'bold' : 'normal'
+                                      }}>
+                                        False
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
                               )}
 
                               {question.type === "Fill in the Blank" && (
