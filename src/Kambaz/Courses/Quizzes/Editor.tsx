@@ -917,43 +917,63 @@ export default function QuizEditor() {
                               <div className="d-flex justify-content-between align-items-start">
                                 <div style={{ flex: 1 }}>
                                   <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <h6>Question {index + 1}</h6>
+                                    <h6>Question {index + 1}{question.title && question.title.trim() ? `: ${question.title}` : ''}</h6>
                                     <span className="badge bg-secondary">{question.points} pts</span>
                                   </div>
-                                  <p className="text-muted mb-2">{question.type}</p>
-                                  <p className="mb-3">{question.questionText}</p>
+                                  <p className="text-muted mb-2">Question Type: {question.type}</p>
+                                  <p className="mb-3">Question Details: {question.questionText}</p>
                                   
                                   {question.type === "Multiple Choice" && (
                                     <div className="mb-3">
-                                      {question.choices?.map((choice, choiceIndex) => (
-                                        <div key={choiceIndex} className="d-flex align-items-center mb-1">
-                                          <span className="me-2" style={{ color: choice.isCorrect ? "green" : "black" }}>
-                                            {choice.isCorrect ? "●" : "○"}
-                                          </span>
-                                          <span style={{ color: choice.isCorrect ? "green" : "black" }}>
-                                            {choice.text}
-                                          </span>
-                                        </div>
-                                      ))}
+                                      <strong>Possible Answers:</strong>
+                                      <div className="mt-2">
+                                        {question.choices?.map((choice, choiceIndex) => (
+                                          <div key={choiceIndex} className="d-flex align-items-center mb-1">
+                                            <span className="me-2" style={{ color: choice.isCorrect ? "green" : "black" }}>
+                                              {choice.isCorrect ? "●" : "○"}
+                                            </span>
+                                            <span style={{ color: choice.isCorrect ? "green" : "black" }}>
+                                              {choice.text}
+                                            </span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                      <div className="mt-2">
+                                        <strong style={{ color: "green" }}>
+                                          Correct Answer: {question.choices?.find(choice => choice.isCorrect)?.text || 'None selected'}
+                                        </strong>
+                                      </div>
                                     </div>
                                   )}
 
                                   {question.type === "True/False" && (
                                     <div className="mb-3">
-                                      <span style={{ color: "green" }}>
-                                        Correct Answer: {question.answer ? "True" : "False"}
-                                      </span>
+                                      <strong>Possible Answers:</strong>
+                                      <div className="mt-2">
+                                        <div className="mb-1">○ True</div>
+                                        <div className="mb-1">○ False</div>
+                                      </div>
+                                      <div className="mt-2">
+                                        <strong style={{ color: "green" }}>
+                                          Correct Answer: {question.answer ? "True" : "False"}
+                                        </strong>
+                                      </div>
                                     </div>
                                   )}
 
                                   {question.type === "Fill in the Blank" && (
                                     <div className="mb-3">
-                                      <strong>Acceptable Answers:</strong>
-                                      <ul className="mb-0">
+                                      <strong>Possible Answers:</strong>
+                                      <div className="mt-2">
                                         {question.correctAnswers?.map((answer, answerIndex) => (
-                                          <li key={answerIndex}>{answer}</li>
+                                          <div key={answerIndex} className="mb-1">○ {answer}</div>
                                         ))}
-                                      </ul>
+                                      </div>
+                                      <div className="mt-2">
+                                        <strong style={{ color: "green" }}>
+                                          Correct Answer: {question.correctAnswers?.join(', ') || 'None specified'}
+                                        </strong>
+                                      </div>
                                     </div>
                                   )}
                                 </div>
