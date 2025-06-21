@@ -409,16 +409,30 @@ export default function QuizPreview() {
           )}
         </div>
 
-        {/* Submit Quiz Button */}
-        <div className="text-center mt-4">
-          <Button 
-            variant="outline-secondary" 
-            style={{ width: "100%", padding: "10px 0" }}
-            onClick={currentQuestionIndex === (currentQuiz.questions?.length || 0) - 1 ? handleSubmitQuiz : undefined}
-          >
-            Quiz saved at 8:19am &nbsp;&nbsp;&nbsp; 
-            {currentQuestionIndex === (currentQuiz.questions?.length || 0) - 1 ? "Submit Quiz" : "Save Quiz"}
-          </Button>
+        {/* Save Status and Submit Quiz */}
+        <div className="mt-4">
+          {/* Save Status */}
+          <div className="text-center mb-3" style={{ 
+            border: "1px solid #dee2e6", 
+            padding: "15px", 
+            backgroundColor: "#f8f9fa",
+            borderRadius: "4px"
+          }}>
+            <span style={{ color: "#666", fontSize: "14px" }}>
+              Quiz saved at {new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+            </span>
+          </div>
+          
+          {/* Submit Quiz Button */}
+          <div className="text-center">
+            <Button 
+              variant="primary" 
+              onClick={handleSubmitQuiz}
+              style={{ padding: "8px 20px" }}
+            >
+              Submit Quiz
+            </Button>
+          </div>
         </div>
 
         {/* Keep Editing Button */}
