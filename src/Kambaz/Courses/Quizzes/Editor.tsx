@@ -36,6 +36,7 @@ export default function QuizEditor() {
   console.log("isNew calculated:", isNew);
 
   const [activeTab, setActiveTab] = useState("details");
+  const [originalQuestions, setOriginalQuestions] = useState<Question[]>([]); // Store original state for cancel
   const [quiz, setQuiz] = useState<any>({
     title: "New Quiz",
     description: "",
@@ -166,17 +167,20 @@ export default function QuizEditor() {
   };
 
   const addNewQuestion = () => {
+    // Save current state as original before adding new question
+    setOriginalQuestions([...quiz.questions]);
+    
     const newQuestion = {
       _id: new Date().getTime().toString(),
       type: "Multiple Choice" as const,
-      title: "New Question",
-      points: 1,
-      questionText: "Enter your question text here",
+      title: "Easy Question",
+      points: 4,
+      questionText: "How much is 2 + 2?",
       choices: [
-        { text: "Option 1", isCorrect: true },
-        { text: "Option 2", isCorrect: false },
-        { text: "Option 3", isCorrect: false },
-        { text: "Option 4", isCorrect: false }
+        { text: "4", isCorrect: true },
+        { text: "3", isCorrect: false },
+        { text: "5", isCorrect: false },
+        { text: "7", isCorrect: false }
       ],
       isEditing: true // Add editing state flag
     };
@@ -187,6 +191,9 @@ export default function QuizEditor() {
   };
 
   const editQuestion = (question: Question) => {
+    // Save original state before editing
+    setOriginalQuestions([...quiz.questions]);
+    
     // Toggle editing state for inline editing
     const questions = quiz.questions.map((q: Question) => 
       q._id === question._id ? { ...q, isEditing: true } : { ...q, isEditing: false }
@@ -195,15 +202,25 @@ export default function QuizEditor() {
   };
 
   const cancelEditQuestion = (questionId: string) => {
-    // If this is a new question (no saved version), remove it
-    const questions = quiz.questions.filter((q: Question) => {
-      if (q._id === questionId && q.questionText === "Enter your question text here") {
-        return false; // Remove new unsaved questions
-      }
-      return true;
-    }).map((q: Question) => ({ ...q, isEditing: false }));
+    const questionToCancel = quiz.questions.find((q: Question) => q._id === questionId);
     
-    setQuiz({ ...quiz, questions });
+    if (questionToCancel) {
+      // Check if this is a new question (not in original questions)
+      const isNewQuestion = !originalQuestions.some(q => q._id === questionId);
+      
+      if (isNewQuestion) {
+        // Remove new question from list
+        const questions = quiz.questions.filter((q: Question) => q._id !== questionId);
+        setQuiz({ ...quiz, questions });
+      } else {
+        // Restore original state for existing question
+        const restoredQuestions = originalQuestions.map((q: Question) => ({ ...q, isEditing: false }));
+        setQuiz({ ...quiz, questions: restoredQuestions });
+      }
+    }
+    
+    // Clear original questions state
+    setOriginalQuestions([]);
   };
 
   const saveQuestionEdit = (questionId: string) => {
@@ -211,6 +228,9 @@ export default function QuizEditor() {
       q._id === questionId ? { ...q, isEditing: false } : q
     );
     setQuiz({ ...quiz, questions });
+    
+    // Clear original questions state after saving
+    setOriginalQuestions([]);
   };
 
   const updateQuestionField = (questionId: string, field: string, value: any) => {
@@ -266,6 +286,32 @@ export default function QuizEditor() {
       if (q._id === questionId && q.choices) {
         const newChoices = [...q.choices];
         newChoices[choiceIndex] = { ...newChoices[choiceIndex], text };
+        return { ...q, choices: newChoices };
+      }
+      return q;
+    });
+    setQuiz({ ...quiz, questions });
+  };
+
+  const addChoice = (questionId: string) => {
+    const questions = quiz.questions.map((q: Question) => {
+      if (q._id === questionId && q.choices) {
+        const newChoices = [...q.choices, { text: "", isCorrect: false }];
+        return { ...q, choices: newChoices };
+      }
+      return q;
+    });
+    setQuiz({ ...quiz, questions });
+  };
+
+  const removeChoice = (questionId: string, choiceIndex: number) => {
+    const questions = quiz.questions.map((q: Question) => {
+      if (q._id === questionId && q.choices && q.choices.length > 2) {
+        const newChoices = q.choices.filter((_, index) => index !== choiceIndex);
+        // If we removed the correct answer, make the first choice correct
+        if (q.choices[choiceIndex].isCorrect && newChoices.length > 0) {
+          newChoices[0].isCorrect = true;
+        }
         return { ...q, choices: newChoices };
       }
       return q;
@@ -567,84 +613,143 @@ export default function QuizEditor() {
                           {question.isEditing ? (
                             // Edit Mode
                             <div>
+                              {/* Question Header */}
                               <div className="d-flex justify-content-between align-items-center mb-3">
-                                <h6>Question {index + 1}</h6>
-                                <div>
-                                  <Button
-                                    variant="outline-secondary"
-                                    size="sm"
-                                    onClick={() => cancelEditQuestion(question._id)}
-                                    className="me-2"
+                                <div className="d-flex align-items-center">
+                                  <Form.Control
+                                    type="text"
+                                    value={question.title}
+                                    onChange={(e) => updateQuestionField(question._id, 'title', e.target.value)}
+                                    placeholder="Easy Question"
+                                    className="me-3"
+                                    style={{ width: '200px', fontWeight: 'normal' }}
+                                  />
+                                  <Form.Select
+                                    value={question.type}
+                                    onChange={(e) => updateQuestionField(question._id, 'type', e.target.value)}
+                                    className="me-3"
+                                    style={{ width: '180px' }}
                                   >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    variant="primary"
-                                    size="sm"
-                                    onClick={() => saveQuestionEdit(question._id)}
-                                  >
-                                    Save
-                                  </Button>
-                                </div>
-                              </div>
-                              
-                              <Row>
-                                <Col md={6}>
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>Question Type</Form.Label>
-                                    <Form.Select
-                                      value={question.type}
-                                      onChange={(e) => updateQuestionField(question._id, 'type', e.target.value)}
-                                    >
-                                      <option value="Multiple Choice">Multiple Choice</option>
-                                      <option value="True/False">True/False</option>
-                                      <option value="Fill in the Blank">Fill in the Blank</option>
-                                    </Form.Select>
-                                  </Form.Group>
-                                </Col>
-                                <Col md={6}>
-                                  <Form.Group className="mb-3">
-                                    <Form.Label>Points</Form.Label>
+                                    <option value="Multiple Choice">Multiple Choice</option>
+                                    <option value="True/False">True/False</option>
+                                    <option value="Fill in the Blank">Fill in the Blank</option>
+                                  </Form.Select>
+                                  <div className="d-flex align-items-center">
+                                    <span className="me-2">pts:</span>
                                     <Form.Control
                                       type="number"
                                       value={question.points}
                                       onChange={(e) => updateQuestionField(question._id, 'points', parseInt(e.target.value) || 0)}
                                       min="0"
+                                      style={{ width: '80px' }}
                                     />
-                                  </Form.Group>
-                                </Col>
-                              </Row>
+                                  </div>
+                                </div>
+                              </div>
 
-                              <Form.Group className="mb-3">
-                                <Form.Label>Question Text</Form.Label>
+                              {/* Instruction Text */}
+                              <p className="text-muted mb-3" style={{ fontSize: '0.9em' }}>
+                                Enter your question and multiple answers, then select the one correct answer.
+                              </p>
+
+                              {/* Question Section */}
+                              <div className="mb-4">
+                                <Form.Label><strong>Question:</strong></Form.Label>
+                                <div className="border rounded p-2 mb-2" style={{ backgroundColor: '#f8f9fa' }}>
+                                  <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <div className="btn-toolbar" role="toolbar">
+                                      <div className="btn-group me-2" role="group">
+                                        <button type="button" className="btn btn-sm btn-outline-secondary">Edit</button>
+                                        <button type="button" className="btn btn-sm btn-outline-secondary">View</button>
+                                        <button type="button" className="btn btn-sm btn-outline-secondary">Insert</button>
+                                        <button type="button" className="btn btn-sm btn-outline-secondary">Format</button>
+                                        <button type="button" className="btn btn-sm btn-outline-secondary">Tools</button>
+                                        <button type="button" className="btn btn-sm btn-outline-secondary">Table</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="border-top pt-2">
+                                    <div className="d-flex align-items-center mb-2">
+                                      <Form.Select size="sm" className="me-2" style={{ width: '80px' }}>
+                                        <option>12pt</option>
+                                      </Form.Select>
+                                      <Form.Select size="sm" className="me-2" style={{ width: '120px' }}>
+                                        <option>Paragraph</option>
+                                      </Form.Select>
+                                      <div className="btn-group me-2">
+                                        <button type="button" className="btn btn-sm btn-outline-secondary"><strong>B</strong></button>
+                                        <button type="button" className="btn btn-sm btn-outline-secondary"><em>I</em></button>
+                                        <button type="button" className="btn btn-sm btn-outline-secondary"><u>U</u></button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
                                 <Form.Control
                                   as="textarea"
-                                  rows={3}
+                                  rows={4}
                                   value={question.questionText}
                                   onChange={(e) => updateQuestionField(question._id, 'questionText', e.target.value)}
+                                  placeholder="Enter your question here..."
+                                  className="mb-3"
                                 />
-                              </Form.Group>
+                              </div>
 
                               {question.type === "Multiple Choice" && (
                                 <div>
-                                  <Form.Label>Answer Choices</Form.Label>
+                                  <Form.Label className="mb-3">Answers:</Form.Label>
                                   {question.choices?.map((choice, choiceIndex) => (
-                                    <div key={choiceIndex} className="d-flex mb-2">
-                                      <Form.Check
-                                        type="radio"
-                                        name={`correctAnswer-${question._id}`}
-                                        checked={choice.isCorrect}
-                                        onChange={() => updateCorrectChoice(question._id, choiceIndex)}
-                                        className="me-2"
-                                      />
-                                      <Form.Control
-                                        type="text"
-                                        value={choice.text}
-                                        onChange={(e) => updateChoiceText(question._id, choiceIndex, e.target.value)}
-                                        placeholder={`Choice ${choiceIndex + 1}`}
-                                      />
+                                    <div key={choiceIndex} className="mb-3">
+                                      <div className="d-flex align-items-start">
+                                        <div className="me-2 mt-1">
+                                          <Form.Check
+                                            type="radio"
+                                            name={`correctAnswer-${question._id}`}
+                                            checked={choice.isCorrect}
+                                            onChange={() => updateCorrectChoice(question._id, choiceIndex)}
+                                            style={{ transform: 'scale(1.2)' }}
+                                          />
+                                        </div>
+                                        <div className="flex-grow-1">
+                                          <div className="d-flex align-items-center mb-1">
+                                                                                         {choice.isCorrect && (
+                                               <span className="badge bg-success me-2">
+                                                 → Correct Answer
+                                               </span>
+                                             )}
+                                            <span className="text-muted">Possible Answer</span>
+                                            <Button
+                                              variant="link"
+                                              size="sm"
+                                              className="ms-auto text-danger p-0"
+                                              onClick={() => removeChoice(question._id, choiceIndex)}
+                                              style={{ textDecoration: 'none' }}
+                                            >
+                                                                                             <FaTrash />
+                                            </Button>
+                                          </div>
+                                          <Form.Control
+                                            as="textarea"
+                                            rows={2}
+                                            value={choice.text}
+                                            onChange={(e) => updateChoiceText(question._id, choiceIndex, e.target.value)}
+                                            placeholder={`Enter answer choice ${choiceIndex + 1}`}
+                                            style={{ 
+                                              border: choice.isCorrect ? '2px solid #28a745' : '1px solid #ced4da',
+                                              backgroundColor: choice.isCorrect ? '#f8fff8' : 'white'
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
                                     </div>
                                   ))}
+                                  <Button
+                                    variant="link"
+                                    className="text-primary p-0 mb-3"
+                                    onClick={() => addChoice(question._id)}
+                                    style={{ textDecoration: 'none' }}
+                                  >
+                                                                         <FaPlus /> Add Another Answer
+                                  </Button>
                                 </div>
                               )}
 
@@ -685,6 +790,23 @@ export default function QuizEditor() {
                                   </Form.Text>
                                 </Form.Group>
                               )}
+
+                              {/* Action Buttons */}
+                              <div className="d-flex justify-content-start mt-4">
+                                <Button
+                                  variant="outline-secondary"
+                                  onClick={() => cancelEditQuestion(question._id)}
+                                  className="me-2"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  variant="danger"
+                                  onClick={() => saveQuestionEdit(question._id)}
+                                >
+                                  Update Question
+                                </Button>
+                              </div>
                             </div>
                           ) : (
                             // Preview Mode
