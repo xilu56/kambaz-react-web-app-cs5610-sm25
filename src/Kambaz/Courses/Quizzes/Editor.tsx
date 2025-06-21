@@ -16,6 +16,7 @@ interface Question {
   choices?: { text: string; isCorrect: boolean }[];
   answer?: boolean;
   correctAnswers?: string[];
+  isEditing?: boolean; // For inline editing state
 }
 
 export default function QuizEditor() {
@@ -58,8 +59,7 @@ export default function QuizEditor() {
     course: cid
   });
 
-  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
-  const [showQuestionModal, setShowQuestionModal] = useState(false);
+
 
   useEffect(() => {
     if (!isNew && qid) {
@@ -166,43 +166,118 @@ export default function QuizEditor() {
   };
 
   const addNewQuestion = () => {
-    setEditingQuestion({
+    const newQuestion = {
       _id: new Date().getTime().toString(),
-      type: "Multiple Choice",
+      type: "Multiple Choice" as const,
       title: "New Question",
       points: 1,
-      questionText: "",
+      questionText: "Enter your question text here",
       choices: [
-        { text: "", isCorrect: false },
-        { text: "", isCorrect: false },
-        { text: "", isCorrect: false },
-        { text: "", isCorrect: false }
-      ]
-    });
-    setShowQuestionModal(true);
+        { text: "Option 1", isCorrect: true },
+        { text: "Option 2", isCorrect: false },
+        { text: "Option 3", isCorrect: false },
+        { text: "Option 4", isCorrect: false }
+      ],
+      isEditing: true // Add editing state flag
+    };
+    
+    // Add question to the list in edit mode
+    const questions = [...quiz.questions, newQuestion];
+    setQuiz({ ...quiz, questions });
   };
 
   const editQuestion = (question: Question) => {
-    setEditingQuestion({ ...question });
-    setShowQuestionModal(true);
-  };
-
-  const saveQuestion = () => {
-    if (!editingQuestion) return;
-
-    const questions = [...quiz.questions];
-    const existingIndex = questions.findIndex(q => q._id === editingQuestion._id);
-    
-    if (existingIndex >= 0) {
-      questions[existingIndex] = editingQuestion;
-    } else {
-      questions.push(editingQuestion);
-    }
-
+    // Toggle editing state for inline editing
+    const questions = quiz.questions.map((q: Question) => 
+      q._id === question._id ? { ...q, isEditing: true } : { ...q, isEditing: false }
+    );
     setQuiz({ ...quiz, questions });
-    setShowQuestionModal(false);
-    setEditingQuestion(null);
   };
+
+  const cancelEditQuestion = (questionId: string) => {
+    // If this is a new question (no saved version), remove it
+    const questions = quiz.questions.filter((q: Question) => {
+      if (q._id === questionId && q.questionText === "Enter your question text here") {
+        return false; // Remove new unsaved questions
+      }
+      return true;
+    }).map((q: Question) => ({ ...q, isEditing: false }));
+    
+    setQuiz({ ...quiz, questions });
+  };
+
+  const saveQuestionEdit = (questionId: string) => {
+    const questions = quiz.questions.map((q: Question) => 
+      q._id === questionId ? { ...q, isEditing: false } : q
+    );
+    setQuiz({ ...quiz, questions });
+  };
+
+  const updateQuestionField = (questionId: string, field: string, value: any) => {
+    const questions = quiz.questions.map((q: Question) => {
+      if (q._id === questionId) {
+        const updatedQuestion = { ...q, [field]: value };
+        
+        // Handle question type changes - set appropriate defaults
+        if (field === 'type') {
+          if (value === 'Multiple Choice') {
+            updatedQuestion.choices = updatedQuestion.choices || [
+              { text: "Option 1", isCorrect: true },
+              { text: "Option 2", isCorrect: false },
+              { text: "Option 3", isCorrect: false },
+              { text: "Option 4", isCorrect: false }
+            ];
+            delete updatedQuestion.answer;
+            delete updatedQuestion.correctAnswers;
+          } else if (value === 'True/False') {
+            updatedQuestion.answer = true;
+            delete updatedQuestion.choices;
+            delete updatedQuestion.correctAnswers;
+          } else if (value === 'Fill in the Blank') {
+            updatedQuestion.correctAnswers = ['Answer'];
+            delete updatedQuestion.choices;
+            delete updatedQuestion.answer;
+          }
+        }
+        
+        return updatedQuestion;
+      }
+      return q;
+    });
+    setQuiz({ ...quiz, questions });
+  };
+
+  const updateCorrectChoice = (questionId: string, correctIndex: number) => {
+    const questions = quiz.questions.map((q: Question) => {
+      if (q._id === questionId && q.choices) {
+        const newChoices = q.choices.map((choice: any, index: number) => ({
+          ...choice,
+          isCorrect: index === correctIndex
+        }));
+        return { ...q, choices: newChoices };
+      }
+      return q;
+    });
+    setQuiz({ ...quiz, questions });
+  };
+
+  const updateChoiceText = (questionId: string, choiceIndex: number, text: string) => {
+    const questions = quiz.questions.map((q: Question) => {
+      if (q._id === questionId && q.choices) {
+        const newChoices = [...q.choices];
+        newChoices[choiceIndex] = { ...newChoices[choiceIndex], text };
+        return { ...q, choices: newChoices };
+      }
+      return q;
+    });
+    setQuiz({ ...quiz, questions });
+  };
+
+  const calculateTotalPoints = () => {
+    return quiz.questions.reduce((total: number, question: Question) => total + (question.points || 0), 0);
+  };
+
+
 
   const deleteQuestion = (questionId: string) => {
     const questions = quiz.questions.filter((q: Question) => q._id !== questionId);
@@ -487,38 +562,201 @@ export default function QuizEditor() {
                 ) : (
                   <div>
                     {quiz.questions.map((question: Question, index: number) => (
-                      <Card key={question._id} className="mb-3">
+                      <Card key={question._id} className="mb-3" style={{ border: question.isEditing ? "2px solid #0d6efd" : "1px solid #dee2e6" }}>
                         <Card.Body>
-                          <div className="d-flex justify-content-between align-items-start">
+                          {question.isEditing ? (
+                            // Edit Mode
                             <div>
-                              <h6>Question {index + 1}: {question.title}</h6>
-                              <p className="text-muted mb-1">{question.type}</p>
-                              <p className="mb-1">{question.questionText}</p>
-                              <small className="text-muted">{question.points} points</small>
+                              <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h6>Question {index + 1}</h6>
+                                <div>
+                                  <Button
+                                    variant="outline-secondary"
+                                    size="sm"
+                                    onClick={() => cancelEditQuestion(question._id)}
+                                    className="me-2"
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    variant="primary"
+                                    size="sm"
+                                    onClick={() => saveQuestionEdit(question._id)}
+                                  >
+                                    Save
+                                  </Button>
+                                </div>
+                              </div>
+                              
+                              <Row>
+                                <Col md={6}>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>Question Type</Form.Label>
+                                    <Form.Select
+                                      value={question.type}
+                                      onChange={(e) => updateQuestionField(question._id, 'type', e.target.value)}
+                                    >
+                                      <option value="Multiple Choice">Multiple Choice</option>
+                                      <option value="True/False">True/False</option>
+                                      <option value="Fill in the Blank">Fill in the Blank</option>
+                                    </Form.Select>
+                                  </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                  <Form.Group className="mb-3">
+                                    <Form.Label>Points</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      value={question.points}
+                                      onChange={(e) => updateQuestionField(question._id, 'points', parseInt(e.target.value) || 0)}
+                                      min="0"
+                                    />
+                                  </Form.Group>
+                                </Col>
+                              </Row>
+
+                              <Form.Group className="mb-3">
+                                <Form.Label>Question Text</Form.Label>
+                                <Form.Control
+                                  as="textarea"
+                                  rows={3}
+                                  value={question.questionText}
+                                  onChange={(e) => updateQuestionField(question._id, 'questionText', e.target.value)}
+                                />
+                              </Form.Group>
+
+                              {question.type === "Multiple Choice" && (
+                                <div>
+                                  <Form.Label>Answer Choices</Form.Label>
+                                  {question.choices?.map((choice, choiceIndex) => (
+                                    <div key={choiceIndex} className="d-flex mb-2">
+                                      <Form.Check
+                                        type="radio"
+                                        name={`correctAnswer-${question._id}`}
+                                        checked={choice.isCorrect}
+                                        onChange={() => updateCorrectChoice(question._id, choiceIndex)}
+                                        className="me-2"
+                                      />
+                                      <Form.Control
+                                        type="text"
+                                        value={choice.text}
+                                        onChange={(e) => updateChoiceText(question._id, choiceIndex, e.target.value)}
+                                        placeholder={`Choice ${choiceIndex + 1}`}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {question.type === "True/False" && (
+                                <Form.Group className="mb-3">
+                                  <Form.Label>Correct Answer</Form.Label>
+                                  <div>
+                                    <Form.Check
+                                      type="radio"
+                                      label="True"
+                                      name={`trueFalseAnswer-${question._id}`}
+                                      checked={question.answer === true}
+                                      onChange={() => updateQuestionField(question._id, 'answer', true)}
+                                    />
+                                    <Form.Check
+                                      type="radio"
+                                      label="False"
+                                      name={`trueFalseAnswer-${question._id}`}
+                                      checked={question.answer === false}
+                                      onChange={() => updateQuestionField(question._id, 'answer', false)}
+                                    />
+                                  </div>
+                                </Form.Group>
+                              )}
+
+                              {question.type === "Fill in the Blank" && (
+                                <Form.Group className="mb-3">
+                                  <Form.Label>Correct Answers (one per line)</Form.Label>
+                                  <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    value={question.correctAnswers?.join('\n') || ''}
+                                    onChange={(e) => updateQuestionField(question._id, 'correctAnswers', e.target.value.split('\n').filter(line => line.trim()))}
+                                    placeholder="Enter possible correct answers, one per line"
+                                  />
+                                  <Form.Text className="text-muted">
+                                    Multiple correct answers are supported (case-insensitive matching)
+                                  </Form.Text>
+                                </Form.Group>
+                              )}
                             </div>
+                          ) : (
+                            // Preview Mode
                             <div>
-                              <Button
-                                variant="outline-primary"
-                                size="sm"
-                                onClick={() => editQuestion(question)}
-                                className="me-2"
-                              >
-                                <FaEdit />
-                              </Button>
-                              <Button
-                                variant="outline-danger"
-                                size="sm"
-                                onClick={() => deleteQuestion(question._id)}
-                              >
-                                <FaTrash />
-                              </Button>
+                              <div className="d-flex justify-content-between align-items-start">
+                                <div style={{ flex: 1 }}>
+                                  <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <h6>Question {index + 1}</h6>
+                                    <span className="badge bg-secondary">{question.points} pts</span>
+                                  </div>
+                                  <p className="text-muted mb-2">{question.type}</p>
+                                  <p className="mb-3">{question.questionText}</p>
+                                  
+                                  {question.type === "Multiple Choice" && (
+                                    <div className="mb-3">
+                                      {question.choices?.map((choice, choiceIndex) => (
+                                        <div key={choiceIndex} className="d-flex align-items-center mb-1">
+                                          <span className="me-2" style={{ color: choice.isCorrect ? "green" : "black" }}>
+                                            {choice.isCorrect ? "●" : "○"}
+                                          </span>
+                                          <span style={{ color: choice.isCorrect ? "green" : "black" }}>
+                                            {choice.text}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+
+                                  {question.type === "True/False" && (
+                                    <div className="mb-3">
+                                      <span style={{ color: "green" }}>
+                                        Correct Answer: {question.answer ? "True" : "False"}
+                                      </span>
+                                    </div>
+                                  )}
+
+                                  {question.type === "Fill in the Blank" && (
+                                    <div className="mb-3">
+                                      <strong>Acceptable Answers:</strong>
+                                      <ul className="mb-0">
+                                        {question.correctAnswers?.map((answer, answerIndex) => (
+                                          <li key={answerIndex}>{answer}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="ms-3">
+                                  <Button
+                                    variant="outline-primary"
+                                    size="sm"
+                                    onClick={() => editQuestion(question)}
+                                    className="me-2"
+                                  >
+                                    <FaEdit />
+                                  </Button>
+                                  <Button
+                                    variant="outline-danger"
+                                    size="sm"
+                                    onClick={() => deleteQuestion(question._id)}
+                                  >
+                                    <FaTrash />
+                                  </Button>
+                                </div>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </Card.Body>
                       </Card>
                     ))}
                     <div className="text-center mt-3">
-                      <strong>Total Points: {quiz.points || 0}</strong>
+                      <strong>Total Points: {calculateTotalPoints()}</strong>
                     </div>
                   </div>
                 )}
@@ -528,145 +766,7 @@ export default function QuizEditor() {
         </Tab.Content>
       </Tab.Container>
 
-      {/* Question Editor Modal */}
-      <Modal show={showQuestionModal} onHide={() => setShowQuestionModal(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {editingQuestion && quiz.questions.find((q: Question) => q._id === editingQuestion._id) 
-              ? "Edit Question" : "New Question"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {editingQuestion && (
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Question Type</Form.Label>
-                <Form.Select
-                  value={editingQuestion.type}
-                  onChange={(e) => setEditingQuestion({
-                    ...editingQuestion,
-                    type: e.target.value as "Multiple Choice" | "True/False" | "Fill in the Blank"
-                  })}
-                >
-                  <option value="Multiple Choice">Multiple Choice</option>
-                  <option value="True/False">True/False</option>
-                  <option value="Fill in the Blank">Fill in the Blank</option>
-                </Form.Select>
-              </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Question Title</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={editingQuestion.title}
-                  onChange={(e) => setEditingQuestion({ ...editingQuestion, title: e.target.value })}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Points</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={editingQuestion.points}
-                  onChange={(e) => setEditingQuestion({ ...editingQuestion, points: parseInt(e.target.value) })}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Question Text</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={editingQuestion.questionText}
-                  onChange={(e) => setEditingQuestion({ ...editingQuestion, questionText: e.target.value })}
-                />
-              </Form.Group>
-
-              {editingQuestion.type === "Multiple Choice" && (
-                <div>
-                  <Form.Label>Answer Choices</Form.Label>
-                  {editingQuestion.choices?.map((choice, index) => (
-                    <div key={index} className="d-flex mb-2">
-                      <Form.Check
-                        type="radio"
-                        name="correctAnswer"
-                        checked={choice.isCorrect}
-                        onChange={() => {
-                          const newChoices = editingQuestion.choices?.map((c, i) => ({
-                            ...c,
-                            isCorrect: i === index
-                          })) || [];
-                          setEditingQuestion({ ...editingQuestion, choices: newChoices });
-                        }}
-                        className="me-2"
-                      />
-                      <Form.Control
-                        type="text"
-                        value={choice.text}
-                        onChange={(e) => {
-                          const newChoices = [...(editingQuestion.choices || [])];
-                          newChoices[index].text = e.target.value;
-                          setEditingQuestion({ ...editingQuestion, choices: newChoices });
-                        }}
-                        placeholder={`Choice ${index + 1}`}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {editingQuestion.type === "True/False" && (
-                <Form.Group className="mb-3">
-                  <Form.Label>Correct Answer</Form.Label>
-                  <div>
-                    <Form.Check
-                      type="radio"
-                      label="True"
-                      name="trueFalseAnswer"
-                      checked={editingQuestion.answer === true}
-                      onChange={() => setEditingQuestion({ ...editingQuestion, answer: true })}
-                    />
-                    <Form.Check
-                      type="radio"
-                      label="False"
-                      name="trueFalseAnswer"
-                      checked={editingQuestion.answer === false}
-                      onChange={() => setEditingQuestion({ ...editingQuestion, answer: false })}
-                    />
-                  </div>
-                </Form.Group>
-              )}
-
-              {editingQuestion.type === "Fill in the Blank" && (
-                <Form.Group className="mb-3">
-                  <Form.Label>Correct Answers (one per line)</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    value={editingQuestion.correctAnswers?.join('\n') || ''}
-                    onChange={(e) => setEditingQuestion({
-                      ...editingQuestion,
-                      correctAnswers: e.target.value.split('\n').filter(line => line.trim())
-                    })}
-                    placeholder="Enter possible correct answers, one per line"
-                  />
-                  <Form.Text className="text-muted">
-                    Multiple correct answers are supported (case-insensitive matching)
-                  </Form.Text>
-                </Form.Group>
-              )}
-            </Form>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowQuestionModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={saveQuestion}>
-            Save Question
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 } 
