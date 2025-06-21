@@ -686,7 +686,7 @@ export default function QuizEditor() {
                                     type="text"
                                     value={question.title}
                                     onChange={(e) => updateQuestionField(question._id, 'title', e.target.value)}
-                                    placeholder="Easy Question"
+                                    placeholder="Enter a title"
                                     className="me-3"
                                     style={{ width: '200px', fontWeight: 'normal' }}
                                   />
@@ -891,9 +891,6 @@ export default function QuizEditor() {
                                   >
                                     <FaPlus /> Add Another Answer
                                   </Button>
-                                  <Form.Text className="text-muted d-block">
-                                    Multiple correct answers are supported (case-insensitive matching)
-                                  </Form.Text>
                                 </div>
                               )}
 
