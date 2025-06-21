@@ -8,6 +8,7 @@ import AssignmentEditor from "./Assignments/Editor";
 import Quizzes from "./Quizzes";
 import QuizDetails from "./Quizzes/Details";
 import QuizEditor from "./Quizzes/Editor";
+import QuizPreview from "./Quizzes/Preview";
 import PeopleTable from "./People/Table";
 import PeopleDetails from "./People/Details";
 import * as enrollmentsClient from "../Enrollments/client";
@@ -72,7 +73,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
             <Route path="Quizzes/:qid" element={<QuizDetails />} />
             <Route path="Quizzes/:qid/edit" element={<QuizEditor />} />
             <Route path="Quizzes/:qid/take" element={<h2>Take Quiz</h2>} />
-            <Route path="Quizzes/:qid/preview" element={<h2>Quiz Preview</h2>} />
+            <Route path="Quizzes/:qid/preview" element={<QuizPreview />} />
             <Route path="Grades" element={<h2>Grades</h2>} />
             <Route path="People" element={<PeopleTable users={courseUsers} onUserDeleted={fetchCourseUsers} />} />
             <Route path="People/:uid" element={<PeopleDetails />} />
