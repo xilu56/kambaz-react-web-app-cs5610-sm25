@@ -764,17 +764,15 @@ export default function QuizEditor() {
                                   
                                   {/* True Option */}
                                   <div className="mb-3">
-                                    <div className="d-flex align-items-center">
+                                    <div className="d-flex align-items-center mb-1">
                                       {question.answer === true && (
                                         <span className="badge bg-success me-2">
-                                          → True
+                                          → Correct Answer
                                         </span>
                                       )}
-                                      {question.answer !== true && (
-                                        <span className="text-muted me-2">True</span>
-                                      )}
+                                      <span className="text-muted">Possible Answer</span>
                                     </div>
-                                    <div className="d-flex align-items-center mt-1">
+                                    <div className="d-flex align-items-center">
                                       <Form.Check
                                         type="radio"
                                         name={`trueFalseAnswer-${question._id}`}
@@ -794,17 +792,15 @@ export default function QuizEditor() {
 
                                   {/* False Option */}
                                   <div className="mb-3">
-                                    <div className="d-flex align-items-center">
+                                    <div className="d-flex align-items-center mb-1">
                                       {question.answer === false && (
                                         <span className="badge bg-success me-2">
-                                          → False
+                                          → Correct Answer
                                         </span>
                                       )}
-                                      {question.answer !== false && (
-                                        <span className="text-muted me-2">False</span>
-                                      )}
+                                      <span className="text-muted">Possible Answer</span>
                                     </div>
-                                    <div className="d-flex align-items-center mt-1">
+                                    <div className="d-flex align-items-center">
                                       <Form.Check
                                         type="radio"
                                         name={`trueFalseAnswer-${question._id}`}
