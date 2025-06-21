@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card, Button, Form, Alert, Badge, Row, Col } from "react-bootstrap";
-import { FaEdit, FaArrowRight, FaArrowLeft, FaCheck, FaTimes } from "react-icons/fa";
+import { FaEdit, FaArrowRight, FaArrowLeft, FaCheck, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentQuiz } from "./reducer";
 import * as quizzesClient from "./client";
@@ -180,16 +180,10 @@ export default function QuizPreview() {
         <div style={{ backgroundColor: "white", borderRadius: "8px", padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
           
           {/* Header */}
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`} style={{ textDecoration: "none", color: "#666", fontSize: "14px" }}>
-                ← Back to Quiz Details
-              </Link>
-            </div>
-            <Button variant="outline-primary" onClick={handleEditQuiz}>
-              <FaEdit className="me-1" />
-              Edit Quiz
-            </Button>
+          <div className="mb-4">
+            <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`} style={{ textDecoration: "none", color: "#666", fontSize: "14px" }}>
+              ← Back to Quiz Details
+            </Link>
           </div>
 
           {/* Quiz Title */}
@@ -300,16 +294,10 @@ export default function QuizPreview() {
       <div style={{ backgroundColor: "white", borderRadius: "8px", padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
         
         {/* Header */}
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <div>
-            <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`} style={{ textDecoration: "none", color: "#666", fontSize: "14px" }}>
-              ← Back to Quiz Details
-            </Link>
-          </div>
-          <Button variant="outline-primary" onClick={handleEditQuiz}>
-            <FaEdit className="me-1" />
-            Edit Quiz
-          </Button>
+        <div className="mb-4">
+          <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`} style={{ textDecoration: "none", color: "#666", fontSize: "14px" }}>
+            ← Back to Quiz Details
+          </Link>
         </div>
 
         {/* Quiz Title */}
@@ -393,14 +381,17 @@ export default function QuizPreview() {
 
         {/* Navigation */}
         <div className="d-flex justify-content-between align-items-center">
-          <Button 
-            variant="outline-secondary" 
-            onClick={handlePreviousQuestion}
-            disabled={currentQuestionIndex === 0}
-          >
-            <FaArrowLeft className="me-1" />
-            Previous
-          </Button>
+          {currentQuestionIndex > 0 ? (
+            <Button 
+              variant="outline-secondary" 
+              onClick={handlePreviousQuestion}
+            >
+              <FaArrowLeft className="me-1" />
+              Previous
+            </Button>
+          ) : (
+            <div></div>
+          )}
           
           <span className="text-muted">
             Question {currentQuestionIndex + 1} of {currentQuiz.questions?.length || 0}
@@ -416,6 +407,49 @@ export default function QuizPreview() {
               <FaArrowRight className="ms-1" />
             </Button>
           )}
+        </div>
+
+        {/* Submit Quiz Button */}
+        <div className="text-center mt-4">
+          <Button 
+            variant="outline-secondary" 
+            style={{ width: "100%", padding: "10px 0" }}
+            onClick={currentQuestionIndex === (currentQuiz.questions?.length || 0) - 1 ? handleSubmitQuiz : undefined}
+          >
+            Quiz saved at 8:19am &nbsp;&nbsp;&nbsp; 
+            {currentQuestionIndex === (currentQuiz.questions?.length || 0) - 1 ? "Submit Quiz" : "Save Quiz"}
+          </Button>
+        </div>
+
+        {/* Keep Editing Button */}
+        <div className="text-center mt-3">
+          <Button variant="outline-secondary" onClick={handleEditQuiz} style={{ width: "100%", padding: "10px 0" }}>
+            <FaEdit className="me-2" />
+            Keep Editing This Quiz
+          </Button>
+        </div>
+
+        {/* Questions Navigation */}
+        <div className="mt-4 p-3" style={{ backgroundColor: "#f8f9fa", border: "1px solid #dee2e6" }}>
+          <h6 className="mb-3">Questions</h6>
+          <div>
+            {currentQuiz.questions?.map((question: any, index: number) => (
+              <div key={index} className="mb-2">
+                <Button
+                  variant={currentQuestionIndex === index ? "danger" : "link"}
+                  onClick={() => setCurrentQuestionIndex(index)}
+                  style={{
+                    textDecoration: "none",
+                    color: currentQuestionIndex === index ? "white" : "#dc3545",
+                    padding: "2px 8px",
+                    fontSize: "14px"
+                  }}
+                >
+                  Question {index + 1}
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
