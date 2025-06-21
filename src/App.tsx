@@ -14,7 +14,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<div>
               <h1>Web Development Course</h1>
-              <p>Welcome to the Web Development course. Please use the navigation above to explore Labs and Kambaz.</p>
+              <p> Welcome to my Kambaz Quiz Project. My name is Xi Lu from CS5610 41980 Web Development SEC 04 Summer 1 2025. PLease navigate to the Kambaz tab to start.</p>
             </div>} />
             <Route path="/Labs/*" element={<Labs />} />
             <Route path="/Kambaz/*" element={<Kambaz />} />
