@@ -277,6 +277,103 @@ export default function TakeQuiz() {
     setStartTime(new Date());
   };
 
+  const getQuizAvailabilityStatus = () => {
+    if (!currentQuiz) return { status: "Loading...", color: "secondary", canTake: false, message: "" };
+    
+    const now = new Date();
+    const availableDate = currentQuiz.availableDate ? new Date(currentQuiz.availableDate) : null;
+    const untilDate = currentQuiz.untilDate ? new Date(currentQuiz.untilDate) : null;
+    
+    if (!currentQuiz.published) {
+      return { 
+        status: "Quiz Not Available", 
+        color: "warning", 
+        canTake: false,
+        message: "This quiz has not been published yet. Please contact your instructor for more information."
+      };
+    }
+    
+    if (untilDate && now > untilDate) {
+      return { 
+        status: "Quiz Not Available", 
+        color: "danger", 
+        canTake: false,
+        message: "This quiz is no longer available. The due date has passed. Please contact your instructor for more information."
+      };
+    }
+    
+    if (availableDate && now < availableDate) {
+      return { 
+        status: "Quiz Not Available", 
+        color: "warning", 
+        canTake: false,
+        message: `This quiz will be available starting ${availableDate.toLocaleDateString()} at ${availableDate.toLocaleTimeString()}.`
+      };
+    }
+    
+    return { status: "Available", color: "success", canTake: true, message: "" };
+  };
+
+  // Show quiz overview if student has attempts but isn't currently taking quiz
+  if (latestAttempt && !isViewingResults && !startTime) {
+    const availability = getQuizAvailabilityStatus();
+    
+    return (
+      <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", padding: "20px" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "8px", padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+          
+          {/* Header */}
+          <div className="mb-4">
+            <Link to={`/Kambaz/Courses/${cid}/Quizzes`} style={{ textDecoration: "none", color: "#666", fontSize: "14px" }}>
+              ← Back to Quizzes
+            </Link>
+          </div>
+
+          {/* Quiz Title */}
+          <h2 className="mb-4">{currentQuiz.title}</h2>
+
+          {/* Quiz Availability Status */}
+          {!availability.canTake ? (
+            <Alert variant={availability.color} className="mb-4">
+              <h4 className="text-center mb-3">Cannot Take Quiz</h4>
+              <h5 className="text-center mb-3">{availability.status}</h5>
+              <p className="text-center mb-0">{availability.message}</p>
+            </Alert>
+          ) : (
+            <Alert variant={availability.color} className="text-center mb-4">
+              <h5 className="mb-0">{availability.status}</h5>
+            </Alert>
+          )}
+
+          {/* Latest Score */}
+          <Alert variant="info" className="text-center mb-4">
+            <h5>Your Latest Score: {latestAttempt.score}/{latestAttempt.totalPoints}</h5>
+            <p className="mb-0">Attempt {latestAttempt.attemptNumber}</p>
+          </Alert>
+
+          {/* Quiz Info */}
+          <div className="text-center mb-4">
+            <p><strong>Points:</strong> {currentQuiz.points}</p>
+            {currentQuiz.timeLimit && <p><strong>Time Limit:</strong> {currentQuiz.timeLimit} minutes</p>}
+            <p><strong>Questions:</strong> {currentQuiz.questions?.length || 0}</p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="text-center">
+            {canTakeQuiz && availability.canTake && (
+              <Button variant="success" onClick={handleTakeNewAttempt} className="me-3" size="lg">
+                New Attempt
+              </Button>
+            )}
+            <Button variant="outline-primary" onClick={() => setIsViewingResults(true)} size="lg">
+              View Results
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Show results if completed or viewing previous results
   if ((isCompleted || isViewingResults) && quizResult) {
     return (
@@ -394,6 +491,57 @@ export default function TakeQuiz() {
             <Button variant="primary" onClick={() => navigate(`/Kambaz/Courses/${cid}/Quizzes`)}>
               Back to Quizzes
             </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show quiz overview for first-time visitors (no attempts yet)
+  if (!latestAttempt && !startTime) {
+    const availability = getQuizAvailabilityStatus();
+    
+    return (
+      <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", padding: "20px" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "8px", padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+          
+          {/* Header */}
+          <div className="mb-4">
+            <Link to={`/Kambaz/Courses/${cid}/Quizzes`} style={{ textDecoration: "none", color: "#666", fontSize: "14px" }}>
+              ← Back to Quizzes
+            </Link>
+          </div>
+
+          {/* Quiz Title */}
+          <h2 className="mb-4">{currentQuiz.title}</h2>
+
+          {/* Quiz Availability Status */}
+          {!availability.canTake ? (
+            <Alert variant={availability.color} className="mb-4">
+              <h4 className="text-center mb-3">Cannot Take Quiz</h4>
+              <h5 className="text-center mb-3">{availability.status}</h5>
+              <p className="text-center mb-0">{availability.message}</p>
+            </Alert>
+          ) : (
+            <Alert variant={availability.color} className="text-center mb-4">
+              <h5 className="mb-0">{availability.status}</h5>
+            </Alert>
+          )}
+
+          {/* Quiz Info */}
+          <div className="text-center mb-4">
+            <p><strong>Points:</strong> {currentQuiz.points}</p>
+            {currentQuiz.timeLimit && <p><strong>Time Limit:</strong> {currentQuiz.timeLimit} minutes</p>}
+            <p><strong>Questions:</strong> {currentQuiz.questions?.length || 0}</p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="text-center">
+            {availability.canTake && (
+              <Button variant="success" onClick={handleTakeNewAttempt} size="lg">
+                Start Quiz
+              </Button>
+            )}
           </div>
         </div>
       </div>
