@@ -39,6 +39,10 @@ export default function TakeQuiz() {
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [latestAttempt, setLatestAttempt] = useState<any>(null);
+  const [canTakeQuiz, setCanTakeQuiz] = useState(true);
+  const [isViewingResults, setIsViewingResults] = useState(false);
+  const [attemptNumber, setAttemptNumber] = useState(1);
 
   const { currentQuiz } = useSelector((state: any) => state.quizzesReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -46,20 +50,49 @@ export default function TakeQuiz() {
   const isStudent = currentUser && currentUser.role === "STUDENT";
 
   useEffect(() => {
-    const fetchQuiz = async () => {
+    const fetchQuizAndAttempts = async () => {
       if (qid) {
         try {
           const quiz = await quizzesClient.fetchQuiz(qid);
           dispatch(setCurrentQuiz(quiz));
           
-          // Initialize answers array
-          const initialAnswers = quiz.questions?.map((question: any) => ({
-            questionId: question._id,
-            answer: null,
-            selectedChoices: []
-          })) || [];
-          setAnswers(initialAnswers);
-          setStartTime(new Date());
+          // Check if student has previous attempts
+          const latestAttemptData = await quizzesClient.getLatestAttemptForStudent(qid);
+          setLatestAttempt(latestAttemptData);
+          
+          if (latestAttemptData) {
+            // Check if student can take quiz again
+            const canTake = checkCanTakeQuiz(quiz, latestAttemptData);
+            setCanTakeQuiz(canTake);
+            setAttemptNumber(latestAttemptData.attemptNumber + 1);
+            
+            if (!canTake) {
+              // Show results of latest attempt
+              setIsViewingResults(true);
+              setQuizResult({
+                totalQuestions: quiz.questions.length,
+                correctAnswers: latestAttemptData.answers.filter((a: any) => a.isCorrect).length,
+                score: Math.round((latestAttemptData.score / latestAttemptData.totalPoints) * 100),
+                answers: latestAttemptData.answers.map((a: any) => ({
+                  questionId: a.questionId,
+                  userAnswer: a.answer,
+                  isCorrect: a.isCorrect,
+                  correctAnswer: getCorrectAnswer(quiz.questions.find((q: any) => q._id === a.questionId))
+                }))
+              });
+            }
+          }
+          
+          // Initialize answers array for new attempt
+          if (!latestAttemptData || checkCanTakeQuiz(quiz, latestAttemptData)) {
+            const initialAnswers = quiz.questions?.map((question: any) => ({
+              questionId: question._id,
+              answer: null,
+              selectedChoices: []
+            })) || [];
+            setAnswers(initialAnswers);
+            setStartTime(new Date());
+          }
         } catch (error) {
           console.error("Error fetching quiz:", error);
         } finally {
@@ -68,8 +101,31 @@ export default function TakeQuiz() {
       }
     };
 
-    fetchQuiz();
+    fetchQuizAndAttempts();
   }, [qid, dispatch]);
+
+  const checkCanTakeQuiz = (quiz: any, latestAttempt: any) => {
+    if (!quiz.multipleAttempts) {
+      // Single attempt only - can't retake if already attempted
+      return !latestAttempt;
+    }
+    
+    // Multiple attempts allowed - check if under limit
+    return latestAttempt.attemptNumber < quiz.howManyAttempts;
+  };
+
+  const getCorrectAnswer = (question: any) => {
+    if (!question) return "";
+    
+    if (question.type === "Multiple Choice") {
+      return question.choices?.find((c: any) => c.isCorrect)?.text || "";
+    } else if (question.type === "True/False") {
+      return question.answer?.toString() || "";
+    } else if (question.type === "Fill in the Blank") {
+      return question.correctAnswers?.join(", ") || "";
+    }
+    return "";
+  };
 
   const handleAnswerChange = (questionId: string, answer: any) => {
     setAnswers(prev => prev.map(a => 
@@ -147,10 +203,37 @@ export default function TakeQuiz() {
     };
   };
 
-  const handleSubmitQuiz = () => {
-    const result = calculateScore();
-    setQuizResult(result);
-    setIsCompleted(true);
+  const handleSubmitQuiz = async () => {
+    try {
+      // Prepare answers for submission
+      const submissionAnswers = answers.map(answer => ({
+        questionId: answer.questionId,
+        answer: answer.answer || (answer.selectedChoices && answer.selectedChoices.length > 0 ? 
+          currentQuiz.questions.find((q: any) => q._id === answer.questionId)?.choices?.[parseInt(answer.selectedChoices[0])]?.text : null)
+      })).filter(a => a.answer !== null);
+
+      // Submit to server
+      const attempt = await quizzesClient.submitQuizAttempt(qid!, submissionAnswers);
+      
+      // Calculate and display results
+      const result = {
+        totalQuestions: currentQuiz.questions.length,
+        correctAnswers: attempt.answers.filter((a: any) => a.isCorrect).length,
+        score: Math.round((attempt.score / attempt.totalPoints) * 100),
+        answers: attempt.answers.map((a: any) => ({
+          questionId: a.questionId,
+          userAnswer: a.answer,
+          isCorrect: a.isCorrect,
+          correctAnswer: getCorrectAnswer(currentQuiz.questions.find((q: any) => q._id === a.questionId))
+        }))
+      };
+      
+      setQuizResult(result);
+      setIsCompleted(true);
+    } catch (error) {
+      console.error("Error submitting quiz:", error);
+      alert("Error submitting quiz. Please try again.");
+    }
   };
 
   const handleNextQuestion = () => {
@@ -177,7 +260,25 @@ export default function TakeQuiz() {
     return <div className="p-4">Access denied. Only students can take quizzes.</div>;
   }
 
-  if (isCompleted && quizResult) {
+  const handleTakeNewAttempt = () => {
+    setIsViewingResults(false);
+    setIsCompleted(false);
+    setQuizResult(null);
+    setCurrentQuestionIndex(0);
+    setLastSaved(null);
+    
+    // Initialize answers for new attempt
+    const initialAnswers = currentQuiz.questions?.map((question: any) => ({
+      questionId: question._id,
+      answer: null,
+      selectedChoices: []
+    })) || [];
+    setAnswers(initialAnswers);
+    setStartTime(new Date());
+  };
+
+  // Show results if completed or viewing previous results
+  if ((isCompleted || isViewingResults) && quizResult) {
     return (
       <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", padding: "20px" }}>
         <div style={{ backgroundColor: "white", borderRadius: "8px", padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
@@ -191,6 +292,16 @@ export default function TakeQuiz() {
 
           {/* Quiz Title */}
           <h2 className="mb-3">{currentQuiz.title} - Results</h2>
+          
+          {/* Attempt Info */}
+          {latestAttempt && (
+            <Alert variant="info" className="mb-3">
+              <strong>Attempt {latestAttempt.attemptNumber}</strong> - Submitted on {new Date(latestAttempt.submittedAt).toLocaleString()}
+              {currentQuiz.multipleAttempts && canTakeQuiz && (
+                <span> | You can take {currentQuiz.howManyAttempts - latestAttempt.attemptNumber} more attempt(s)</span>
+              )}
+            </Alert>
+          )}
 
           {/* Score Summary */}
           <Card className="mb-4">
@@ -233,9 +344,12 @@ export default function TakeQuiz() {
               <Card key={question._id} className="mb-3">
                 <Card.Body>
                   <div className="d-flex justify-content-between align-items-start mb-2">
-                    <h6>Question {index + 1}{question.title ? `: ${question.title}` : ''}</h6>
+                    <h6 style={{ color: result?.isCorrect ? "#28a745" : "#dc3545" }}>
+                      {result?.isCorrect ? <FaCheck className="me-2" /> : <FaTimes className="me-2" />}
+                      Question {index + 1}{question.title ? `: ${question.title}` : ''}
+                    </h6>
                     <Badge bg={result?.isCorrect ? "success" : "danger"}>
-                      {result?.isCorrect ? <FaCheck /> : <FaTimes />} {question.points} pts
+                      {question.points} pts
                     </Badge>
                   </div>
                   
@@ -272,8 +386,50 @@ export default function TakeQuiz() {
 
           {/* Action Buttons */}
           <div className="text-center mt-4">
+            {canTakeQuiz && currentQuiz.multipleAttempts && !isCompleted && (
+              <Button variant="success" onClick={handleTakeNewAttempt} className="me-3">
+                Take New Attempt
+              </Button>
+            )}
             <Button variant="primary" onClick={() => navigate(`/Kambaz/Courses/${cid}/Quizzes`)}>
               Back to Quizzes
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If student can't take quiz, show message
+  if (!canTakeQuiz && !isViewingResults) {
+    return (
+      <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", padding: "20px" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "8px", padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+          <div className="mb-4">
+            <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`} style={{ textDecoration: "none", color: "#666", fontSize: "14px" }}>
+              ← Back to Quiz Details
+            </Link>
+          </div>
+          
+          <h2 className="mb-3">{currentQuiz.title}</h2>
+          
+          <Alert variant="warning">
+            <h5>Quiz Attempts Exhausted</h5>
+            <p>
+              You have completed all allowed attempts for this quiz. 
+              {currentQuiz.multipleAttempts 
+                ? ` You were allowed ${currentQuiz.howManyAttempts} attempts.`
+                : " This quiz only allows one attempt."
+              }
+            </p>
+            <p>
+              <strong>Your latest score:</strong> {latestAttempt ? Math.round((latestAttempt.score / latestAttempt.totalPoints) * 100) : 0}%
+            </p>
+          </Alert>
+          
+          <div className="text-center">
+            <Button variant="primary" onClick={() => setIsViewingResults(true)}>
+              View Your Results
             </Button>
           </div>
         </div>
@@ -302,6 +458,14 @@ export default function TakeQuiz() {
         <div className="mb-4">
           <p className="text-muted">Started: {startTime?.toLocaleString()}</p>
           <h4>Quiz Instructions</h4>
+          {latestAttempt && (
+            <Alert variant="info">
+              <strong>Attempt {attemptNumber}</strong>
+              {currentQuiz.multipleAttempts && (
+                <span> of {currentQuiz.howManyAttempts} allowed attempts</span>
+              )}
+            </Alert>
+          )}
         </div>
 
         {/* Question */}
